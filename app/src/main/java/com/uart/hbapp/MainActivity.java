@@ -1,8 +1,13 @@
 package com.uart.hbapp;
 
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 
+import com.clj.fastble.data.BleDevice;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.uart.hbapp.comm.Observer;
+import com.uart.hbapp.comm.ObserverManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.annotation.NonNull;
@@ -15,7 +20,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity  implements Observer {
+    public static final String KEY_DATA = "key_data";
+
+    private BleDevice bleDevice;
+    private BluetoothGattService bluetoothGattService;
+    private BluetoothGattCharacteristic characteristic;
+
+    private int charaProp;
     private int lastIndex;
     List<Fragment> mFragments;
 
@@ -25,6 +37,8 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         initBottomNavigation();
         initData();
+
+        ObserverManager.getInstance().addObserver(this);
     }
 
     public void initData() {
@@ -77,19 +91,24 @@ public class MainActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        ObserverManager.getInstance().deleteObserver(this);
     }
 
-    private long firstPressedTime;
     @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - firstPressedTime < 2000) {
-            super.onBackPressed();
-            System.exit(0);
-        } else {
-            Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
-            firstPressedTime = System.currentTimeMillis();
-        }
+    public void disConnected(BleDevice bleDevice) {
+
     }
+
+//    private long firstPressedTime;
+//    @Override
+//    public void onBackPressed() {
+//        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+//            super.onBackPressed();
+//            System.exit(0);
+//        } else {
+//            Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+//            firstPressedTime = System.currentTimeMillis();
+//        }
+//    }
 
 }

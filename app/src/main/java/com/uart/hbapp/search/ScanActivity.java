@@ -6,7 +6,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
@@ -22,10 +21,13 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
 import com.clj.fastble.callback.BleMtuChangedCallback;
@@ -37,6 +39,7 @@ import com.clj.fastble.scan.BleScanRuleConfig;
 import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.DeviceAdapter;
+import com.uart.hbapp.comm.ObserverManager;
 import com.uart.hbapp.utils.view.Radar.RadarViewGroup;
 
 import java.util.ArrayList;
@@ -45,28 +48,32 @@ import java.util.UUID;
 
 
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+
 public class ScanActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_OPEN_GPS = 1;
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
     private static final long SCAN_DURATION = 5000;
 
-
     private RadarViewGroup radarViewGroup;
     private DeviceAdapter mDeviceAdapter;
     private Handler mHandler = new Handler();
 
     boolean mIsScanning = false;
-    String str_uuid=null;
-    String str_name="Test";
-    String mac=null;
     boolean isAutoConnect=false;
+    String str_uuid=null;
+    String str_name=null;
+    String mac=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Window window = getWindow();
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        window.setFlags(flag, flag);
         setContentView(R.layout.activity_scan);
+        getSupportActionBar().hide();
 
         radarViewGroup = findViewById(R.id.radar);
         radarViewGroup.setiRadarClickListener(new RadarViewGroup.IRadarClickListener() {
@@ -160,38 +167,35 @@ public class ScanActivity extends AppCompatActivity {
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
-//                progressDialog.show();
             }
 
             @Override
             public void onConnectFail(BleDevice bleDevice, BleException exception) {
-//                img_loading.clearAnimation();
-//                img_loading.setVisibility(View.INVISIBLE);
-//                btn_scan.setText(getString(R.string.start_scan));
-//                progressDialog.dismiss();
-//                Toast.makeText(MainActivity.this, getString(R.string.connect_fail), Toast.LENGTH_LONG).show();
+                ToastUtils.showShort(getString(R.string.connect_fail));
             }
 
             @Override
             public void onConnectSuccess(BleDevice bleDevice, BluetoothGatt gatt, int status) {
-//                progressDialog.dismiss();
-                mDeviceAdapter.addDevice(bleDevice);
-                mDeviceAdapter.notifyDataSetChanged();
+                //mDeviceAdapter.addDevice(bleDevice);
+                //mDeviceAdapter.notifyDataSetChanged();
+                ToastUtils.showShort(getString(R.string.connect_success));
+
+                Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+                intent.putExtra(MainActivity.KEY_DATA, bleDevice);
+                startActivity(intent);
             }
 
             @Override
             public void onDisConnected(boolean isActiveDisConnected, BleDevice bleDevice, BluetoothGatt gatt, int status) {
-//                progressDialog.dismiss();
-//
                 mDeviceAdapter.removeDevice(bleDevice);
                 mDeviceAdapter.notifyDataSetChanged();
-//
-//                if (isActiveDisConnected) {
-//                    Toast.makeText(MainActivity.this, getString(R.string.active_disconnected), Toast.LENGTH_LONG).show();
-//                } else {
-//                    Toast.makeText(MainActivity.this, getString(R.string.disconnected), Toast.LENGTH_LONG).show();
-//                    ObserverManager.getInstance().notifyObserver(bleDevice);
-//                }
+
+                if (isActiveDisConnected) {
+                    ToastUtils.showShort(getString(R.string.active_disconnected));
+                } else {
+                    ToastUtils.showShort(getString(R.string.disconnected));
+                    ObserverManager.getInstance().notifyObserver(bleDevice);
+                }
 
             }
         });
@@ -245,8 +249,10 @@ public class ScanActivity extends AppCompatActivity {
 
             @Override
             public void onScanning(BleDevice bleDevice) {
-                mDeviceAdapter.addDevice(bleDevice);
-                mDeviceAdapter.notifyDataSetChanged();
+                if(bleDevice!=null && !TextUtils.isEmpty(bleDevice.getName())){
+                    mDeviceAdapter.addDevice(bleDevice);
+                    mDeviceAdapter.notifyDataSetChanged();
+                }
             }
 
             @Override
