@@ -37,6 +37,8 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation files('libs/achartengine-1.2.0.jar')
+    implementation 'com.blankj:utilcodex:1.23.7'
+    implementation project(':FastBleLib')
 
     //联网
     implementation 'com.zhy:okhttputils:+'
@@ -45,9 +47,7 @@ dependencies {
     implementation 'com.lzy.net:okserver:2.0.5'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
-    implementation 'no.nordicsemi.android:log:2.2.0'
-    implementation 'no.nordicsemi.android.support.v18:scanner:1.4.0'
-    implementation 'no.nordicsemi.android:dfu:1.9.0'
-    implementation 'no.nordicsemi.android:ble-common:2.1.1'
+
+
 
 }

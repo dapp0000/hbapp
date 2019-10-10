@@ -3,6 +3,8 @@ package com.uart.hbapp.utils;
 import android.content.Context;
 import android.os.Environment;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
@@ -33,7 +35,7 @@ public class DownLoadFileUtils {
             @Override
             public void onStart(Request<File, ? extends Request> request) {
                 super.onStart(request);
-                ToastUtils.showShort(context,"开始下载");
+                ToastUtils.showShort("开始下载");
             }
 
             @Override
@@ -45,14 +47,14 @@ public class DownLoadFileUtils {
             @Override
             public void onFinish() {
                 super.onFinish();
-                ToastUtils.showShort(context,"下载完成");
+                ToastUtils.showShort("下载完成");
                 //SpUtils.put(context,"localPath",mBasePath);
             }
 
             @Override
             public void onError(com.lzy.okgo.model.Response<File> response) {
                 super.onError(response);
-                ToastUtils.showShort(context,"下载文件出错："+response.message());
+                ToastUtils.showShort("下载文件出错："+response.message());
 
             }
 
@@ -60,7 +62,7 @@ public class DownLoadFileUtils {
             public void downloadProgress(Progress progress) {
                 super.downloadProgress(progress);
                 dLProgress= progress.fraction;
-                LogUtil.getInstance().e("文件下载的进度"+"DDDDD"+dLProgress);
+               LogUtils.e("文件下载的进度"+"DDDDD"+dLProgress);
             }
         });
     }

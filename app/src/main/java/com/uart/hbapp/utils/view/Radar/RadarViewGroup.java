@@ -8,9 +8,10 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.clj.fastble.data.BleDevice;
 import com.uart.hbapp.R;
-import com.uart.hbapp.bean.ExtendedBluetoothDevice;
-import com.uart.hbapp.utils.LogUtil;
+
 import java.util.List;
 import java.util.Random;
 
@@ -22,7 +23,7 @@ import java.util.Random;
 public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningListener {
     private int mWidth, mHeight;//viewgroup的宽高
     private SparseArray<Float> scanAngleList = new SparseArray<>();//记录展示的item所在的扫描位置角度
-    private List<ExtendedBluetoothDevice> mDatas;//数据源
+    private List<BleDevice> mDatas;//数据源
     private int dataLength;//数据源长度
     private int minItemPosition;//最小距离的item所在数据源中的位置
     private CircleView currentShowChild;//当前展示的item
@@ -73,7 +74,7 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
     @Override
     protected void  onLayout(boolean changed, int l, int t, int r, int b) {
         int childCount = getChildCount();
-        LogUtil.getInstance().e("childCount"+childCount);
+        LogUtils.e("childCount"+childCount);
         //首先放置雷达扫描图
         View view = findViewById(R.id.id_scan_circle);
         if (view != null) {
@@ -83,7 +84,7 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
         for (int i = 0; i < childCount; i++) {
             final int j = i;
             final View child = getChildAt(i);
-            LogUtil.getInstance().e("i"+i);
+            LogUtils.e("i"+i);
             if (child.getId() == R.id.id_scan_circle) {
                 //如果不是Circleview跳过
                 continue;
@@ -155,32 +156,32 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
      *
      * @param mDatas
      */
-    public void setDatas(List<ExtendedBluetoothDevice> mDatas) {
+    public void setDatas(List<BleDevice> mDatas) {
         this.mDatas = mDatas;
         dataLength = mDatas.size();
         float min = Float.MAX_VALUE;
         float max = Float.MIN_VALUE;
         //找到距离的最大值，最小值对应的minItemPosition
         for (int j = 0; j < dataLength; j++) {
-            ExtendedBluetoothDevice item = mDatas.get(j);
-            if (item.distance < min) {
-                min = item.distance;
-                minItemPosition = j;
-            }
-            if (item.distance > max) {
-                max = item.distance;
-            }
+            BleDevice item = mDatas.get(j);
+//            if (item.distance < min) {
+//                min = item.distance;
+//                minItemPosition = j;
+//            }
+//            if (item.distance > max) {
+//                max = item.distance;
+//            }
             scanAngleList.put(j, 0f);
         }
         //根据数据源信息动态添加CircleView
         for (int i = 0; i < dataLength; i++) {
             CircleView circleView = new CircleView(getContext());
-            circleView.setText(mDatas.get(i).device.getName());
+            circleView.setText(mDatas.get(i).getName());
             circleView.setTextSize(12);
             circleView.setAngle(random.nextInt(90));
 //            circleView.setPaintColor(getResources().getColor(R.color.colorAccent));
             //根据远近距离的不同计算得到的应该占的半径比例 0.312-0.832
-            circleView.setProportion((mDatas.get(i).distance / max + 0.6f) * 0.52f);
+            circleView.setProportion((1 / max + 0.6f) * 0.52f);
 
 
             if (minItemPosition == i) {
