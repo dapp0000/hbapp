@@ -164,9 +164,11 @@ public class ScanActivity extends AppCompatActivity {
 
 
     private void connect(final BleDevice bleDevice) {
+
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
+              ToastUtils.showShort("开始连接蓝牙设备");
             }
 
             @Override

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/bt_disable" android:title="关闭音频蓝牙-2s" />
+    <item android:id="@+id/bt_enable" android:title="开启音频蓝牙广播配对-4s" />
+    <item android:id="@+id/bt_dispair" android:title="清除音频蓝牙配对-5s" />
+
+</menu>

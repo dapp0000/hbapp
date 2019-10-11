@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.clj.fastble.BleManager;
 import com.clj.fastble.data.BleDevice;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uart.hbapp.comm.Observer;
@@ -37,6 +39,10 @@ public class MainActivity extends AppCompatActivity  implements Observer {
         setContentView(R.layout.activity_main);
         initBottomNavigation();
         initData();
+
+        bleDevice = getIntent().getParcelableExtra(KEY_DATA);
+        if (bleDevice == null)
+            ToastUtils.showShort("未连接蓝牙设备");
 
         ObserverManager.getInstance().addObserver(this);
     }
@@ -92,11 +98,15 @@ public class MainActivity extends AppCompatActivity  implements Observer {
     protected void onDestroy() {
         super.onDestroy();
         ObserverManager.getInstance().deleteObserver(this);
+        if (bleDevice!=null && BleManager.getInstance().isConnected(bleDevice)) {
+            BleManager.getInstance().disconnect(bleDevice);
+            ToastUtils.showShort("蓝牙设备断开了");
+        }
     }
 
     @Override
     public void disConnected(BleDevice bleDevice) {
-
+        ToastUtils.showShort("蓝牙设备断开了");
     }
 
 //    private long firstPressedTime;
@@ -110,5 +120,34 @@ public class MainActivity extends AppCompatActivity  implements Observer {
 //            firstPressedTime = System.currentTimeMillis();
 //        }
 //    }
+
+
+    public BleDevice getBleDevice() {
+        return bleDevice;
+    }
+
+    public BluetoothGattService getBluetoothGattService() {
+        return bluetoothGattService;
+    }
+
+    public void setBluetoothGattService(BluetoothGattService bluetoothGattService) {
+        this.bluetoothGattService = bluetoothGattService;
+    }
+
+    public BluetoothGattCharacteristic getCharacteristic() {
+        return characteristic;
+    }
+
+    public void setCharacteristic(BluetoothGattCharacteristic characteristic) {
+        this.characteristic = characteristic;
+    }
+
+    public int getCharaProp() {
+        return charaProp;
+    }
+
+    public void setCharaProp(int charaProp) {
+        this.charaProp = charaProp;
+    }
 
 }
