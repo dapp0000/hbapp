@@ -22,14 +22,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".HbApplication"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".search.ScanActivity"></activity>
-        <activity android:name=".login.WelcomeActivity" />
+        <activity android:name=".login.LoginActivity" />
         <activity android:name=".login.TipsActivity" />
         <activity android:name=".login.AdditionalActivity" />
+        <activity android:name=".login.SplashActivity" />
+        <activity android:name=".login.RegistActivity" />
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".login.WelcomeActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,28 +1,19 @@
 package com.uart.hbapp.login;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 
-import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
-import com.uart.hbapp.search.ScanActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-        window.setFlags(flag, flag);
         setContentView(R.layout.activity_welcome);
         getSupportActionBar().hide();
         CountHandler.postDelayed(CountRunnable, 1000);
@@ -52,7 +43,7 @@ public class WelcomeActivity extends AppCompatActivity {
             if (recLen == 0) {
                 message.what = 1;
                 CountHandler.sendMessage(message);
-                startActivity(new Intent(WelcomeActivity.this, ScanActivity.class));
+                startActivity(new Intent(WelcomeActivity.this, SplashActivity.class));
                 finish();
             }
             CountHandler.postDelayed(this, 1000);
