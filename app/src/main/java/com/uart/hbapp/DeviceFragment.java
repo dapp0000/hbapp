@@ -1,21 +1,10 @@
 package com.uart.hbapp;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -34,7 +31,7 @@ import com.clj.fastble.callback.BleReadCallback;
 import com.clj.fastble.callback.BleRssiCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
-import com.clj.fastble.utils.HexUtil;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -47,7 +44,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import butterknife.BindView;
 
 public class DeviceFragment extends Fragment {
     public static final int PROPERTY_READ = 1;
@@ -56,6 +53,26 @@ public class DeviceFragment extends Fragment {
     public static final int PROPERTY_NOTIFY = 4;
     public static final int PROPERTY_INDICATE = 5;
     private static final String TAG = DeviceFragment.class.getSimpleName();
+    @BindView(R.id.txt_device_name)
+    TextView txtDeviceName;
+    @BindView(R.id.line_chart_signal)
+    LineChart lineChartSignal;
+    @BindView(R.id.spinner_music)
+    Spinner spinnerMusic;
+    @BindView(R.id.spinner_text)
+    Spinner spinnerText;
+    @BindView(R.id.spinner_span)
+    Spinner spinnerSpan;
+    @BindView(R.id.btn_start_rest)
+    Button btnStartRest;
+    @BindView(R.id.layout_ready)
+    LinearLayout layoutReady;
+    @BindView(R.id.btn_stop_rest)
+    Button btnStopRest;
+    @BindView(R.id.layout_rest)
+    LinearLayout layoutRest;
+
+
     private DeviceViewModel mViewModel;
     private ActionBar actionBar;
 
@@ -79,8 +96,8 @@ public class DeviceFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(DeviceViewModel.class);
         setHasOptionsMenu(true);
-        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        if(actionBar!=null)
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null)
             actionBar.setTitle(R.string.title_home);
         // TODO: Use the ViewModel
     }
@@ -89,7 +106,7 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if(actionBar!=null&&!hidden)
+        if (actionBar != null && !hidden)
             actionBar.setTitle(R.string.title_home);
     }
 
@@ -109,11 +126,12 @@ public class DeviceFragment extends Fragment {
 
 
     TextView txt_device_name;
-    com.github.mikephil.charting.charts.LineChart line_chart_signal;
-    Button btn_start_rest,btn_stop_rest;
+    LineChart line_chart_signal;
+    Button btn_start_rest, btn_stop_rest;
     LineChartManager lineChartManager;
-    LinearLayout layout_ready,layout_rest;
-    private void initView(View v){
+    LinearLayout layout_ready, layout_rest;
+
+    private void initView(View v) {
         layout_ready = v.findViewById(R.id.layout_ready);
         layout_rest = v.findViewById(R.id.layout_rest);
         layout_ready.setVisibility(View.VISIBLE);
@@ -129,7 +147,7 @@ public class DeviceFragment extends Fragment {
                 layout_ready.setVisibility(View.GONE);
                 layout_rest.setVisibility(View.VISIBLE);
                 initChart();
-                openNotify(bleDevice,heartRateCharacteristic);
+                openNotify(bleDevice, heartRateCharacteristic);
             }
         });
         btn_stop_rest = v.findViewById(R.id.btn_stop_rest);
@@ -138,7 +156,7 @@ public class DeviceFragment extends Fragment {
             public void onClick(View v) {
                 layout_ready.setVisibility(View.VISIBLE);
                 layout_rest.setVisibility(View.GONE);
-                closeNotify(bleDevice,heartRateCharacteristic);
+                closeNotify(bleDevice, heartRateCharacteristic);
             }
         });
 
@@ -148,15 +166,14 @@ public class DeviceFragment extends Fragment {
     List<BluetoothGattService> services;
     List<BluetoothGattCharacteristic> characteristics;
     BluetoothGattCharacteristic heartRateCharacteristic;
-    private void showData(){
+
+    private void showData() {
         bleDevice = ((MainActivity) getActivity()).getBleDevice();
-        if(bleDevice==null)
-        {
+        if (bleDevice == null) {
             line_chart_signal.setNoDataText("设备未连接");
             btn_start_rest.setEnabled(false);
             return;
-        }
-        else{
+        } else {
             line_chart_signal.setNoDataText("设备准备就绪");
             btn_start_rest.setEnabled(true);
         }
@@ -180,7 +197,7 @@ public class DeviceFragment extends Fragment {
         services = gatt.getServices();
         for (BluetoothGattService service : services) {
             String uuid = service.getUuid().toString();
-            LogUtils.i("BluetoothGattService:"+uuid);
+            LogUtils.i("BluetoothGattService:" + uuid);
             switch (uuid) {
                 case "6e400001-b5a3-f393-e0a9-e50e24dcca9e"://脑电波服务
                     ((MainActivity) getActivity()).setBluetoothGattService(service);
@@ -202,14 +219,11 @@ public class DeviceFragment extends Fragment {
     }
 
 
-
-
-
-    private void configDIS(BluetoothGattService service){
+    private void configDIS(BluetoothGattService service) {
         List<BluetoothGattCharacteristic> characteristics_DIS = service.getCharacteristics();
-        for (BluetoothGattCharacteristic characteristic:characteristics_DIS){
+        for (BluetoothGattCharacteristic characteristic : characteristics_DIS) {
             String uuid = characteristic.getUuid().toString();
-            LogUtils.i("DISService:"+uuid);
+            LogUtils.i("DISService:" + uuid);
             switch (uuid) {
                 case "00002a25-0000-1000-8000-00805f9b34fb"://Serial Number String (d@后对应音频蓝牙地址)
                     BleManager.getInstance().read(
@@ -225,8 +239,8 @@ public class DeviceFragment extends Fragment {
                                         public void run() {
                                             //addText(txt, HexUtil.formatHexString(data, true));
                                             try {
-                                                String srt2=new String(data,"UTF-8");
-                                                ToastUtils.showShort("音频蓝牙地址："+srt2);
+                                                String srt2 = new String(data, "UTF-8");
+                                                ToastUtils.showShort("音频蓝牙地址：" + srt2);
                                             } catch (UnsupportedEncodingException e) {
                                                 e.printStackTrace();
                                             }
@@ -256,7 +270,7 @@ public class DeviceFragment extends Fragment {
     }
 
 
-    private void openNotify(BleDevice bleDevice,BluetoothGattCharacteristic characteristic){
+    private void openNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         BleManager.getInstance().notify(
                 bleDevice,
                 characteristic.getService().getUuid().toString(),
@@ -299,7 +313,7 @@ public class DeviceFragment extends Fragment {
     }
 
 
-    private void closeNotify(BleDevice bleDevice,BluetoothGattCharacteristic characteristic){
+    private void closeNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         BleManager.getInstance().stopNotify(
                 bleDevice,
                 characteristic.getService().getUuid().toString(),
@@ -321,17 +335,18 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void addLineData(byte[] datas){
+    private void addLineData(byte[] datas) {
         showChart(datas);
     }
 
     ArrayList<Float> xValues;
     List<String> names;
     List<Integer> colours;
-    private void initChart(){
-       XAxis xAxis = line_chart_signal.getXAxis();
-       YAxis yAxisLeft = line_chart_signal.getAxisLeft();
-       YAxis yAxisRight = line_chart_signal.getAxisRight();
+
+    private void initChart() {
+        XAxis xAxis = line_chart_signal.getXAxis();
+        YAxis yAxisLeft = line_chart_signal.getAxisLeft();
+        YAxis yAxisRight = line_chart_signal.getAxisRight();
         xAxis.setTextColor(Color.WHITE);
         yAxisLeft.setTextColor(Color.WHITE);
         yAxisRight.setTextColor(Color.WHITE);
@@ -370,22 +385,22 @@ public class DeviceFragment extends Fragment {
         description.setTextColor(Color.WHITE);
     }
 
-    private void showChart(byte[] datas){
-        boolean isData=true;
+    private void showChart(byte[] datas) {
+        boolean isData = true;
         int maxValue = 100;
         int size = datas.length;
-        if(size!=20)
-            isData=false;
-        if((datas[0] & 0xFF) != 170)
-            isData=false;
-        if((datas[1] & 0xFF) != 170)
-            isData=false;
-        if((datas[2] & 0xFF) != 16)
-            isData=false;
-        if((datas[3] & 0xFF) != 128)
-            isData=false;
+        if (size != 20)
+            isData = false;
+        if ((datas[0] & 0xFF) != 170)
+            isData = false;
+        if ((datas[1] & 0xFF) != 170)
+            isData = false;
+        if ((datas[2] & 0xFF) != 16)
+            isData = false;
+        if ((datas[3] & 0xFF) != 128)
+            isData = false;
 
-        if(!isData){
+        if (!isData) {
             LogUtils.e(ByteUtils.bytesToHex(datas));
             //LogUtils.e(ByteUtils.bytesToUTF8(datas));
             return;
@@ -396,11 +411,11 @@ public class DeviceFragment extends Fragment {
         for (int i = 0; i < 1; i++) {
             List<Float> yValue = new ArrayList<>();
 
-            for (int j = 4; j < size-1; j=j+2) {
+            for (int j = 4; j < size - 1; j = j + 2) {
                 int hign = datas[j] & 0xFF;
-                int low = datas[j+1] & 0xFF;
-                float point = (hign*256 + low)/1000f;
-                if(point>maxValue)
+                int low = datas[j + 1] & 0xFF;
+                float point = (hign * 256 + low) / 1000f;
+                if (point > maxValue)
                     maxValue = (int) point + 100;
 
 
@@ -415,8 +430,6 @@ public class DeviceFragment extends Fragment {
         LineData lineData = line_chart_signal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
     }
-
-
 
 
 }

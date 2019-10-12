@@ -1,23 +1,21 @@
 package com.uart.hbapp;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
@@ -27,10 +25,19 @@ import com.clj.fastble.exception.BleException;
 import com.clj.fastble.utils.HexUtil;
 import com.uart.hbapp.utils.CommandUtils;
 
+import butterknife.BindView;
+
 public class UserInfoFragment extends Fragment {
+
+    @BindView(R.id.list_music)
+    ListView listMusic;
+    @BindView(R.id.list_text)
+    ListView listText;
+
 
     private UserInfoViewModel mViewModel;
     private ActionBar actionBar;
+
     public static UserInfoFragment newInstance() {
         return new UserInfoFragment();
     }
@@ -46,18 +53,17 @@ public class UserInfoFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
         mViewModel = ViewModelProviders.of(this).get(UserInfoViewModel.class);
-        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        if(actionBar!=null)
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null)
             actionBar.setTitle(R.string.title_notifications);
         // TODO: Use the ViewModel
     }
 
 
-
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if(actionBar!=null&&!hidden)
+        if (actionBar != null && !hidden)
             actionBar.setTitle(R.string.title_notifications);
     }
 
@@ -71,7 +77,7 @@ public class UserInfoFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.bt_disable:
                 send(CommandUtils.bt_disable_cmd());
                 break;
@@ -87,10 +93,10 @@ public class UserInfoFragment extends Fragment {
     }
 
 
-    private void send(byte[] hexCmd){
-        BleDevice bleDevice = ((MainActivity)getActivity()).getBleDevice();
-        BluetoothGattCharacteristic characteristic= ((MainActivity)getActivity()).getCharacteristic();
-        if(bleDevice==null || characteristic==null)
+    private void send(byte[] hexCmd) {
+        BleDevice bleDevice = ((MainActivity) getActivity()).getBleDevice();
+        BluetoothGattCharacteristic characteristic = ((MainActivity) getActivity()).getCharacteristic();
+        if (bleDevice == null || characteristic == null)
             return;
 
         BleManager.getInstance().write(
@@ -109,7 +115,7 @@ public class UserInfoFragment extends Fragment {
                                         + " total: " + total
                                         + " justWrite: " + HexUtil.formatHexString(justWrite, true);
 
-                                ToastUtils.showShort("onWriteSuccess: "+result);
+                                ToastUtils.showShort("onWriteSuccess: " + result);
                             }
                         });
                     }
@@ -120,7 +126,7 @@ public class UserInfoFragment extends Fragment {
                             @Override
                             public void run() {
                                 //addText(txt, exception.toString());
-                                ToastUtils.showShort("onWriteFailure:"+exception.toString());
+                                ToastUtils.showShort("onWriteFailure:" + exception.toString());
                             }
                         });
                     }
@@ -132,7 +138,6 @@ public class UserInfoFragment extends Fragment {
         if (isAdded() && getActivity() != null)
             getActivity().runOnUiThread(runnable);
     }
-
 
 
 }

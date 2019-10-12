@@ -3,6 +3,14 @@ package com.uart.hbapp;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
@@ -11,19 +19,21 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uart.hbapp.comm.Observer;
 import com.uart.hbapp.comm.ObserverManager;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.view.MenuItem;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity  implements Observer {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity implements Observer {
     public static final String KEY_DATA = "key_data";
+    @BindView(R.id.ll_frameLayout)
+    FrameLayout llFrameLayout;
+    @BindView(R.id.nav_view)
+    BottomNavigationView navView;
+    @BindView(R.id.container)
+    ConstraintLayout container;
+
 
     private BleDevice bleDevice;
     private BluetoothGattService bluetoothGattService;
@@ -37,6 +47,7 @@ public class MainActivity extends AppCompatActivity  implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         initBottomNavigation();
         initData();
 
@@ -98,7 +109,7 @@ public class MainActivity extends AppCompatActivity  implements Observer {
     protected void onDestroy() {
         super.onDestroy();
         ObserverManager.getInstance().deleteObserver(this);
-        if (bleDevice!=null && BleManager.getInstance().isConnected(bleDevice)) {
+        if (bleDevice != null && BleManager.getInstance().isConnected(bleDevice)) {
             BleManager.getInstance().disconnect(bleDevice);
             ToastUtils.showShort("蓝牙设备断开了");
         }

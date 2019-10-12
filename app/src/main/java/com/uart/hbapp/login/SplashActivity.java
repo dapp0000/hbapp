@@ -13,22 +13,30 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import com.uart.hbapp.R;
 import com.uart.hbapp.login.adapter.SplashAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
+
+    @BindView(R.id.vp_guide)
+    ViewPager vpGuide;
+    @BindView(R.id.ll_guide_points)
+    LinearLayout llGuidePoints;
+    @BindView(R.id.v_guide_redpoint)
+    View vGuideRedpoint;
+
+
     //向导界面的图片
     private int[] mPics = new int[]{R.mipmap.photo31, R.mipmap.photo31, R.mipmap.photo31};
-    private ViewPager mVp_Guide;
-    private View mGuideRedPoint;
-    private LinearLayout mLlGuidePoints;
-
     private int disPoints;
     private int currentItem;
     private SplashAdapter adapter;
@@ -38,16 +46,16 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        ButterKnife.bind(this);
         getSupportActionBar().hide();
-        initView();
+
+
         initData();
         initEvent();
     }
-    private void initView() {
-        mVp_Guide = (ViewPager) findViewById(R.id.vp_guide);
-        mGuideRedPoint = findViewById(R.id.v_guide_redpoint);
-        mLlGuidePoints = (LinearLayout) findViewById(R.id.ll_guide_points);
-    }
+
+
+
 
     private void initData() {
         // viewpaper adapter适配器
@@ -73,29 +81,29 @@ public class SplashActivity extends AppCompatActivity {
                 params.leftMargin = 47;
             v_point.setLayoutParams(params);
 
-            mLlGuidePoints.addView(v_point);
+            llGuidePoints.addView(v_point);
         }
 
         // 创建viewpager的适配器
         adapter = new SplashAdapter(getApplicationContext(), guids);
         // 设置适配器
-        mVp_Guide.setAdapter(adapter);
+        vpGuide.setAdapter(adapter);
     }
 
     private void initEvent() {
         //监听界面绘制完成
-        mGuideRedPoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        vGuideRedpoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 //取消注册界面而产生的回调接口
-                mGuideRedPoint.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                vGuideRedpoint.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 //计算点于点之间的距离
-                disPoints = (mLlGuidePoints.getChildAt(1).getLeft() - mLlGuidePoints.getChildAt(0).getLeft());
+                disPoints = (llGuidePoints.getChildAt(1).getLeft() - llGuidePoints.getChildAt(0).getLeft());
             }
         });
 
         //滑动事件监听滑动距离，点更随滑动。
-        mVp_Guide.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        vpGuide.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                /* //当前viewpager显示的页码
@@ -120,11 +128,11 @@ public class SplashActivity extends AppCompatActivity {
                 //计算红点的左边距
                 float leftMargin = disPoints * (position + positionOffset);
                 //设置红点的左边距
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mGuideRedPoint.getLayoutParams();
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) vGuideRedpoint.getLayoutParams();
                 //对folat类型进行四舍五入，
                 layoutParams.leftMargin = Math.round(leftMargin);
                 //设置位置
-                mGuideRedPoint.setLayoutParams(layoutParams);
+                vGuideRedpoint.setLayoutParams(layoutParams);
             }
 
             @Override
@@ -133,7 +141,7 @@ public class SplashActivity extends AppCompatActivity {
         });
 
         //给页面设置触摸事件
-        mVp_Guide.setOnTouchListener(new View.OnTouchListener() {
+        vpGuide.setOnTouchListener(new View.OnTouchListener() {
             float startX;
             float endX;
 

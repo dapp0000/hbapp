@@ -1,10 +1,5 @@
 package com.uart.hbapp.search;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -23,10 +18,15 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.blankj.utilcode.util.LogUtils;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
@@ -40,43 +40,58 @@ import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.DeviceAdapter;
 import com.uart.hbapp.comm.ObserverManager;
+import com.uart.hbapp.utils.view.Radar.RadarView;
 import com.uart.hbapp.utils.view.Radar.RadarViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class ScanActivity extends AppCompatActivity {
+    @BindView(R.id.id_scan_circle)
+    RadarView idScanCircle;
+    @BindView(R.id.radar)
+    RadarViewGroup radar;
+    @BindView(R.id.list_device)
+    ListView listDevice;
+    @BindView(R.id.btnscan)
+    Button btnscan;
+    @BindView(R.id.btnskip)
+    Button btnskip;
+
+
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_OPEN_GPS = 1;
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
     private static final long SCAN_DURATION = 5000;
 
-    private RadarViewGroup radarViewGroup;
     private DeviceAdapter mDeviceAdapter;
     private Handler mHandler = new Handler();
 
     boolean mIsScanning = false;
-    boolean isAutoConnect=false;
-    String str_uuid=null;
-    String str_name=null;
-    String mac=null;
+    boolean isAutoConnect = false;
+    String str_uuid = null;
+    String str_name = null;
+    String mac = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
         window.setFlags(flag, flag);
         setContentView(R.layout.activity_scan);
+        ButterKnife.bind(this);
         getSupportActionBar().hide();
 
-        radarViewGroup = findViewById(R.id.radar);
-        radarViewGroup.setiRadarClickListener(new RadarViewGroup.IRadarClickListener() {
+
+        radar.setiRadarClickListener(new RadarViewGroup.IRadarClickListener() {
             @Override
             public void onRadarItemClick(int position) {
 
@@ -109,8 +124,9 @@ public class ScanActivity extends AppCompatActivity {
                 }
             }
         });
-        ListView listView_device = (ListView) findViewById(R.id.list_device);
-        listView_device.setAdapter(mDeviceAdapter);
+
+
+        listDevice.setAdapter(mDeviceAdapter);
 
         BleManager.getInstance().init(getApplication());
         BleManager.getInstance()
@@ -122,7 +138,7 @@ public class ScanActivity extends AppCompatActivity {
         checkPermissions();
     }
 
-    private void setScanRule( ) {
+    private void setScanRule() {
         String[] uuids;
         if (TextUtils.isEmpty(str_uuid)) {
             uuids = null;
@@ -168,7 +184,7 @@ public class ScanActivity extends AppCompatActivity {
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
             @Override
             public void onStartConnect() {
-              ToastUtils.showShort("开始连接蓝牙设备");
+                ToastUtils.showShort("开始连接蓝牙设备");
             }
 
             @Override
@@ -232,8 +248,7 @@ public class ScanActivity extends AppCompatActivity {
     }
 
 
-
-    public void scanDevice(View view){
+    public void scanDevice() {
         BleManager.getInstance().scan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
@@ -251,7 +266,7 @@ public class ScanActivity extends AppCompatActivity {
 
             @Override
             public void onScanning(BleDevice bleDevice) {
-                if(bleDevice!=null && !TextUtils.isEmpty(bleDevice.getName())){
+                if (bleDevice != null && !TextUtils.isEmpty(bleDevice.getName())) {
                     mDeviceAdapter.addDevice(bleDevice);
                     mDeviceAdapter.notifyDataSetChanged();
                 }
@@ -266,21 +281,22 @@ public class ScanActivity extends AppCompatActivity {
         });
     }
 
-    public void stopScanDevice(View view){
+    public void stopScanDevice() {
         BleManager.getInstance().cancelScan();
     }
 
 
-    public void skip(View view){
+    public void skip() {
         startActivity(new Intent(ScanActivity.this, MainActivity.class));
         mHandler.postDelayed(() -> {
             if (mIsScanning) {
-                stopScanDevice(null);
+                stopScanDevice();
             }
         }, SCAN_DURATION);
     }
 
     private long firstPressedTime;
+
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - firstPressedTime < 2000) {
@@ -293,7 +309,7 @@ public class ScanActivity extends AppCompatActivity {
     }
 
     @Override
-    public final void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults) {
+    public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case REQUEST_CODE_PERMISSION_LOCATION:
@@ -358,7 +374,7 @@ public class ScanActivity extends AppCompatActivity {
                             .show();
                 } else {
                     setScanRule();
-                    scanDevice(null);
+                    scanDevice();
                 }
                 break;
         }
@@ -368,7 +384,7 @@ public class ScanActivity extends AppCompatActivity {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null)
             return false;
-        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
     @Override
@@ -377,10 +393,20 @@ public class ScanActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_OPEN_GPS) {
             if (checkGPSIsOpen()) {
                 setScanRule();
-                scanDevice(null);
+                scanDevice();
             }
         }
     }
 
-
+    @OnClick({R.id.btnscan, R.id.btnskip})
+    public void onCliecked(View v){
+        switch (v.getId()){
+            case R.id.btnscan:
+                scanDevice();
+                break;
+            case R.id.btnskip:
+                skip();
+                break;
+        }
+    }
 }

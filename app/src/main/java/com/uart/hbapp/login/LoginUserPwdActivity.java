@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
@@ -20,31 +23,39 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
-import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class LoginUserPwdActivity extends AppCompatActivity {
 
-    EditText username, password;
-    Button login, phoneLogin, regist;
+    @BindView(R.id.welcome)
+    TextView welcome;
+    @BindView(R.id.username)
+    EditText username;
+    @BindView(R.id.password)
+    EditText password;
+    @BindView(R.id.login)
+    Button login;
+    @BindView(R.id.phoneLogin)
+    Button phoneLogin;
+    @BindView(R.id.regist)
+    Button regist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loginuserpwd);
+        ButterKnife.bind(this);
         getSupportActionBar().hide();
-        username = findViewById(R.id.username);
-        password = findViewById(R.id.password);
-        login = findViewById(R.id.login);
-        regist = findViewById(R.id.regist);
-        phoneLogin = findViewById(R.id.phoneLogin);
+
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (username.getText().toString().isEmpty()||password.getText().toString().isEmpty()){
+                if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
                     ToastUtils.showShort(LoginUserPwdActivity.this, "用户名和密码不能为空");
-                }else {
-                    login(username.getText().toString(),password.getText().toString());
+                } else {
+                    login(username.getText().toString(), password.getText().toString());
                 }
 
             }
@@ -61,22 +72,17 @@ public class LoginUserPwdActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginUserPwdActivity.this, LoginActivity.class));
             }
         });
+
     }
 
-    public void loginByPhone(View view) {
 
-        Intent intent = new Intent(this, AdditionalActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void login(String uname,String pwd) {
-        DialogUtils.showProgressDialog(this,"请稍等...");
+    private void login(String uname, String pwd) {
+        DialogUtils.showProgressDialog(this, "请稍等...");
         HashMap<String, Object> params = new HashMap<>();
         params.put("userName", uname);
         params.put("nickName", "");
         params.put("passWord", pwd);
-        params.put("gender","");
+        params.put("gender", "");
         params.put("age", "");
         params.put("height", "");
         params.put("weight", "");
