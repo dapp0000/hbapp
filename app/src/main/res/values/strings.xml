@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">hbapp</string>
-    <string name="title_home">我的设备</string>
-    <string name="title_dashboard">历史记录</string>
-    <string name="title_notifications">其他信息</string>
+    <string name="title_home">设备</string>
+    <string name="title_dashboard">历史</string>
+    <string name="title_notifications">资源</string>
+    <string name="title_settings">设置</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
