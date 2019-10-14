@@ -14,6 +14,7 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.utils.DialogUtils;
 import com.uart.hbapp.utils.ToastUtils;
@@ -47,7 +48,7 @@ public class LoginUserPwdActivity extends AppCompatActivity {
         setContentView(R.layout.activity_loginuserpwd);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
-
+        HbApplication.getApp().addActivity(this);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override

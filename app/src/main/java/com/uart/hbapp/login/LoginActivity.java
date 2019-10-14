@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 
 import butterknife.BindView;
@@ -40,14 +41,15 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
+        HbApplication.getApp().addActivity(this);
 
-
-        timer= new MyCountDownTimer(5000, 1000);
+        timer= new MyCountDownTimer(60000, 1000);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //手机号登录接口
                 startActivity(new Intent(LoginActivity.this, AdditionalActivity.class));
+                finish();
             }
         });
         sendCode.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         userPwdLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,LoginUserPwdActivity.class));
                 finish();
             }
         });

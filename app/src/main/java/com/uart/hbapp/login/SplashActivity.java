@@ -36,7 +36,7 @@ public class SplashActivity extends AppCompatActivity {
 
 
     //向导界面的图片
-    private int[] mPics = new int[]{R.mipmap.photo31, R.mipmap.photo31, R.mipmap.photo31};
+    private int[] mPics = new int[]{R.mipmap.img1, R.mipmap.img2, R.mipmap.img3};
     private int disPoints;
     private int currentItem;
     private SplashAdapter adapter;

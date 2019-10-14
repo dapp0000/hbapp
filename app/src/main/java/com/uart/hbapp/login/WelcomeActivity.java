@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.uart.hbapp.R;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,8 +44,15 @@ public class WelcomeActivity extends AppCompatActivity {
             if (recLen == 0) {
                 message.what = 1;
                 CountHandler.sendMessage(message);
-                startActivity(new Intent(WelcomeActivity.this, SplashActivity.class));
-                finish();
+                if (SPUtils.getInstance().getBoolean("first")){
+                    startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
+                    finish();
+                }else {
+                    SPUtils.getInstance().put("first",true);
+                    startActivity(new Intent(WelcomeActivity.this, SplashActivity.class));
+                    finish();
+                }
+
             }
             CountHandler.postDelayed(this, 1000);
         }
