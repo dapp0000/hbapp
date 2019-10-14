@@ -82,10 +82,10 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
-        window.setFlags(flag, flag);
+//        Window window = getWindow();
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
+//        window.setFlags(flag, flag);
         setContentView(R.layout.activity_scan);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
@@ -301,9 +301,10 @@ public class ScanActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (System.currentTimeMillis() - firstPressedTime < 2000) {
             super.onBackPressed();
+            finish();
             System.exit(0);
         } else {
-            Toast.makeText(ScanActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            ToastUtils.showShort("再按一次退出");
             firstPressedTime = System.currentTimeMillis();
         }
     }
