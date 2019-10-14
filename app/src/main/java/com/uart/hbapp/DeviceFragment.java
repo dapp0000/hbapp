@@ -68,10 +68,10 @@ public class DeviceFragment extends Fragment {
     LineChart lineChartSignal;
 //    @BindView(R.id.spinner_music)
     Spinner spinnerMusic;
-    @BindView(R.id.spinner_text)
+//    @BindView(R.id.spinner_text)
     Spinner spinnerText;
-    @BindView(R.id.spinner_span)
-    Spinner spinnerSpan;
+//    @BindView(R.id.spinner_span)
+//    Spinner spinnerSpan;
     @BindView(R.id.btn_start_rest)
     Button btnStartRest;
     @BindView(R.id.layout_ready)
@@ -172,6 +172,8 @@ public class DeviceFragment extends Fragment {
             }
         });
         spinnerMusic=v.findViewById(R.id.spinner_music);
+        spinnerText=v.findViewById(R.id.spinner_text);
+
         spinnerInit();
     }
 
@@ -449,6 +451,7 @@ public class DeviceFragment extends Fragment {
     /**
      * 加载数据列，监听选择
      */
+    String []spinnerStr={"你好我好大家好","晚上好我的兄弟"};
     private void spinnerInit() {
         Vector<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
         //原始string数组
@@ -456,12 +459,19 @@ public class DeviceFragment extends Fragment {
         final String[] spinnerItems = musicNames.toArray(spi);
 
         //简单的string数组适配器：样式res，数组
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),
+        ArrayAdapter<String> musicAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, spinnerItems);
         //下拉的样式res
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        musicAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //绑定 Adapter到控件
-        spinnerMusic.setAdapter(spinnerAdapter);
+        spinnerMusic.setAdapter(musicAdapter);
+
+        ArrayAdapter<String> wordAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerStr);
+        //下拉的样式res
+        wordAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spinnerText.setAdapter(wordAdapter);
         //选择监听
         spinnerMusic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             //parent就是父控件spinner
