@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,8 +17,6 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -36,6 +35,7 @@ import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.DeviceAdapter;
@@ -64,7 +64,6 @@ public class ScanActivity extends AppCompatActivity {
     @BindView(R.id.btnskip)
     Button btnskip;
 
-
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_OPEN_GPS = 1;
     private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
@@ -82,10 +81,6 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Window window = getWindow();
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        int flag = WindowManager.LayoutParams.FLAG_FULLSCREEN;
-//        window.setFlags(flag, flag);
         setContentView(R.layout.activity_scan);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
@@ -137,6 +132,17 @@ public class ScanActivity extends AppCompatActivity {
 
         checkPermissions();
     }
+
+
+    public void updateRadar(BleDevice mDatas) {
+        radar.setDatas(mDatas);
+    }
+
+    public void clearRadar(){
+        radar.clearDatas();
+    }
+
+
 
     private void setScanRule() {
         String[] uuids;
@@ -254,9 +260,9 @@ public class ScanActivity extends AppCompatActivity {
             public void onScanStarted(boolean success) {
                 mDeviceAdapter.clearScanDevice();
                 mDeviceAdapter.notifyDataSetChanged();
-//                img_loading.startAnimation(operatingAnim);
-//                img_loading.setVisibility(View.VISIBLE);
-//                btn_scan.setText(getString(R.string.stop_scan));
+
+                clearRadar();
+
             }
 
             @Override
@@ -269,14 +275,15 @@ public class ScanActivity extends AppCompatActivity {
                 if (bleDevice != null && !TextUtils.isEmpty(bleDevice.getName())) {
                     mDeviceAdapter.addDevice(bleDevice);
                     mDeviceAdapter.notifyDataSetChanged();
+
+                    updateRadar(bleDevice);
                 }
             }
 
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
-//                img_loading.clearAnimation();
-//                img_loading.setVisibility(View.INVISIBLE);
-//                btn_scan.setText(getString(R.string.start_scan));
+
+
             }
         });
     }
@@ -295,19 +302,7 @@ public class ScanActivity extends AppCompatActivity {
         }, SCAN_DURATION);
     }
 
-    private long firstPressedTime;
 
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - firstPressedTime < 2000) {
-            super.onBackPressed();
-            finish();
-            System.exit(0);
-        } else {
-            ToastUtils.showShort("再按一次退出");
-            firstPressedTime = System.currentTimeMillis();
-        }
-    }
 
     @Override
     public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -410,4 +405,20 @@ public class ScanActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    private long firstPressedTime;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+            super.onBackPressed();
+            finish();
+            //System.exit(0);
+            HbApplication.getApp().exit();
+        } else {
+            ToastUtils.showShort("再按一次退出");
+            firstPressedTime = System.currentTimeMillis();
+        }
+    }
+
 }

@@ -28,6 +28,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class RegistActivity extends AppCompatActivity {
+
     @BindView(R.id.welcome)
     TextView welcome;
     @BindView(R.id.username)
@@ -98,23 +99,6 @@ public class RegistActivity extends AppCompatActivity {
                 });
 
     }
-
-
-    private long firstPressedTime;
-
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - firstPressedTime < 2000) {
-            super.onBackPressed();
-            finish();
-            System.exit(0);
-        } else {
-            ToastUtils.showShort("再按一次退出");
-            firstPressedTime = System.currentTimeMillis();
-        }
-    }
-
-
 
     @OnClick({R.id.regist, R.id.regist_cancel})
     public void onViewClicked(View view) {

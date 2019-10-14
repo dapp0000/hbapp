@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +17,6 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
-import com.uart.hbapp.search.ScanActivity;
 import com.uart.hbapp.utils.DialogUtils;
 import com.uart.hbapp.utils.URLUtil;
 
@@ -28,9 +26,9 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LoginUserPwdActivity extends AppCompatActivity {
-
     @BindView(R.id.welcome)
     TextView welcome;
     @BindView(R.id.username)
@@ -51,38 +49,11 @@ public class LoginUserPwdActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().hide();
         HbApplication.getApp().addActivity(this);
-
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
-                    ToastUtils.showShort( "用户名和密码不能为空");
-                } else {
-                    login(username.getText().toString(), password.getText().toString());
-                }
-
-            }
-        });
-        regist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginUserPwdActivity.this, RegistActivity.class));
-                finish();
-            }
-        });
-        phoneLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginUserPwdActivity.this, LoginActivity.class));
-                finish();
-            }
-        });
-
     }
 
 
     private void login(String uname, String pwd) {
-        DialogUtils.showProgressDialog(this,"请稍等...");
+        DialogUtils.showProgressDialog(this, "请稍等...");
         HashMap<String, Object> params = new HashMap<>();
         params.put("userName", uname);
         params.put("passWord", pwd);
@@ -129,18 +100,22 @@ public class LoginUserPwdActivity extends AppCompatActivity {
     }
 
 
-    private long firstPressedTime;
-
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - firstPressedTime < 2000) {
-            super.onBackPressed();
-            finish();
-            System.exit(0);
-        } else {
-            ToastUtils.showShort("再按一次退出");
-            firstPressedTime = System.currentTimeMillis();
+    @OnClick({R.id.login, R.id.phoneLogin, R.id.regist})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.login:
+                if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
+                    ToastUtils.showShort("用户名和密码不能为空");
+                } else {
+                    login(username.getText().toString(), password.getText().toString());
+                }
+                break;
+            case R.id.phoneLogin:
+                startActivity(new Intent(LoginUserPwdActivity.this, LoginActivity.class));
+                break;
+            case R.id.regist:
+                startActivity(new Intent(LoginUserPwdActivity.this, RegistActivity.class));
+                break;
         }
     }
-
 }

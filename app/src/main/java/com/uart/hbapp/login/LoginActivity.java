@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity {
 
+    MyCountDownTimer timer;
     @BindView(R.id.welcome)
     TextView welcome;
     @BindView(R.id.username)
@@ -34,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.userPwdLogin)
     Button userPwdLogin;
 
-    MyCountDownTimer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         HbApplication.getApp().addActivity(this);
 
-        timer= new MyCountDownTimer(60000, 1000);
+        timer = new MyCountDownTimer(60000, 1000);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         userPwdLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,LoginUserPwdActivity.class));
+                startActivity(new Intent(LoginActivity.this, LoginUserPwdActivity.class));
                 finish();
             }
         });

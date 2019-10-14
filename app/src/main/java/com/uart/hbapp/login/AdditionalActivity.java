@@ -1,28 +1,53 @@
 package com.uart.hbapp.login;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
 import com.uart.hbapp.utils.view.scaleruler.ScaleRulerView;
+import com.uart.hbapp.utils.view.scaleruler.SlantedTextView;
 
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Locale;
 
-import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AdditionalActivity extends AppCompatActivity implements DatePicker.OnDateChangedListener {
-
-    ScaleRulerView mHeightWheelView, mWeightWheelView;
-    TextView mHeightValue, mWeightValue;
+    @BindView(R.id.welcome_1)
+    TextView welcome1;
+    @BindView(R.id.welcome_2)
+    TextView welcome2;
+    @BindView(R.id.layout_welcome)
+    LinearLayout layoutWelcome;
+    @BindView(R.id.radioMan)
+    RadioButton radioMan;
+    @BindView(R.id.radioWoman)
+    RadioButton radioWoman;
+    @BindView(R.id.scaleWheelView_height)
+    ScaleRulerView scaleWheelViewHeight;
+    @BindView(R.id.slant_one)
+    SlantedTextView slantOne;
+    @BindView(R.id.tv_user_height_value)
+    TextView tvUserHeightValue;
+    @BindView(R.id.scaleWheelView_weight)
+    ScaleRulerView scaleWheelViewWeight;
+    @BindView(R.id.slant_two)
+    SlantedTextView slantTwo;
+    @BindView(R.id.tv_user_weight_value)
+    TextView tvUserWeightValue;
+    @BindView(R.id.datepicker)
+    DatePicker datepicker;
+    @BindView(R.id.layout_content)
+    LinearLayout layoutContent;
 
     private float mHeight = 170;
     private float mMaxHeight = 220;
@@ -39,14 +64,10 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional);
+        ButterKnife.bind(this);
         getSupportActionBar().hide();
-        mHeightWheelView = findViewById(R.id.scaleWheelView_height);
-        mWeightWheelView = findViewById(R.id.scaleWheelView_weight);
-        mHeightValue = findViewById(R.id.tv_user_height_value);
-        mWeightValue = findViewById(R.id.tv_user_weight_value);
 
         init();
-
 
         DatePicker datePicker = (DatePicker) findViewById(R.id.datepicker);
         Calendar calendar = Calendar.getInstance();
@@ -58,32 +79,32 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
 
     @Override
     public void onDateChanged(DatePicker view, int year, int month, int day) {
-        this.year=year;
-        this.monthOfYear=month;
-        this.dayOfMonth=day;
+        this.year = year;
+        this.monthOfYear = month;
+        this.dayOfMonth = day;
 //        Toast.makeText(AdditionalActivity.this,"您选择的日期是："+year+"年"+(month+1)+"月"+day+"日!",Toast
 //                .LENGTH_SHORT).show();
     }
 
     private void init() {
-        mHeightValue.setText((int) mHeight + "");
-        mWeightValue.setText(mWeight + "");
+        tvUserHeightValue.setText((int) mHeight + "");
+        tvUserWeightValue.setText(mWeight + "");
 
 
-        mHeightWheelView.initViewParam(mHeight, mMaxHeight, mMinHeight);
-        mHeightWheelView.setValueChangeListener(new ScaleRulerView.OnValueChangeListener() {
+        scaleWheelViewHeight.initViewParam(mHeight, mMaxHeight, mMinHeight);
+        scaleWheelViewHeight.setValueChangeListener(new ScaleRulerView.OnValueChangeListener() {
             @Override
             public void onValueChange(float value) {
-                mHeightValue.setText((int) value + "");
+                tvUserHeightValue.setText((int) value + "");
                 mHeight = value;
             }
         });
 
-        mWeightWheelView.initViewParam(mWeight, mMaxWeight, mMinWeight);
-        mWeightWheelView.setValueChangeListener(new ScaleRulerView.OnValueChangeListener() {
+        scaleWheelViewWeight.initViewParam(mWeight, mMaxWeight, mMinWeight);
+        scaleWheelViewWeight.setValueChangeListener(new ScaleRulerView.OnValueChangeListener() {
             @Override
             public void onValueChange(float value) {
-                mWeightValue.setText(value + "");
+                tvUserWeightValue.setText(value + "");
                 mWeight = value;
             }
         });
@@ -94,6 +115,6 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
         Intent intent = new Intent(this, ScanActivity.class);
         startActivity(intent);
         finish();
-        Toast.makeText(this, "选择身高： " + mHeight + " 体重： " + mWeight+" 生日是："+year+"-"+monthOfYear+"-"+dayOfMonth, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "选择身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear + "-" + dayOfMonth, Toast.LENGTH_LONG).show();
     }
 }
