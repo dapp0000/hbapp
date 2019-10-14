@@ -89,7 +89,9 @@ public class ScanActivity extends AppCompatActivity {
         radar.setiRadarClickListener(new RadarViewGroup.IRadarClickListener() {
             @Override
             public void onRadarItemClick(int position) {
-
+                idScanCircle.stopScan();
+                BleManager.getInstance().cancelScan();
+                connect( mDeviceAdapter.getItem(position));
             }
         });
 
@@ -130,7 +132,7 @@ public class ScanActivity extends AppCompatActivity {
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
 
-        checkPermissions();
+
     }
 
 
@@ -262,7 +264,7 @@ public class ScanActivity extends AppCompatActivity {
                 mDeviceAdapter.notifyDataSetChanged();
 
                 clearRadar();
-
+                idScanCircle.startScan();
             }
 
             @Override
@@ -282,7 +284,14 @@ public class ScanActivity extends AppCompatActivity {
 
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
+                idScanCircle.stopScan();
+                BleDevice maxDevice = scanResultList.get(0);
+                for (BleDevice device : scanResultList){
+                    if(device.getRssi()>maxDevice.getRssi())
+                        maxDevice = device;
+                }
 
+                radar.setCurrentShowItem(maxDevice);
 
             }
         });
@@ -421,4 +430,17 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        idScanCircle.stopScan();
+        BleManager.getInstance().cancelScan();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkPermissions();
+    }
 }

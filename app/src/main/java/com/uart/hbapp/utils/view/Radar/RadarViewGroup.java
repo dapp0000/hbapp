@@ -61,7 +61,7 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
                 //考虑到数据没有添加前扫描图在扫描，但是不会开始为CircleView布局
                 if (mDatas != null && mDatas.size() > 0) {
                     ((RadarView) child).setMaxScanItemCount(mDatas.size());
-                    ((RadarView) child).startScan();
+                    //((RadarView) child).startScan();
                 }
                 continue;
             }
@@ -139,21 +139,16 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
 
     private Random random = new Random();
     public void setDatas(BleDevice device) {
-        boolean isExist = false;
-        for (BleDevice bleDevice :mDatas){
-            if(bleDevice.getName().equals(device.getName()))
-            {
-                isExist=true;
-            }
-        }
-
-        if(isExist)
-            return;
+        removeIfExist(device);
 
         this.mDatas.add(device);
         //根据数据源信息动态添加CircleView
         CircleView circleView = new CircleView(getContext());
-        circleView.setText(device.getName());
+        circleView.setTag(device);
+        String deviceName = device.getName();
+        if(deviceName.length()>8)
+            deviceName = deviceName.substring(0,7)+"...";
+        circleView.setText("    "+deviceName);
         circleView.setTextSize(12);
         circleView.setAngle(random.nextInt(360));
         //根据远近距离的不同计算得到的应该占的半径比例 0.312-0.832
@@ -164,15 +159,11 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
             proportion =  0.832f;
         circleView.setProportion(proportion);
         addView(circleView);
-        //postInvalidate();
     }
 
 
     public void clearDatas(){
         mDatas.clear();
-        //removeAllViews();
-        //postInvalidate();
-
         int childCount = getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
@@ -181,6 +172,24 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
             }
         }
     }
+
+    public void removeIfExist(BleDevice bleDevice){
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            if(child!=null){
+                Object tagObj = getChildAt(i).getTag();
+                if(tagObj instanceof BleDevice){
+                    BleDevice tag = (BleDevice)tagObj;
+                    if (tag.getName().equals(bleDevice.getName()) && tag.getMac().equals(bleDevice.getMac())) {
+                        removeViewAt(i);
+                        mDatas.remove(tag);
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * 雷达图没有扫描完毕时回调
@@ -244,15 +253,29 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
         void onRadarItemClick(int position);
     }
 
-    /**
-     * 根据position，放大指定的CircleView小圆点
-     *
-     * @param position
-     */
-    public void setCurrentShowItem(int position) {
-        CircleView child = (CircleView) getChildAt(position + 1);
+
+
+    public void setCurrentShowItem(BleDevice bleDevice) {
         resetAnim(currentShowChild);
-        currentShowChild = child;
-        startAnim(currentShowChild, position);
+        currentShowChild = null;
+
+        int childCount = getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = getChildAt(i);
+            if(child!=null){
+                Object tagObj = getChildAt(i).getTag();
+                if(tagObj instanceof BleDevice){
+                    BleDevice tag = (BleDevice)tagObj;
+                    if (tag.getName().equals(bleDevice.getName()) && tag.getMac().equals(bleDevice.getMac())) {
+                        currentShowChild = (CircleView)getChildAt(i);
+                        startAnim(currentShowChild, i);
+                    }
+                }
+            }
+        }
+
+        if(currentShowChild ==null)
+            currentShowChild = (CircleView)getChildAt(2);
     }
+
 }

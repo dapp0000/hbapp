@@ -4,9 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import com.uart.hbapp.R;
 
 
 /**
@@ -17,7 +21,7 @@ import android.widget.TextView;
 public class CircleView extends TextView {
     private Paint mPaint;
     private Bitmap mBitmap;
-    private float radius = DisplayUtils.dp2px(getContext(),9);//半径
+    private float radius = DisplayUtils.dp2px(getContext(),4);//半径
     private float disX;//位置X
     private float disY;//位置Y
     private float angle;//旋转的角度
@@ -69,15 +73,15 @@ public class CircleView extends TextView {
     }
 
     private void init() {
-//        mPaint = new Paint();
-//        mPaint.setColor(getResources().getColor(R.color.colorAccent));
-//        mPaint.setAntiAlias(true);
+        mPaint = new Paint();
+        mPaint.setColor(getResources().getColor(R.color.colorAccent));
+        mPaint.setAntiAlias(true);
     }
 
 //    @Override
 //    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        setMeasuredDimension(measureSize(widthMeasureSpec), measureSize(heightMeasureSpec));
+////        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+////        setMeasuredDimension(measureSize(widthMeasureSpec), measureSize(heightMeasureSpec));
 //    }
 
     private int measureSize(int measureSpec) {
@@ -96,13 +100,16 @@ public class CircleView extends TextView {
     }
 
 
-//    @Override
-//    protected void onDraw(Canvas canvas) {
-//        canvas.drawCircle(radius, radius, radius, mPaint);
+    @Override
+    protected void onDraw(Canvas canvas) {
+        //canvas.drawCircle(radius, radius, radius, mPaint);
 //        if (mBitmap != null) {
 //            canvas.drawBitmap(mBitmap, null, new Rect(0, 0, 2 * (int) radius, 2 * (int) radius), mPaint);
 //        }
-//    }
+        //canvas.drawText(getText().toString(),0,0,mPaint);
+        super.onDraw(canvas);
+        canvas.drawCircle(radius, 2*radius, radius, mPaint);
+    }
 
     public void setPaintColor(int resId) {
         mPaint.setColor(resId);
