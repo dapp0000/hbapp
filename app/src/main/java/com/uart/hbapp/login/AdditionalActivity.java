@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
 import com.uart.hbapp.utils.view.scaleruler.ScaleRulerView;
@@ -59,14 +61,15 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
     private float mMinWeight = 25;
 
     int year, monthOfYear, dayOfMonth;
-
+    String tag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
-
+        Intent intent = getIntent();
+        tag = intent.getStringExtra("AdditionalActivity");
         init();
 
         DatePicker datePicker = (DatePicker) findViewById(R.id.datepicker);
@@ -112,9 +115,33 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
     }
 
     public void confirmInfo(View view) {
-        Intent intent = new Intent(this, ScanActivity.class);
-        startActivity(intent);
-        finish();
+        if (tag.equals("changeMessage")) {
+
+        } else {
+            Intent intent = new Intent(this, ScanActivity.class);
+            startActivity(intent);
+            finish();
+        }
         Toast.makeText(this, "选择身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear + "-" + dayOfMonth, Toast.LENGTH_LONG).show();
+    }
+
+    private long firstPressedTime;
+
+    @Override
+    public void onBackPressed() {
+
+        if (tag.equals("changeMessage")) {
+            finish();
+        } else {
+            if (System.currentTimeMillis() - firstPressedTime < 2000) {
+                super.onBackPressed();
+                finish();
+                HbApplication.getApp().exit();
+            } else {
+                ToastUtils.showShort("再按一次退出");
+                firstPressedTime = System.currentTimeMillis();
+            }
+        }
+
     }
 }

@@ -75,7 +75,8 @@ public class LoginUserPwdActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
-                                Intent intent = new Intent(LoginUserPwdActivity.this, AdditionalActivity.class);
+                                Intent intent=new Intent(LoginUserPwdActivity.this, AdditionalActivity.class);
+                                intent.putExtra("AdditionalActivity","login");
                                 startActivity(intent);
                                 finish();
                             } else {

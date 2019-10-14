@@ -48,7 +48,9 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //手机号登录接口
-                startActivity(new Intent(LoginActivity.this, AdditionalActivity.class));
+                Intent intent=new Intent(LoginActivity.this, AdditionalActivity.class);
+                intent.putExtra("AdditionalActivity","login");
+                startActivity(intent);
                 finish();
             }
         });
@@ -63,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, LoginUserPwdActivity.class));
-                finish();
+                //finish();
             }
         });
 
