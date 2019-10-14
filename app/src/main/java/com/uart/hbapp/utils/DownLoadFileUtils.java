@@ -11,6 +11,7 @@ import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.request.base.Request;
 
 import java.io.File;
+import java.util.Vector;
 
 /**
  * Created by admin on 2019/8/13.
@@ -88,6 +89,23 @@ public class DownLoadFileUtils {
     public static String subFileFullName(String fileName, String fileUrl){
         String cutName=fileName+fileUrl.substring(fileUrl.lastIndexOf("."),fileUrl.length());  //这里获取的是  恰似寒光遇骄阳.txt
         return cutName;
+    }
+    public static Vector<String> getFileName(String fileAbsolutePath) {
+        Vector<String> vecFile = new Vector<String>();
+        File file = new File(fileAbsolutePath);
+        File[] subFile = file.listFiles();
+
+        if (subFile != null) {
+            for (int iFileLength = 0; iFileLength < subFile.length; iFileLength++) {
+                // 判断是否为文件夹
+                if (!subFile[iFileLength].isDirectory()) {
+                    String filename = subFile[iFileLength].getName();
+                    vecFile.add(filename);
+                }
+            }
+        }
+
+        return vecFile;
     }
 }
 
