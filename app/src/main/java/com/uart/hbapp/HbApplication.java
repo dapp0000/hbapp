@@ -24,7 +24,6 @@ public class HbApplication extends Application {
         super.onCreate();
         mContext = this;
         initOkGo();
-        DrawUtil.resetDensity(this);
     }
     private void initOkGo() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
