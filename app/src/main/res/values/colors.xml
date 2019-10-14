@@ -5,5 +5,6 @@
     <color name="colorAccent">#D81B60</color>
     <color name="white">#FFFFFF</color>
     <color name="gray">#AEA1A1</color>
+    <color name="black">#000000</color>
     <color name="lable_blue">#3DB0FD</color>
 </resources>

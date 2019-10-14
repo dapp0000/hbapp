@@ -124,17 +124,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         ToastUtils.showShort("蓝牙设备断开了");
     }
 
-//    private long firstPressedTime;
-//    @Override
-//    public void onBackPressed() {
-//        if (System.currentTimeMillis() - firstPressedTime < 2000) {
-//            super.onBackPressed();
-//            System.exit(0);
-//        } else {
-//            Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
-//            firstPressedTime = System.currentTimeMillis();
-//        }
-//    }
+
 
 
     public BleDevice getBleDevice() {

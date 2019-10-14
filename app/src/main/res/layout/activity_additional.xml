@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,31 +7,43 @@
     android:orientation="vertical"
     tools:context=".login.AdditionalActivity">
 
-
-    <TextView
-        android:id="@+id/welcome_1"
+    <LinearLayout
+        android:id="@+id/layout_welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:gravity="center"
-        android:text="@string/login_welcome_1"
-        android:textSize="24sp"
+        android:orientation="vertical"
+        android:layout_marginTop="35dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" >
 
-    <TextView
-        android:id="@+id/welcome_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15sp"
-        android:gravity="center"
-        android:text="@string/login_welcome_2"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/welcome_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/login_welcome_1"
+            android:textSize="24sp"/>
+
+        <TextView
+            android:id="@+id/welcome_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15sp"
+            android:gravity="center"
+            android:text="@string/login_welcome_2"
+            android:textSize="16sp" />
+
+    </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_welcome">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -226,12 +238,12 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:onClick="confirmInfo"
         android:text="确认"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_2" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_content" />
 
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

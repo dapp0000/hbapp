@@ -7,16 +7,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.uart.hbapp.R;
+import com.uart.hbapp.search.ScanActivity;
 import com.uart.hbapp.utils.DialogUtils;
-import com.uart.hbapp.utils.ToastUtils;
 import com.uart.hbapp.utils.URLUtil;
 
 import org.json.JSONObject;
@@ -53,7 +55,7 @@ public class LoginUserPwdActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (username.getText().toString().isEmpty() || password.getText().toString().isEmpty()) {
-                    ToastUtils.showShort(LoginUserPwdActivity.this, "用户名和密码不能为空");
+                    ToastUtils.showShort( "用户名和密码不能为空");
                 } else {
                     login(username.getText().toString(), password.getText().toString());
                 }
@@ -64,12 +66,14 @@ public class LoginUserPwdActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginUserPwdActivity.this, RegistActivity.class));
+                finish();
             }
         });
         phoneLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginUserPwdActivity.this, LoginActivity.class));
+                finish();
             }
         });
 
@@ -103,7 +107,7 @@ public class LoginUserPwdActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             } else {
-                                ToastUtils.showShort(LoginUserPwdActivity.this, jsonObject.getString("message"));
+                                ToastUtils.showShort(jsonObject.getString("message"));
                             }
                             DialogUtils.closeProgressDialog();
 
@@ -117,9 +121,25 @@ public class LoginUserPwdActivity extends AppCompatActivity {
                     public void onError(Response<String> response) {
                         super.onError(response);
                         DialogUtils.closeProgressDialog();
-                        ToastUtils.showShort(LoginUserPwdActivity.this, "服务器异常");
+                        ToastUtils.showShort("服务器异常");
                     }
                 });
 
     }
+
+
+    private long firstPressedTime;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+            super.onBackPressed();
+            finish();
+            System.exit(0);
+        } else {
+            ToastUtils.showShort("再按一次退出");
+            firstPressedTime = System.currentTimeMillis();
+        }
+    }
+
 }

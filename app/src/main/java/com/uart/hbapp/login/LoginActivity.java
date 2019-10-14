@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.ToastUtils;
 import com.uart.hbapp.R;
 
 import butterknife.BindView;
@@ -48,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //手机号登录接口
                 startActivity(new Intent(LoginActivity.this, AdditionalActivity.class));
+                finish();
             }
         });
         sendCode.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         userPwdLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, LoginUserPwdActivity.class));
                 finish();
             }
         });
@@ -96,6 +99,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
         if (timer != null) {
             timer.cancel();
+        }
+    }
+
+    private long firstPressedTime;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+            super.onBackPressed();
+            finish();
+            System.exit(0);
+        } else {
+            ToastUtils.showShort("再按一次退出");
+            firstPressedTime = System.currentTimeMillis();
         }
     }
 }
