@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         mFragments.add(new DeviceFragment());
         mFragments.add(new RecordFragment());
         mFragments.add(new UserInfoFragment());
+        mFragments.add(new SettingFragment());
         // 初始化展示MessageFragment
         setFragmentPosition(0);
     }
@@ -81,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements Observer {
                         break;
                     case R.id.navigation_notifications:
                         setFragmentPosition(2);
+                        break;
+                    case R.id.navigation_settings:
+                        setFragmentPosition(3);
                         break;
                     default:
                         break;
