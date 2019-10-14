@@ -40,10 +40,11 @@
             android:layout_height="wrap_content"
             android:text="电池电量：" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MyDevice" />
+        <View
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_battery_80_black_24dp"
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -64,18 +65,20 @@
             android:layout_height="wrap_content"
             android:text="蓝牙信号：" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MyDevice" />
+        <View
+            android:id="@+id/view_signal"
+            android:layout_width="50dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_signal_cellular_connected_no_internet_0_bar_black_24dp"
+            />
+
 
         <TextView
+            android:id="@+id/tv_signal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:text="正常"/>
-
-
+            android:text="未连接"/>
 
 
     </LinearLayout>
@@ -92,7 +95,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MyDevice" />
+            android:text="" />
 
         <TextView
             android:layout_width="wrap_content"

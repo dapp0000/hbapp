@@ -60,17 +60,21 @@ public class DeviceFragment extends Fragment {
     public static final int PROPERTY_NOTIFY = 4;
     public static final int PROPERTY_INDICATE = 5;
     private static final String TAG = DeviceFragment.class.getSimpleName();
+    @BindView(R.id.view_signal)
+    View viewSignal;
+    @BindView(R.id.tv_signal)
+    TextView tvSignal;
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private String musicPath;
     @BindView(R.id.txt_device_name)
     TextView txtDeviceName;
     @BindView(R.id.line_chart_signal)
     LineChart lineChartSignal;
-//    @BindView(R.id.spinner_music)
+    //    @BindView(R.id.spinner_music)
     Spinner spinnerMusic;
-//    @BindView(R.id.spinner_text)
+    //    @BindView(R.id.spinner_text)
     Spinner spinnerText;
-//    @BindView(R.id.spinner_span)
+    //    @BindView(R.id.spinner_span)
 //    Spinner spinnerSpan;
     @BindView(R.id.btn_start_rest)
     Button btnStartRest;
@@ -142,6 +146,8 @@ public class DeviceFragment extends Fragment {
     LinearLayout layout_ready, layout_rest;
 
     private void initView(View v) {
+        tvSignal =  v.findViewById(R.id.tv_signal);
+        viewSignal =  v.findViewById(R.id.view_signal);
         layout_ready = v.findViewById(R.id.layout_ready);
         layout_rest = v.findViewById(R.id.layout_rest);
         layout_ready.setVisibility(View.VISIBLE);
@@ -171,8 +177,8 @@ public class DeviceFragment extends Fragment {
                 mediaPlayer.reset();
             }
         });
-        spinnerMusic=v.findViewById(R.id.spinner_music);
-        spinnerText=v.findViewById(R.id.spinner_text);
+        spinnerMusic = v.findViewById(R.id.spinner_music);
+        spinnerText = v.findViewById(R.id.spinner_text);
 
         spinnerInit();
     }
@@ -196,6 +202,27 @@ public class DeviceFragment extends Fragment {
         }
 
         txt_device_name.setText(bleDevice.getName());
+
+        //设置信号
+        int signal = Math.abs(bleDevice.getRssi());
+        if(signal>80){
+            tvSignal.setText("很差");
+            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_1_bar_black_24dp));
+        }
+        else if(signal>70){
+            tvSignal.setText("差");
+            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_2_bar_black_24dp));
+        }
+        else if(signal>60){
+            tvSignal.setText("正常");
+            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_3_bar_black_24dp));
+        }
+        else{
+            tvSignal.setText("很好");
+            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_4_bar_black_24dp));
+        }
+
+
 
         BleManager.getInstance().readRssi(bleDevice, new BleRssiCallback() {
             @Override
@@ -451,7 +478,8 @@ public class DeviceFragment extends Fragment {
     /**
      * 加载数据列，监听选择
      */
-    String []spinnerStr={"你好我好大家好","晚上好我的兄弟"};
+    String[] spinnerStr = {"你好我好大家好", "晚上好我的兄弟"};
+
     private void spinnerInit() {
         Vector<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
         //原始string数组
