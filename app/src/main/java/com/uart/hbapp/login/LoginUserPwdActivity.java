@@ -77,15 +77,10 @@ public class LoginUserPwdActivity extends AppCompatActivity {
 
 
     private void login(String uname, String pwd) {
-        DialogUtils.showProgressDialog(this, "请稍等...");
+        DialogUtils.showProgressDialog(this,"请稍等...");
         HashMap<String, Object> params = new HashMap<>();
         params.put("userName", uname);
-        params.put("nickName", "");
         params.put("passWord", pwd);
-        params.put("gender", "");
-        params.put("age", "");
-        params.put("height", "");
-        params.put("weight", "");
 
         JSONObject jsonObject = new JSONObject(params);
         String base_url = URLUtil.login;

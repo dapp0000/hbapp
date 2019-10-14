@@ -1,54 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".login.AdditionalActivity">
 
-    <TextView
-        android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:textSize="48sp"
-        android:text="@string/login_welcome"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
 
     <TextView
         android:id="@+id/welcome_1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:textSize="24sp"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
         android:text="@string/login_welcome_1"
-        app:layout_constraintTop_toBottomOf="@+id/welcome"
+        android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
         android:id="@+id/welcome_2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5sp"
-        android:textSize="16sp"
+        android:layout_marginTop="15sp"
+        android:gravity="center"
         android:text="@string/login_welcome_2"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="性别：" />
+
+            <TextView
+                android:layout_marginTop="50dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="身高：" />
+
+            <TextView
+                android:layout_marginTop="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="体重：" />
+
+            <TextView
+                android:layout_marginTop="130dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="生日：" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioMan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="男" />
+
+                <RadioButton
+                    android:id="@+id/radioWoman"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="50dp"
+                    android:text="女" />
+            </RadioGroup>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.uart.hbapp.utils.view.scaleruler.ScaleRulerView
+                    android:id="@+id/scaleWheelView_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@android:color/white"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp" />
+
+                <com.uart.hbapp.utils.view.scaleruler.SlantedTextView
+                    android:id="@+id/slant_one"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:slantedBackgroundColor="@color/colorPrimary"
+                    app:slantedLength="28dp"
+                    app:slantedMode="left_triangle"
+                    app:slantedText="身高"
+                    app:slantedTextColor="#ffffff"
+                    app:slantedTextSize="14sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@+id/scaleWheelView_height"
+                    android:layout_marginTop="8dp"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp">
+
+                    <TextView
+                        android:id="@+id/tv_user_height_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="bottom"
+                        android:text="170"
+                        android:textColor="#333333"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_user_height_value"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toRightOf="@id/tv_user_height_value"
+                        android:text="cm"
+                        android:textColor="#999999"
+                        android:textSize="15sp" />
+
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.uart.hbapp.utils.view.scaleruler.ScaleRulerView
+                    android:id="@+id/scaleWheelView_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@android:color/white"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp" />
+
+                <com.uart.hbapp.utils.view.scaleruler.SlantedTextView
+                    android:id="@+id/slant_two"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:slantedBackgroundColor="@color/colorPrimary"
+                    app:slantedLength="28dp"
+                    app:slantedMode="left"
+                    app:slantedText="体重"
+                    app:slantedTextColor="#ffffff"
+                    app:slantedTextSize="14sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@id/scaleWheelView_weight"
+                    android:layout_marginTop="8dp"
+                    android:paddingLeft="30dp"
+                    android:paddingRight="30dp">
+
+                    <TextView
+                        android:id="@+id/tv_user_weight_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:text="65"
+                        android:textColor="#333333"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/tv_user_weight_value"
+                        android:layout_marginLeft="4dp"
+                        android:layout_toRightOf="@id/tv_user_weight_value"
+                        android:text="kg"
+                        android:textColor="#999999"
+                        android:textSize="15sp" />
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <DatePicker
+                android:id="@+id/datepicker"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
+                android:spinnersShown="true"
+                android:startYear="1990"></DatePicker>
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
         android:onClick="confirmInfo"
         android:text="确认"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/welcome_2" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

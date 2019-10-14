@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
+import com.uart.hbapp.utils.view.scaleruler.DrawUtil;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class HbApplication extends Application {
         super.onCreate();
         mContext = this;
         initOkGo();
+        DrawUtil.resetDensity(this);
     }
     private void initOkGo() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
