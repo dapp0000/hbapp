@@ -123,6 +123,7 @@
         android:orientation="vertical"
         android:visibility="gone">
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -141,6 +142,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -159,6 +161,8 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -185,6 +189,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="快速休息模式"/>

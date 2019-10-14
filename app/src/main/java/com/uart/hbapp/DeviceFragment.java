@@ -4,13 +4,18 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -38,11 +43,13 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.uart.hbapp.utils.ByteUtils;
+import com.uart.hbapp.utils.DownLoadFileUtils;
 import com.uart.hbapp.utils.view.LineChart.LineChartManager;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import butterknife.BindView;
 
@@ -53,16 +60,18 @@ public class DeviceFragment extends Fragment {
     public static final int PROPERTY_NOTIFY = 4;
     public static final int PROPERTY_INDICATE = 5;
     private static final String TAG = DeviceFragment.class.getSimpleName();
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private String musicPath;
     @BindView(R.id.txt_device_name)
     TextView txtDeviceName;
     @BindView(R.id.line_chart_signal)
     LineChart lineChartSignal;
-    @BindView(R.id.spinner_music)
+//    @BindView(R.id.spinner_music)
     Spinner spinnerMusic;
-    @BindView(R.id.spinner_text)
+//    @BindView(R.id.spinner_text)
     Spinner spinnerText;
-    @BindView(R.id.spinner_span)
-    Spinner spinnerSpan;
+//    @BindView(R.id.spinner_span)
+//    Spinner spinnerSpan;
     @BindView(R.id.btn_start_rest)
     Button btnStartRest;
     @BindView(R.id.layout_ready)
@@ -100,6 +109,7 @@ public class DeviceFragment extends Fragment {
         if (actionBar != null)
             actionBar.setTitle(R.string.title_home);
         // TODO: Use the ViewModel
+
     }
 
 
@@ -148,6 +158,7 @@ public class DeviceFragment extends Fragment {
                 layout_rest.setVisibility(View.VISIBLE);
                 initChart();
                 openNotify(bleDevice, heartRateCharacteristic);
+                initMediaPlayer();
             }
         });
         btn_stop_rest = v.findViewById(R.id.btn_stop_rest);
@@ -157,10 +168,15 @@ public class DeviceFragment extends Fragment {
                 layout_ready.setVisibility(View.VISIBLE);
                 layout_rest.setVisibility(View.GONE);
                 closeNotify(bleDevice, heartRateCharacteristic);
+                mediaPlayer.reset();
             }
         });
+        spinnerMusic=v.findViewById(R.id.spinner_music);
+        spinnerText=v.findViewById(R.id.spinner_text);
 
+        spinnerInit();
     }
+
 
     BleDevice bleDevice;
     List<BluetoothGattService> services;
@@ -168,6 +184,7 @@ public class DeviceFragment extends Fragment {
     BluetoothGattCharacteristic heartRateCharacteristic;
 
     private void showData() {
+
         bleDevice = ((MainActivity) getActivity()).getBleDevice();
         if (bleDevice == null) {
             line_chart_signal.setNoDataText("设备未连接");
@@ -431,5 +448,58 @@ public class DeviceFragment extends Fragment {
         lineData.setValueTextColor(Color.GREEN);
     }
 
+    /**
+     * 加载数据列，监听选择
+     */
+    String []spinnerStr={"你好我好大家好","晚上好我的兄弟"};
+    private void spinnerInit() {
+        Vector<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
+        //原始string数组
+        final String[] spi = new String[musicNames.size()];
+        final String[] spinnerItems = musicNames.toArray(spi);
 
+        //简单的string数组适配器：样式res，数组
+        ArrayAdapter<String> musicAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerItems);
+        //下拉的样式res
+        musicAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spinnerMusic.setAdapter(musicAdapter);
+
+        ArrayAdapter<String> wordAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerStr);
+        //下拉的样式res
+        wordAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spinnerText.setAdapter(wordAdapter);
+        //选择监听
+        spinnerMusic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //parent就是父控件spinner
+            //view就是spinner内填充的textview,id=@android:id/text1
+            //position是值所在数组的位置
+            //id是值所在行的位置，一般来说与positin一致
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view,
+                                       int pos, long id) {
+                ((TextView) view).setGravity(Gravity.CENTER);
+                musicPath = Environment.getExternalStorageDirectory() + "/HbMusic/" + spinnerItems[pos];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Another interface callback
+            }
+        });
+    }
+
+    private void initMediaPlayer() {
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(musicPath);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
