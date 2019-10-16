@@ -73,8 +73,9 @@ public class DownLoadFileUtils {
     //分类别路径
     private static String mClassifyPath=null;
     public static String customLocalStoragePath(String differentName){
-        File basePath=new File(mSDPath); // /storage/emulated/0
+
         mClassifyPath=mSDPath+"/"+differentName+"/";  //如果传来的是 book 拼接就是 /storage/emulated/0/book/
+        File basePath=new File(mClassifyPath); // /storage/emulated/0
         //如果传来的是game  那拼接就是 /storage/emulated/0/game/
         if(!basePath.exists()){
             basePath.mkdirs();
