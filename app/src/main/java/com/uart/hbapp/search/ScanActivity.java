@@ -211,6 +211,7 @@ public class ScanActivity extends AppCompatActivity {
                 ToastUtils.showShort(getString(R.string.connect_success));
                 BluetoothGattService manService = gatt.getService(UUID.fromString(HbApplication.man_service_uuid));
                 if(manService==null){
+                    BleManager.getInstance().disconnect(bleDevice);
                     ToastUtils.showShort("设备未能识别");
                     return;
                 }
