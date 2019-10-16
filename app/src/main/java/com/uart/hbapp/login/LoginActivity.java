@@ -1,6 +1,5 @@
 package com.uart.hbapp.login;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,10 +15,10 @@ import com.uart.hbapp.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
 
-    MyCountDownTimer timer;
     @BindView(R.id.welcome)
     TextView welcome;
     @BindView(R.id.username)
@@ -42,65 +41,47 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         getSupportActionBar().hide();
         HbApplication.getApp().addActivity(this);
-
-        timer = new MyCountDownTimer(60000, 1000);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //手机号登录接口
-                Intent intent=new Intent(LoginActivity.this, AdditionalActivity.class);
-                intent.putExtra("AdditionalActivity","login");
-                startActivity(intent);
-                finish();
-            }
-        });
-        sendCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //发送验证码接口
-                timer.start();
-            }
-        });
-        userPwdLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, LoginUserPwdActivity.class));
-                //finish();
-            }
-        });
-
     }
 
-    //倒计时效果
-    private class MyCountDownTimer extends CountDownTimer {
-
-        //millisInFuture：总时间  countDownInterval：每隔多少时间刷新一次
-        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
+    @OnClick({R.id.sendCode, R.id.login, R.id.userPwdLogin})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.sendCode:
+                //发送验证码接口
+                timer.start();
+                break;
+            case R.id.login:
+                //手机号登录接口
+                Intent intent = new Intent(LoginActivity.this, AdditionalActivity.class);
+                intent.putExtra("AdditionalActivity", "login");
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.userPwdLogin:
+                startActivity(new Intent(LoginActivity.this, LoginUserPwdActivity.class));
+                //finish();
+                break;
         }
+    }
 
-        //计时过程
-        @SuppressLint("SetTextI18n")
+    private CountDownTimer timer = new CountDownTimer(60000,1000) {
         @Override
-        public void onTick(long lm) {
+        public void onTick(long millisUntilFinished) {
             //不允许再次点击
             sendCode.setClickable(false);
-            sendCode.setText(lm / 1000 + "秒");
+            sendCode.setText(millisUntilFinished / 1000 + "秒");
         }
 
-        //计时结束
         @Override
         public void onFinish() {
             sendCode.setClickable(true);
             sendCode.setText("重新获取");
         }
-    }
+    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (timer != null) {
-            timer.cancel();
-        }
+        timer.cancel();
     }
 }

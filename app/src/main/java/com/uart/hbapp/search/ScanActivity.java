@@ -1,9 +1,11 @@
 package com.uart.hbapp.search;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.blankj.utilcode.constant.PermissionConstants;
+import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
@@ -33,6 +37,7 @@ import com.clj.fastble.callback.BleMtuChangedCallback;
 import com.clj.fastble.callback.BleRssiCallback;
 import com.clj.fastble.callback.BleScanCallback;
 import com.clj.fastble.data.BleDevice;
+import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.uart.hbapp.HbApplication;
@@ -66,7 +71,6 @@ public class ScanActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_CODE_OPEN_GPS = 1;
-    private static final int REQUEST_CODE_PERMISSION_LOCATION = 2;
     private static final long SCAN_DURATION = 5000;
 
     private DeviceAdapter mDeviceAdapter;
@@ -205,6 +209,11 @@ public class ScanActivity extends AppCompatActivity {
                 //mDeviceAdapter.addDevice(bleDevice);
                 //mDeviceAdapter.notifyDataSetChanged();
                 ToastUtils.showShort(getString(R.string.connect_success));
+                BluetoothGattService manService = gatt.getService(UUID.fromString(HbApplication.man_service_uuid));
+                if(manService==null){
+                    ToastUtils.showShort("设备未能识别");
+                    return;
+                }
 
                 Intent intent = new Intent(ScanActivity.this, MainActivity.class);
                 intent.putExtra(MainActivity.KEY_DATA, bleDevice);
@@ -257,6 +266,12 @@ public class ScanActivity extends AppCompatActivity {
 
 
     public void scanDevice() {
+        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            Toast.makeText(this, getString(R.string.please_open_blue), Toast.LENGTH_LONG).show();
+            return;
+        }
+
         BleManager.getInstance().scan(new BleScanCallback() {
             @Override
             public void onScanStarted(boolean success) {
@@ -285,8 +300,10 @@ public class ScanActivity extends AppCompatActivity {
             @Override
             public void onScanFinished(List<BleDevice> scanResultList) {
                 idScanCircle.stopScan();
-                BleDevice maxDevice = scanResultList.get(0);
-                for (BleDevice device : scanResultList){
+                BleDevice maxDevice = mDeviceAdapter.getItem(0);
+                int count = mDeviceAdapter.getCount();
+                for (int i=0;i<count;i++){
+                    BleDevice device = mDeviceAdapter.getItem(i);
                     if(device.getRssi()>maxDevice.getRssi())
                         maxDevice = device;
                 }
@@ -313,42 +330,46 @@ public class ScanActivity extends AppCompatActivity {
 
 
 
-    @Override
-    public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_CODE_PERMISSION_LOCATION:
-                if (grantResults.length > 0) {
-                    for (int i = 0; i < grantResults.length; i++) {
-                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                            onPermissionGranted(permissions[i]);
-                        }
-                    }
-                }
-                break;
-        }
-    }
-
+    @SuppressLint("WrongConstant")
     private void checkPermissions() {
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetoothAdapter.isEnabled()) {
-            Toast.makeText(this, getString(R.string.please_open_blue), Toast.LENGTH_LONG).show();
-            return;
-        }
+        String[] requestPermissions = new String[]{
+                PermissionConstants.LOCATION,
+                PermissionConstants.STORAGE
+        };
 
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
-        List<String> permissionDeniedList = new ArrayList<>();
-        for (String permission : permissions) {
-            int permissionCheck = ContextCompat.checkSelfPermission(this, permission);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                onPermissionGranted(permission);
-            } else {
-                permissionDeniedList.add(permission);
-            }
+        if(!PermissionUtils.isGranted(requestPermissions)){
+//           getPermissions : 获取应用权限
+//           isGranted : 判断权限是否被授予
+//           isGrantedWriteSettings : 判断修改系统权限是否被授予
+//           requestWriteSettings : 申请修改系统权限
+//           isGrantedDrawOverlays : 判断悬浮窗权限是否被授予
+//           requestDrawOverlays : 申请悬浮窗权限
+//           launchAppDetailsSettings: 打开应用具体设置
+//           permission : 设置请求权限
+//           rationale : 设置拒绝权限后再次请求的回调接口
+//           callback : 设置回调
+//           theme : 设置主题
+//           request : 开始请求
+            PermissionUtils.permission(requestPermissions).rationale(new PermissionUtils.OnRationaleListener() {
+                @Override
+                public void rationale(ShouldRequest shouldRequest) {
+                    ToastUtils.showShort("拒绝权限可能无法使用app");
+                }
+            }).callback(new PermissionUtils.SimpleCallback() {
+                @Override
+                public void onGranted() {
+                    ToastUtils.showShort("权限申请成功");
+                    onPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION);
+                }
+                @Override
+                public void onDenied() {
+                    ToastUtils.showShort("权限申请失败，请前往系统设置页面手动设置");
+                }
+
+            }).request();
         }
-        if (!permissionDeniedList.isEmpty()) {
-            String[] deniedPermissions = permissionDeniedList.toArray(new String[permissionDeniedList.size()]);
-            ActivityCompat.requestPermissions(this, deniedPermissions, REQUEST_CODE_PERMISSION_LOCATION);
+        else{
+            onPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION);
         }
     }
 
@@ -435,7 +456,8 @@ public class ScanActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         idScanCircle.stopScan();
-        BleManager.getInstance().cancelScan();
+        if(BleManager.getInstance().getScanSate() == BleScanState.STATE_SCANNING)
+            BleManager.getInstance().cancelScan();
     }
 
     @Override

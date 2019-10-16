@@ -243,7 +243,7 @@ public class DeviceFragment extends Fragment {
             String uuid = service.getUuid().toString();
             LogUtils.i("BluetoothGattService:" + uuid);
             switch (uuid) {
-                case "6e400001-b5a3-f393-e0a9-e50e24dcca9e"://脑电波服务
+                case HbApplication.man_service_uuid://脑电波服务
                     ((MainActivity) getActivity()).setBluetoothGattService(service);
                     characteristics = service.getCharacteristics();
                     heartRateCharacteristic = characteristics.get(0);
@@ -253,7 +253,7 @@ public class DeviceFragment extends Fragment {
                         ((MainActivity) getActivity()).setCharaProp(DeviceFragment.PROPERTY_WRITE);
                     }
                     break;
-                case "0000180a-0000-1000-8000-00805f9b34fb"://设备信息服务
+                case HbApplication.device_info_service_uuid://设备信息服务
                     configDIS(service);
                     break;
                 default:
@@ -269,13 +269,12 @@ public class DeviceFragment extends Fragment {
             String uuid = characteristic.getUuid().toString();
             LogUtils.i("DISService:" + uuid);
             switch (uuid) {
-                case "00002a25-0000-1000-8000-00805f9b34fb"://Serial Number String (d@后对应音频蓝牙地址)
+                case HbApplication.device_info_serial_number://Serial Number String (d@后对应音频蓝牙地址)
                     BleManager.getInstance().read(
                             bleDevice,
                             characteristic.getService().getUuid().toString(),
                             characteristic.getUuid().toString(),
                             new BleReadCallback() {
-
                                 @Override
                                 public void onReadSuccess(final byte[] data) {
                                     runOnUiThread(new Runnable() {

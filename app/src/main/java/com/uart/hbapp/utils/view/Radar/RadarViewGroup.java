@@ -274,8 +274,11 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
             }
         }
 
-        if(currentShowChild ==null)
+        if(currentShowChild ==null){
             currentShowChild = (CircleView)getChildAt(2);
+            startAnim(currentShowChild, 1);
+        }
+
     }
 
 }
