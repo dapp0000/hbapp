@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initBottomNavigation();
-        initData();
 
         bleDevice = getIntent().getParcelableExtra(KEY_DATA);
         if (bleDevice == null)
@@ -58,17 +57,15 @@ public class MainActivity extends AppCompatActivity implements Observer {
         ObserverManager.getInstance().addObserver(this);
     }
 
-    public void initData() {
+
+
+    public void initBottomNavigation() {
         mFragments = new ArrayList<>();
         mFragments.add(new DeviceFragment());
         mFragments.add(new RecordFragment());
         mFragments.add(new UserInfoFragment());
         mFragments.add(new SettingFragment());
-        // 初始化展示MessageFragment
-        setFragmentPosition(0);
-    }
 
-    public void initBottomNavigation() {
         BottomNavigationView mBottomNavigationView = findViewById(R.id.nav_view);
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -93,6 +90,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 return true;
             }
         });
+
+        if("skip".equals(getIntent().getAction())){
+            //setFragmentPosition(1);
+            mBottomNavigationView.setSelectedItemId(R.id.navigation_dashboard);
+        }
+        else{
+            // 初始化展示MessageFragment
+            //setFragmentPosition(0);
+            mBottomNavigationView.setSelectedItemId(R.id.navigation_home);
+        }
     }
 
     private void setFragmentPosition(int position) {
@@ -115,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         ObserverManager.getInstance().deleteObserver(this);
         if (bleDevice != null && BleManager.getInstance().isConnected(bleDevice)) {
             BleManager.getInstance().disconnect(bleDevice);
-            ToastUtils.showShort("蓝牙设备断开了");
+            //ToastUtils.showShort("蓝牙设备断开了");
         }
     }
 

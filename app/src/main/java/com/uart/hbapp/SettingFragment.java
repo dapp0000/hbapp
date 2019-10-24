@@ -1,5 +1,7 @@
 package com.uart.hbapp;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
@@ -17,11 +19,8 @@ import com.uart.hbapp.login.AdditionalActivity;
 
 public class SettingFragment extends Fragment {
 
-    private SettingViewModel mViewModel;
-
-    public static SettingFragment newInstance() {
-        return new SettingFragment();
-    }
+    SettingViewModel mViewModel;
+    ActionBar actionBar;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -44,7 +43,10 @@ public class SettingFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(SettingViewModel.class);
         // TODO: Use the ViewModel
-
+        setHasOptionsMenu(true);
+        actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if(actionBar!=null)
+            actionBar.setTitle(R.string.title_settings);
     }
 
 }

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.StringUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 
@@ -51,6 +53,14 @@ public class LoginActivity extends AppCompatActivity {
                 timer.start();
                 break;
             case R.id.login:
+                String userName = username.getText().toString();
+                if(StringUtils.isEmpty(userName)){
+                    ToastUtils.showShort("用户名不能为空");
+                    return;
+                }
+
+                HbApplication.loginUser = userName;
+
                 //手机号登录接口
                 Intent intent = new Intent(LoginActivity.this, AdditionalActivity.class);
                 intent.putExtra("AdditionalActivity", "login");

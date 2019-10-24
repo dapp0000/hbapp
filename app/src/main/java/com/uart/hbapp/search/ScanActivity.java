@@ -321,7 +321,9 @@ public class ScanActivity extends AppCompatActivity {
 
 
     public void skip() {
-        startActivity(new Intent(ScanActivity.this, MainActivity.class));
+        Intent intent = new Intent(ScanActivity.this, MainActivity.class);
+        intent.setAction("skip");
+        startActivity(intent);
         mHandler.postDelayed(() -> {
             if (mIsScanning) {
                 stopScanDevice();

@@ -72,7 +72,7 @@ public class DeviceAdapter extends BaseAdapter {
 
     @Override
     public BleDevice getItem(int position) {
-        if (position > bleDeviceList.size())
+        if (position >= bleDeviceList.size())
             return null;
         return bleDeviceList.get(position);
     }

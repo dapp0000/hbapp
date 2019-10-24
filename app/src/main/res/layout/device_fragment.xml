@@ -107,14 +107,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:orientation="vertical">
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:background="@drawable/chart_background">
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart_signal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/header"
            />
 
     </LinearLayout>
@@ -124,7 +124,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
         <LinearLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
@@ -164,7 +164,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -213,7 +213,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"

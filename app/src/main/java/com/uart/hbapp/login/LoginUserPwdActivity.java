@@ -59,12 +59,13 @@ public class LoginUserPwdActivity extends AppCompatActivity {
         params.put("passWord", pwd);
 
         JSONObject jsonObject = new JSONObject(params);
-        String base_url = URLUtil.login;
+        String base_url =URLUtil.url + URLUtil.login;
         OkGo.<String>post(base_url)
                 .tag(this)
                 .cacheKey("cachePostKey")
-                .cacheMode(CacheMode.DEFAULT)
+//                .cacheMode(CacheMode.DEFAULT)
 //                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
+                .headers("Content-Type","application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
                     @Override
@@ -75,6 +76,7 @@ public class LoginUserPwdActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
+                                HbApplication.loginUser = uname;
                                 Intent intent=new Intent(LoginUserPwdActivity.this, AdditionalActivity.class);
                                 intent.putExtra("AdditionalActivity","login");
                                 startActivity(intent);

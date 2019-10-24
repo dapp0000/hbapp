@@ -63,12 +63,13 @@ public class RegistActivity extends AppCompatActivity {
         params.put("weight", "");
 
         JSONObject jsonObject = new JSONObject(params);
-        String base_url = URLUtil.regist;
+        String base_url =URLUtil.url + URLUtil.regist;
         OkGo.<String>post(base_url)
                 .tag(this)
                 .cacheKey("cachePostKey")
-                .cacheMode(CacheMode.DEFAULT)
+//                .cacheMode(CacheMode.DEFAULT)
 //                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
+                .headers("Content-Type","application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
                     @Override

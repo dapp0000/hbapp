@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,8 +29,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.blankj.utilcode.util.ZipUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleReadCallback;
@@ -42,42 +46,60 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.cache.CacheMode;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.uart.hbapp.utils.ByteUtils;
+import com.uart.hbapp.utils.CommandUtils;
+import com.uart.hbapp.utils.DialogUtils;
 import com.uart.hbapp.utils.DownLoadFileUtils;
+import com.uart.hbapp.utils.OriginalDataUtil;
+import com.uart.hbapp.utils.URLUtil;
 import com.uart.hbapp.utils.view.LineChart.LineChartManager;
 
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class DeviceFragment extends Fragment {
+    private static final String TAG = DeviceFragment.class.getSimpleName();
     public static final int PROPERTY_READ = 1;
     public static final int PROPERTY_WRITE = 2;
     public static final int PROPERTY_WRITE_NO_RESPONSE = 3;
     public static final int PROPERTY_NOTIFY = 4;
     public static final int PROPERTY_INDICATE = 5;
-    private static final String TAG = DeviceFragment.class.getSimpleName();
+
     @BindView(R.id.view_signal)
     View viewSignal;
     @BindView(R.id.tv_signal)
     TextView tvSignal;
-    private MediaPlayer mediaPlayer = new MediaPlayer();
-    private String musicPath;
+    @BindView(R.id.btn_start_rest)
+    Button btnStartRest;
     @BindView(R.id.txt_device_name)
     TextView txtDeviceName;
     @BindView(R.id.line_chart_signal)
     LineChart lineChartSignal;
-    //    @BindView(R.id.spinner_music)
+    @BindView(R.id.spinner_music)
     Spinner spinnerMusic;
-    //    @BindView(R.id.spinner_text)
+    @BindView(R.id.spinner_text)
     Spinner spinnerText;
-    //    @BindView(R.id.spinner_span)
-//    Spinner spinnerSpan;
-    @BindView(R.id.btn_start_rest)
-    Button btnStartRest;
+    @BindView(R.id.spinner_span)
+    Spinner spinnerSpan;
     @BindView(R.id.layout_ready)
     LinearLayout layoutReady;
     @BindView(R.id.btn_stop_rest)
@@ -86,23 +108,39 @@ public class DeviceFragment extends Fragment {
     LinearLayout layoutRest;
 
 
-    private DeviceViewModel mViewModel;
-    private ActionBar actionBar;
-
-    public static DeviceFragment newInstance() {
-        return new DeviceFragment();
-    }
+    DeviceViewModel mViewModel;
+    ActionBar actionBar;
+    LineChartManager lineChartManager;
+    BleDevice bleDevice;
+    BluetoothGattCharacteristic heartRateCharacteristic;
+    List<String> names;
+    List<Integer> colours;
+    ArrayList<Float> xValues;
+    MediaPlayer mediaPlayer;
+    String musicPath;
+    File cacheDir;
+    String dataFileName;
+    String zipFileName;
+    long startTime;
+    long endTime;
+    boolean isResting;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.device_fragment, container, false);
-        initView(v);
-        showData();
+        ButterKnife.bind(this, v);
+
+        cacheDir = Objects.requireNonNull(getActivity()).getCacheDir();
+        lineChartManager = new LineChartManager(lineChartSignal);
+        mediaPlayer = new MediaPlayer();
+        timerOriginal.schedule(task,100,15000);//15s
+        spinnerInit();
+        initData();
+        initChart();
 
         return v;
     }
-
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -115,7 +153,6 @@ public class DeviceFragment extends Fragment {
         // TODO: Use the ViewModel
 
     }
-
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -134,94 +171,42 @@ public class DeviceFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
+        switch (id) {
+            case R.id.btn_close_device:
+                getActivity().finish();
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
-
-    TextView txt_device_name;
-    LineChart line_chart_signal;
-    Button btn_start_rest, btn_stop_rest;
-    LineChartManager lineChartManager;
-    LinearLayout layout_ready, layout_rest;
-
-    private void initView(View v) {
-        tvSignal =  v.findViewById(R.id.tv_signal);
-        viewSignal =  v.findViewById(R.id.view_signal);
-        layout_ready = v.findViewById(R.id.layout_ready);
-        layout_rest = v.findViewById(R.id.layout_rest);
-        layout_ready.setVisibility(View.VISIBLE);
-        layout_rest.setVisibility(View.GONE);
-
-        txt_device_name = v.findViewById(R.id.txt_device_name);
-        line_chart_signal = v.findViewById(R.id.line_chart_signal);
-        lineChartManager = new LineChartManager(line_chart_signal);
-        btn_start_rest = v.findViewById(R.id.btn_start_rest);
-        btn_start_rest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layout_ready.setVisibility(View.GONE);
-                layout_rest.setVisibility(View.VISIBLE);
-                initChart();
-                openNotify(bleDevice, heartRateCharacteristic);
-                initMediaPlayer();
-            }
-        });
-        btn_stop_rest = v.findViewById(R.id.btn_stop_rest);
-        btn_stop_rest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                layout_ready.setVisibility(View.VISIBLE);
-                layout_rest.setVisibility(View.GONE);
-                closeNotify(bleDevice, heartRateCharacteristic);
-                mediaPlayer.reset();
-            }
-        });
-        spinnerMusic = v.findViewById(R.id.spinner_music);
-        spinnerText = v.findViewById(R.id.spinner_text);
-
-        spinnerInit();
-    }
-
-
-    BleDevice bleDevice;
-    List<BluetoothGattService> services;
-    List<BluetoothGattCharacteristic> characteristics;
-    BluetoothGattCharacteristic heartRateCharacteristic;
-
-    private void showData() {
-
+    private void initData() {
         bleDevice = ((MainActivity) getActivity()).getBleDevice();
         if (bleDevice == null) {
-            line_chart_signal.setNoDataText("设备未连接");
-            btn_start_rest.setEnabled(false);
+            lineChartSignal.setNoDataText("设备未连接");
+            btnStartRest.setEnabled(false);
             return;
         } else {
-            line_chart_signal.setNoDataText("设备准备就绪");
-            btn_start_rest.setEnabled(true);
+            lineChartSignal.setNoDataText("设备准备就绪");
+            btnStartRest.setEnabled(true);
         }
 
-        txt_device_name.setText(bleDevice.getName());
+        txtDeviceName.setText(bleDevice.getName());
 
         //设置信号
         int signal = Math.abs(bleDevice.getRssi());
-        if(signal>80){
+        if (signal > 80) {
             tvSignal.setText("很差");
             viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_1_bar_black_24dp));
-        }
-        else if(signal>70){
+        } else if (signal > 70) {
             tvSignal.setText("差");
             viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_2_bar_black_24dp));
-        }
-        else if(signal>60){
+        } else if (signal > 60) {
             tvSignal.setText("正常");
             viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_3_bar_black_24dp));
-        }
-        else{
+        } else {
             tvSignal.setText("很好");
             viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_4_bar_black_24dp));
         }
-
 
 
         BleManager.getInstance().readRssi(bleDevice, new BleRssiCallback() {
@@ -238,20 +223,22 @@ public class DeviceFragment extends Fragment {
         });
 
         BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(bleDevice);
-        services = gatt.getServices();
+        List<BluetoothGattService> services = gatt.getServices();
         for (BluetoothGattService service : services) {
             String uuid = service.getUuid().toString();
             LogUtils.i("BluetoothGattService:" + uuid);
             switch (uuid) {
                 case HbApplication.man_service_uuid://脑电波服务
                     ((MainActivity) getActivity()).setBluetoothGattService(service);
-                    characteristics = service.getCharacteristics();
+                    List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
                     heartRateCharacteristic = characteristics.get(0);
                     int charaProp = heartRateCharacteristic.getProperties();
                     if ((charaProp & BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
                         ((MainActivity) getActivity()).setCharacteristic(characteristics.get(1));
                         ((MainActivity) getActivity()).setCharaProp(DeviceFragment.PROPERTY_WRITE);
                     }
+
+                    openNotify(bleDevice, heartRateCharacteristic);
                     break;
                 case HbApplication.device_info_service_uuid://设备信息服务
                     configDIS(service);
@@ -261,7 +248,6 @@ public class DeviceFragment extends Fragment {
             }
         }
     }
-
 
     private void configDIS(BluetoothGattService service) {
         List<BluetoothGattCharacteristic> characteristics_DIS = service.getCharacteristics();
@@ -312,8 +298,12 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-
     private void openNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        boolean connected = BleManager.getInstance().isConnected(bleDevice);
+        if(!connected){
+            return;
+        }
+
         BleManager.getInstance().notify(
                 bleDevice,
                 characteristic.getService().getUuid().toString(),
@@ -355,41 +345,31 @@ public class DeviceFragment extends Fragment {
                 });
     }
 
-
     private void closeNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
+        boolean connected = BleManager.getInstance().isConnected(bleDevice);
+        if(!connected){
+            return;
+        }
+
         BleManager.getInstance().stopNotify(
                 bleDevice,
                 characteristic.getService().getUuid().toString(),
                 characteristic.getUuid().toString());
     }
 
-
     private void runOnUiThread(Runnable runnable) {
         if (isAdded() && getActivity() != null)
             getActivity().runOnUiThread(runnable);
-    }
-
-    private void addText(TextView textView, String content) {
-        textView.append(content);
-        textView.append("\n");
-        int offset = textView.getLineCount() * textView.getLineHeight();
-        if (offset > textView.getHeight()) {
-            textView.scrollTo(0, offset - textView.getHeight());
-        }
     }
 
     private void addLineData(byte[] datas) {
         showChart(datas);
     }
 
-    ArrayList<Float> xValues;
-    List<String> names;
-    List<Integer> colours;
-
     private void initChart() {
-        XAxis xAxis = line_chart_signal.getXAxis();
-        YAxis yAxisLeft = line_chart_signal.getAxisLeft();
-        YAxis yAxisRight = line_chart_signal.getAxisRight();
+        XAxis xAxis = lineChartSignal.getXAxis();
+        YAxis yAxisLeft = lineChartSignal.getAxisLeft();
+        YAxis yAxisRight = lineChartSignal.getAxisRight();
         xAxis.setTextColor(Color.WHITE);
         yAxisLeft.setTextColor(Color.WHITE);
         yAxisRight.setTextColor(Color.WHITE);
@@ -405,7 +385,7 @@ public class DeviceFragment extends Fragment {
         for (int i = 0; i < 1; i++) {
             List<Float> yValue = new ArrayList<>();
             for (int j = 0; j <= 7; j++) {
-                yValue.add((float) (Math.random() * 80));
+                yValue.add(0f);
             }
             yValues.add(yValue);
         }
@@ -417,14 +397,14 @@ public class DeviceFragment extends Fragment {
         names.add("信号");
 
         lineChartManager.showLineChart(xValues, yValues, names, colours);
-        lineChartManager.setYAxis(100, 0, 6);
+        lineChartManager.setYAxis(100, 0, 2);
         lineChartManager.setDescription("脑电波");
 
-        LineData lineData = line_chart_signal.getLineData();
+        LineData lineData = lineChartSignal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
-        Legend legend = line_chart_signal.getLegend();
+        Legend legend = lineChartSignal.getLegend();
         legend.setTextColor(Color.WHITE);
-        Description description = line_chart_signal.getDescription();
+        Description description = lineChartSignal.getDescription();
         description.setTextColor(Color.WHITE);
     }
 
@@ -443,10 +423,16 @@ public class DeviceFragment extends Fragment {
         if ((datas[3] & 0xFF) != 128)
             isData = false;
 
+        String hexString = ByteUtils.bytesToHex(datas);
         if (!isData) {
-            LogUtils.e(ByteUtils.bytesToHex(datas));
+            LogUtils.e(hexString);
             //LogUtils.e(ByteUtils.bytesToUTF8(datas));
             return;
+        }
+        else{
+            if(isResting){
+                originalList.add(hexString);
+            }
         }
 
         //设置y轴的数据()
@@ -469,15 +455,10 @@ public class DeviceFragment extends Fragment {
         }
 
         lineChartManager.showLineChart(xValues, yValues, names, colours);
-        lineChartManager.setYAxis(maxValue, 0, 6);
-        LineData lineData = line_chart_signal.getLineData();
+        lineChartManager.setYAxis(maxValue, 0, 2);
+        LineData lineData = lineChartSignal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
     }
-
-    /**
-     * 加载数据列，监听选择
-     */
-    String[] spinnerStr = {"你好我好大家好", "晚上好我的兄弟"};
 
     private void spinnerInit() {
         Vector<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
@@ -493,8 +474,9 @@ public class DeviceFragment extends Fragment {
         //绑定 Adapter到控件
         spinnerMusic.setAdapter(musicAdapter);
 
+        String[] spinnerStrList = new String[] {"你好我好大家好", "晚上好我的兄弟"};
         ArrayAdapter<String> wordAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, spinnerStr);
+                android.R.layout.simple_spinner_item, spinnerStrList);
         //下拉的样式res
         wordAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //绑定 Adapter到控件
@@ -517,16 +499,198 @@ public class DeviceFragment extends Fragment {
                 // Another interface callback
             }
         });
+
+        String[] spinnerSpanList = new String[] {"自然醒", "10分钟", "20分钟", "30分钟", "1小时", "2小时"};
+        ArrayAdapter<String> spanAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, spinnerSpanList);
+        //下拉的样式res
+        spanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //绑定 Adapter到控件
+        spinnerSpan.setAdapter(spanAdapter);
     }
 
-    private void initMediaPlayer() {
+    private void mediaPlayer(String filePath) {
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(musicPath);
+            mediaPlayer.setDataSource(filePath);
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private void startRest(){
+        layoutReady.setVisibility(View.GONE);
+        layoutRest.setVisibility(View.VISIBLE);
+        mediaPlayer(musicPath);
+
+        isResting=true;
+        startTime = System.currentTimeMillis();
+        String fileName =  HbApplication.loginUser + "_" + System.currentTimeMillis();
+        dataFileName = fileName+".txt";
+        zipFileName = fileName + ".zip";
+        originalList.clear();
+    }
+
+    private void stopRest(){
+        layoutReady.setVisibility(View.VISIBLE);
+        layoutRest.setVisibility(View.GONE);
+        mediaPlayer.reset();
+
+        isResting=false;
+        endTime = System.currentTimeMillis();
+        originalList.clear();
+        updateNet();
+    }
+
+    private void updateNet(){
+        updateSleepInfo(bleDevice.getName(),bleDevice.getMac(),HbApplication.loginUser,startTime,endTime);
+    }
+
+    private void updateSleepInfo(String deviceName,String deviceMac, String userName, long startTime,long endTime) {
+//        {
+//            "deviceName":"xv-90",
+//                "deviceMac":"MVC-DD",
+//                "userName":"wyqljwwy",
+//                "startTime":1571626067000,
+//                "endTime":1571626067000
+//        }
+
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("deviceName", deviceName);
+        params.put("deviceMac", deviceMac);
+        params.put("userName", userName);
+        params.put("startTime",startTime);
+        params.put("endTime", endTime);
+
+        JSONObject jsonObject = new JSONObject(params);
+        String base_url = URLUtil.url + URLUtil.addSleepInfo;
+        OkGo.<String>post(base_url)
+                .tag(this)
+                .cacheKey("cachePostKey")
+//                .cacheMode(CacheMode.DEFAULT)
+//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
+//                .headers("Content-Type","application/json")
+                .upJson(jsonObject.toString())
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        try {
+                            Log.e("eee", "AddFaceT:" + response.body());
+                            JSONObject jsonObject = new JSONObject(response.body());
+                            int error = jsonObject.getInt("error");
+                            if (error == 0) {
+                                ToastUtils.showShort("休息记录已经上传成功");
+                                updateZipFile();
+                            } else {
+                                ToastUtils.showShort(jsonObject.getString("message"));
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            ToastUtils.showShort(e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        ToastUtils.showShort("服务器异常");
+                    }
+                });
+
+    }
+
+    private void updateZipFile(){
+        File srcFile = new File(cacheDir,dataFileName);
+        File zipFile = new File(cacheDir,zipFileName);
+
+        try {
+            boolean result = ZipUtils.zipFile(srcFile,zipFile);
+            if(result){
+                ToastUtils.showShort("数据文件准备上传");
+                FileUtils.delete(srcFile);//删除原始文件
+                String base_url = URLUtil.url + URLUtil.fileData;
+                OkGo.<String>post(base_url)
+                        .tag(this)
+                        .params("fileData", zipFile)
+                        .isMultipart(true)
+                        .execute(new StringCallback() {
+                            @Override
+                            public void onSuccess(Response<String> response) {
+                                ToastUtils.showShort("上传成功" + response.body());
+                                FileUtils.delete(zipFile);
+                            }
+
+                            @Override
+                            public void onError(Response<String> response) {
+                                ToastUtils.showShort("上传失败" + response.body());
+                            }
+                        });
+
+            }
+            else{
+                ToastUtils.showShort("数据文件丢失");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateFail(){
+
+    }
+
+    private List<String> originalList = new ArrayList<>();
+    private Timer timerOriginal = new Timer();
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            try {
+                //1分钟写入原始数据
+              if(isResting){
+                 Object[] datas = originalList.toArray();
+                 originalList.clear();
+                 OriginalDataUtil.writeListIntoCache(cacheDir,dataFileName,datas);
+              }
+              else{
+                  updateFail();
+              }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+
+
+    @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_start_rest:
+               startRest();
+                break;
+            case R.id.btn_stop_rest:
+               stopRest();
+                break;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        closeNotify(bleDevice,heartRateCharacteristic);
+        stopRest();
+        timerOriginal.cancel();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
 }
