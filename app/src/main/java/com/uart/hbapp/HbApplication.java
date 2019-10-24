@@ -43,6 +43,8 @@ public class HbApplication extends Application {
         builder.writeTimeout(15000, TimeUnit.MILLISECONDS);
         //全局的连接超时时间
         builder.connectTimeout(5000, TimeUnit.MILLISECONDS);
+
+
         OkGo.getInstance().init(this).setRetryCount(1).setOkHttpClient(builder.build());
     }
 

@@ -569,10 +569,10 @@ public class DeviceFragment extends Fragment {
         String base_url = URLUtil.url + URLUtil.addSleepInfo;
         OkGo.<String>post(base_url)
                 .tag(this)
-                .cacheKey("cachePostKey")
+//                .cacheKey("cachePostKey")
 //                .cacheMode(CacheMode.DEFAULT)
 //                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
-//                .headers("Content-Type","application/json")
+                .headers("Content-Type","application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
                     @Override
@@ -615,7 +615,7 @@ public class DeviceFragment extends Fragment {
                 String base_url = URLUtil.url + URLUtil.fileData;
                 OkGo.<String>post(base_url)
                         .tag(this)
-                        .params("fileData", zipFile)
+                        .params("originalDataFile", zipFile)
                         .isMultipart(true)
                         .execute(new StringCallback() {
                             @Override
