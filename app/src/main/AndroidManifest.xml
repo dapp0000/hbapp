@@ -4,7 +4,11 @@
     package="com.uart.hbapp">
 
     <dist:module dist:instant="true" />
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -13,31 +17,32 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="no.nordicsemi.android.LOG" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".HbApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".HbApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".search.ScanActivity"/>
+        <activity android:name=".history.MonthHistoryActivity"></activity>
+        <activity android:name=".history.WeekHistoryActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".search.ScanActivity" />
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".login.TipsActivity" />
         <activity android:name=".login.AdditionalActivity" />
         <activity android:name=".login.SplashActivity" />
         <activity android:name=".login.RegistActivity" />
-        <activity android:name=".login.LoginUserPwdActivity" />
-        <!--<activity android:name=".login.WelcomeActivity" />-->
+        <activity android:name=".login.LoginUserPwdActivity" /> <!-- <activity android:name=".login.WelcomeActivity" /> -->
         <activity
             android:name=".login.WelcomeActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

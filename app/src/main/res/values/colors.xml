@@ -7,4 +7,5 @@
     <color name="gray">#AEA1A1</color>
     <color name="black">#000000</color>
     <color name="lable_blue">#3DB0FD</color>
+    <color name="border">#CC4F4F4F</color>
 </resources>
