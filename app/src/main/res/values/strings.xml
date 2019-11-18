@@ -62,4 +62,7 @@
     <string name="disconnect">断开连接</string>
     <string name="enter">进入操作</string>
 
+    <string name="chain_week">对比上周</string>
+
+
 </resources>

@@ -290,11 +290,15 @@ public class ScanActivity extends AppCompatActivity {
 
             @Override
             public void onScanning(BleDevice bleDevice) {
-                if (bleDevice != null && !TextUtils.isEmpty(bleDevice.getName())) {
-                    mDeviceAdapter.addDevice(bleDevice);
-                    mDeviceAdapter.notifyDataSetChanged();
+                try {
+                    if (bleDevice != null && !TextUtils.isEmpty(bleDevice.getName())) {
+                        mDeviceAdapter.addDevice(bleDevice);
+                        mDeviceAdapter.notifyDataSetChanged();
 
-                    updateRadar(bleDevice);
+                        updateRadar(bleDevice);
+                    }
+                }catch (Exception ex){
+                    ex.printStackTrace();
                 }
             }
 

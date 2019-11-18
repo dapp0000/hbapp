@@ -10,9 +10,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="10dp"
+            android:layout_height="2dp"
+            android:layout_marginStart="15dp"
+            android:background="@color/device"/>
+
         <LinearLayout
             android:id="@+id/layout_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -20,16 +26,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <ImageView
-                    android:scaleType="fitXY"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@mipmap/u672"/>
-
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="@color/border"
+                    android:background="@color/device"
                     android:layout_marginTop="-5dp"
                     android:layout_marginStart="15dp"/>
 
@@ -38,30 +38,74 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:orientation="vertical">
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:background="@color/lucency">
+
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_content1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2019年05月28日"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/tv_content2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="10:15"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/device"/>
 
                 <TextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_content3"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textAlignment="viewEnd"
-                    android:textSize="18sp"
-                    android:text="2019年05月28日 10:15，休息45分钟"/>
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:text="休息45分钟"
+                    android:textColor="@color/white"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/device"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/white"
+                    android:text="精力充电"/>
 
                 <TextView
                     android:id="@+id/tv_battery"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:textAlignment="viewEnd"
-                    android:textColor="@color/lable_blue"
-                    android:textSize="20sp"
-                    android:text="精力充电20%"/>
+                    android:layout_gravity="center_vertical"
+                    android:padding="5dp"
+                    android:background="@drawable/shape_oval"
+                    android:textColor="@color/white"
+                    android:text="20%"/>
 
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -73,22 +117,20 @@
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
-                android:background="@color/border"
+                android:background="@color/device"
                 android:layout_marginStart="15dp"/>
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@mipmap/u700"/>
 
             <TextView
                 android:id="@+id/btn_week"
                 android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="周报详情"/>
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textSize="16sp"
+                android:text="周报详情"
+                android:textColor="@color/white"
+                android:background="@color/device"/>
 
         </LinearLayout>
 
@@ -102,21 +144,19 @@
             <View
                 android:layout_width="2dp"
                 android:layout_height="match_parent"
-                android:background="@color/border"
+                android:background="@color/device"
                 android:layout_marginStart="15dp"/>
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@mipmap/u700"/>
 
             <TextView
                 android:id="@+id/btn_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="月报详情"/>
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textSize="16sp"
+                android:text="月报详情"
+                android:textColor="@color/white"
+                android:background="@color/device"/>
 
         </LinearLayout>
 

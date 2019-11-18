@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initBottomNavigation();
+        getSupportActionBar().hide();
 
         bleDevice = getIntent().getParcelableExtra(KEY_DATA);
         if (bleDevice == null)
@@ -119,10 +120,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ObserverManager.getInstance().deleteObserver(this);
-        if (bleDevice != null && BleManager.getInstance().isConnected(bleDevice)) {
-            BleManager.getInstance().disconnect(bleDevice);
-            //ToastUtils.showShort("蓝牙设备断开了");
+
+        try{
+            ObserverManager.getInstance().deleteObserver(this);
+            if (bleDevice != null && BleManager.getInstance().isConnected(bleDevice)) {
+                BleManager.getInstance().disconnect(bleDevice);
+                //ToastUtils.showShort("蓝牙设备断开了");
+            }
+
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 

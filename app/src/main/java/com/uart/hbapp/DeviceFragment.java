@@ -15,9 +15,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,7 +33,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -47,12 +50,9 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.LineData;
 import com.lzy.okgo.OkGo;
-import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.uart.hbapp.utils.ByteUtils;
-import com.uart.hbapp.utils.CommandUtils;
-import com.uart.hbapp.utils.DialogUtils;
 import com.uart.hbapp.utils.DownLoadFileUtils;
 import com.uart.hbapp.utils.OriginalDataUtil;
 import com.uart.hbapp.utils.URLUtil;
@@ -63,7 +63,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,8 +112,6 @@ public class DeviceFragment extends Fragment {
     LineChartManager lineChartManager;
     BleDevice bleDevice;
     BluetoothGattCharacteristic heartRateCharacteristic;
-    List<String> names;
-    List<Integer> colours;
     ArrayList<Float> xValues;
     MediaPlayer mediaPlayer;
     String musicPath;
@@ -125,6 +122,14 @@ public class DeviceFragment extends Fragment {
     long endTime;
     boolean isResting;
 
+    RotateAnimation animationR;
+    @BindView(R.id.btn_play)
+    ImageView btnPlay;
+    @BindView(R.id.btn_music)
+    ImageView btnMusic;
+    @BindView(R.id.btn_menu)
+    ImageView btnMenu;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -134,10 +139,17 @@ public class DeviceFragment extends Fragment {
         cacheDir = Objects.requireNonNull(getActivity()).getCacheDir();
         lineChartManager = new LineChartManager(lineChartSignal);
         mediaPlayer = new MediaPlayer();
-        timerOriginal.schedule(task,100,15000);//15s
+        timerOriginal.schedule(task, 100, 15000);//15s
         spinnerInit();
         initData();
         initChart();
+
+        /* 设置旋转动画*/
+        animationR = new RotateAnimation(360, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animationR.setDuration(3000);
+        animationR.setRepeatCount(RotateAnimation.INFINITE);
+        animationR.setInterpolator(new LinearInterpolator());
+        btnMusic.setAnimation(animationR);
 
         return v;
     }
@@ -152,13 +164,16 @@ public class DeviceFragment extends Fragment {
             actionBar.setTitle(R.string.title_home);
         // TODO: Use the ViewModel
 
+        animationR.startNow();
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (actionBar != null && !hidden)
+        {
             actionBar.setTitle(R.string.title_home);
+        }
     }
 
     @Override
@@ -222,7 +237,9 @@ public class DeviceFragment extends Fragment {
             }
         });
 
+
         BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(bleDevice);
+
         List<BluetoothGattService> services = gatt.getServices();
         for (BluetoothGattService service : services) {
             String uuid = service.getUuid().toString();
@@ -300,7 +317,7 @@ public class DeviceFragment extends Fragment {
 
     private void openNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         boolean connected = BleManager.getInstance().isConnected(bleDevice);
-        if(!connected){
+        if (!connected) {
             return;
         }
 
@@ -347,7 +364,7 @@ public class DeviceFragment extends Fragment {
 
     private void closeNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         boolean connected = BleManager.getInstance().isConnected(bleDevice);
-        if(!connected){
+        if (!connected) {
             return;
         }
 
@@ -381,31 +398,26 @@ public class DeviceFragment extends Fragment {
         }
 
         //设置y轴的数据()
-        List<List<Float>> yValues = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            List<Float> yValue = new ArrayList<>();
-            for (int j = 0; j <= 7; j++) {
-                yValue.add(0f);
-            }
-            yValues.add(yValue);
+        List<Float> yValues = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            yValues.add(0f);
         }
-        //颜色集合
-        colours = new ArrayList<>();
-        colours.add(Color.GREEN);
-        //线的名字集合
-        names = new ArrayList<>();
-        names.add("信号");
 
-        lineChartManager.showLineChart(xValues, yValues, names, colours);
-        lineChartManager.setYAxis(100, 0, 2);
-        lineChartManager.setDescription("脑电波");
+        lineChartManager.showLineChart(xValues, yValues, "", Color.GREEN);
+        lineChartManager.setYAxis(100, 0, 0);
+        lineChartManager.setYAxis(10,0,0);
 
         LineData lineData = lineChartSignal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
         Legend legend = lineChartSignal.getLegend();
         legend.setTextColor(Color.WHITE);
+        legend.setForm(Legend.LegendForm.EMPTY);
         Description description = lineChartSignal.getDescription();
         description.setTextColor(Color.WHITE);
+        description.setText("");
+
+        lineChartSignal.setDrawBorders(false);
+        lineChartSignal.setDrawMarkers(false);
     }
 
     private void showChart(byte[] datas) {
@@ -428,36 +440,30 @@ public class DeviceFragment extends Fragment {
             LogUtils.e(hexString);
             //LogUtils.e(ByteUtils.bytesToUTF8(datas));
             return;
-        }
-        else{
-            if(isResting){
+        } else {
+            if (isResting) {
                 originalList.add(hexString);
             }
         }
 
         //设置y轴的数据()
-        List<List<Float>> yValues = new ArrayList<>();
-        for (int i = 0; i < 1; i++) {
-            List<Float> yValue = new ArrayList<>();
-
-            for (int j = 4; j < size - 1; j = j + 2) {
-                int hign = datas[j] & 0xFF;
-                int low = datas[j + 1] & 0xFF;
-                float point = (hign * 256 + low) / 1000f;
-                if (point > maxValue)
-                    maxValue = (int) point + 100;
+        List<Float> yValue = new ArrayList<>();
+        for (int j = 4; j < size - 1; j = j + 2) {
+            int hign = datas[j] & 0xFF;
+            int low = datas[j + 1] & 0xFF;
+            float point = (hign * 256 + low) / 1000f;
+            if (point > maxValue)
+                maxValue = (int) point + 100;
 
 
-                yValue.add(point);
-            }
-
-            yValues.add(yValue);
+            yValue.add(point);
         }
 
-        lineChartManager.showLineChart(xValues, yValues, names, colours);
-        lineChartManager.setYAxis(maxValue, 0, 2);
+        lineChartManager.showLineChart(xValues, yValue, "", Color.GREEN);
+        lineChartManager.setYAxis(maxValue, 0, 0);
         LineData lineData = lineChartSignal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
+
     }
 
     private void spinnerInit() {
@@ -474,7 +480,7 @@ public class DeviceFragment extends Fragment {
         //绑定 Adapter到控件
         spinnerMusic.setAdapter(musicAdapter);
 
-        String[] spinnerStrList = new String[] {"你好我好大家好", "晚上好我的兄弟"};
+        String[] spinnerStrList = new String[]{"你好我好大家好", "晚上好我的兄弟"};
         ArrayAdapter<String> wordAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, spinnerStrList);
         //下拉的样式res
@@ -500,7 +506,7 @@ public class DeviceFragment extends Fragment {
             }
         });
 
-        String[] spinnerSpanList = new String[] {"自然醒", "10分钟", "20分钟", "30分钟", "1小时", "2小时"};
+        String[] spinnerSpanList = new String[]{"自然醒", "10分钟", "20分钟", "30分钟", "1小时", "2小时"};
         ArrayAdapter<String> spanAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, spinnerSpanList);
         //下拉的样式res
@@ -520,35 +526,38 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void startRest(){
+    private void startRest() {
         layoutReady.setVisibility(View.GONE);
         layoutRest.setVisibility(View.VISIBLE);
         mediaPlayer(musicPath);
 
-        isResting=true;
+        isResting = true;
         startTime = System.currentTimeMillis();
-        String fileName =  HbApplication.loginUser + "_" + System.currentTimeMillis();
-        dataFileName = fileName+".txt";
+        String fileName = HbApplication.loginUser + "_" + System.currentTimeMillis();
+        dataFileName = fileName + ".txt";
         zipFileName = fileName + ".zip";
         originalList.clear();
     }
 
-    private void stopRest(){
+    private void stopRest() {
         layoutReady.setVisibility(View.VISIBLE);
         layoutRest.setVisibility(View.GONE);
         mediaPlayer.reset();
 
-        isResting=false;
+        isResting = false;
         endTime = System.currentTimeMillis();
         originalList.clear();
-        updateNet();
+
+        if(bleDevice!=null){
+            updateNet();
+        }
     }
 
-    private void updateNet(){
-        updateSleepInfo(bleDevice.getName(),bleDevice.getMac(),HbApplication.loginUser,startTime,endTime);
+    private void updateNet() {
+        updateSleepInfo(bleDevice.getName(), bleDevice.getMac(), HbApplication.loginUser, startTime, endTime);
     }
 
-    private void updateSleepInfo(String deviceName,String deviceMac, String userName, long startTime,long endTime) {
+    private void updateSleepInfo(String deviceName, String deviceMac, String userName, long startTime, long endTime) {
 //        {
 //            "deviceName":"xv-90",
 //                "deviceMac":"MVC-DD",
@@ -562,7 +571,7 @@ public class DeviceFragment extends Fragment {
         params.put("deviceName", deviceName);
         params.put("deviceMac", deviceMac);
         params.put("userName", userName);
-        params.put("startTime",startTime);
+        params.put("startTime", startTime);
         params.put("endTime", endTime);
 
         JSONObject jsonObject = new JSONObject(params);
@@ -572,7 +581,7 @@ public class DeviceFragment extends Fragment {
 //                .cacheKey("cachePostKey")
 //                .cacheMode(CacheMode.DEFAULT)
 //                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
-                .headers("Content-Type","application/json")
+                .headers("Content-Type", "application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
                     @Override
@@ -603,13 +612,13 @@ public class DeviceFragment extends Fragment {
 
     }
 
-    private void updateZipFile(){
-        File srcFile = new File(cacheDir,dataFileName);
-        File zipFile = new File(cacheDir,zipFileName);
+    private void updateZipFile() {
+        File srcFile = new File(cacheDir, dataFileName);
+        File zipFile = new File(cacheDir, zipFileName);
 
         try {
-            boolean result = ZipUtils.zipFile(srcFile,zipFile);
-            if(result){
+            boolean result = ZipUtils.zipFile(srcFile, zipFile);
+            if (result) {
                 ToastUtils.showShort("数据文件准备上传");
                 FileUtils.delete(srcFile);//删除原始文件
                 String base_url = URLUtil.url + URLUtil.fileData;
@@ -630,8 +639,7 @@ public class DeviceFragment extends Fragment {
                             }
                         });
 
-            }
-            else{
+            } else {
                 ToastUtils.showShort("数据文件丢失");
             }
         } catch (IOException e) {
@@ -639,7 +647,7 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void updateFail(){
+    private void updateFail() {
 
     }
 
@@ -650,14 +658,13 @@ public class DeviceFragment extends Fragment {
         public void run() {
             try {
                 //1分钟写入原始数据
-              if(isResting){
-                 Object[] datas = originalList.toArray();
-                 originalList.clear();
-                 OriginalDataUtil.writeListIntoCache(cacheDir,dataFileName,datas);
-              }
-              else{
-                  updateFail();
-              }
+                if (isResting) {
+                    Object[] datas = originalList.toArray();
+                    originalList.clear();
+                    OriginalDataUtil.writeListIntoCache(cacheDir, dataFileName, datas);
+                } else {
+                    updateFail();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -666,16 +673,14 @@ public class DeviceFragment extends Fragment {
     };
 
 
-
-
     @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_start_rest:
-               startRest();
+                startRest();
                 break;
             case R.id.btn_stop_rest:
-               stopRest();
+                stopRest();
                 break;
         }
     }
@@ -683,7 +688,7 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        closeNotify(bleDevice,heartRateCharacteristic);
+        closeNotify(bleDevice, heartRateCharacteristic);
         stopRest();
         timerOriginal.cancel();
     }
@@ -691,6 +696,18 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        animationR.startNow();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        animationR.cancel();
     }
 
 }

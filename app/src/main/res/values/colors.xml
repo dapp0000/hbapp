@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimaryDark">#020f2a</color>
     <color name="colorAccent">#D81B60</color>
+
     <color name="white">#FFFFFF</color>
     <color name="gray">#AEA1A1</color>
     <color name="black">#000000</color>
     <color name="lable_blue">#3DB0FD</color>
     <color name="border">#CC4F4F4F</color>
+    <color name="nav_bg">#020f2a</color>
+    <color name="lucency">#4DFFFFFF</color>
+    <color name="device">#00AFBD</color>
+
 </resources>
