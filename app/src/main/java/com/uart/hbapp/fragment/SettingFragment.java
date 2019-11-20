@@ -1,4 +1,4 @@
-package com.uart.hbapp;
+package com.uart.hbapp.fragment;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.uart.hbapp.R;
 import com.uart.hbapp.login.AdditionalActivity;
 
 public class SettingFragment extends Fragment {

@@ -1,4 +1,4 @@
-package com.uart.hbapp;
+package com.uart.hbapp.dialog;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -16,6 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.uart.hbapp.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

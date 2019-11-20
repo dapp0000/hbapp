@@ -1,4 +1,4 @@
-package com.uart.hbapp;
+package com.uart.hbapp.fragment;
 
 import androidx.lifecycle.ViewModel;
 

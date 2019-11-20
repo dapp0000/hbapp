@@ -18,6 +18,10 @@ import com.clj.fastble.data.BleDevice;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.uart.hbapp.comm.Observer;
 import com.uart.hbapp.comm.ObserverManager;
+import com.uart.hbapp.fragment.DeviceFragment;
+import com.uart.hbapp.fragment.RecordFragment;
+import com.uart.hbapp.fragment.SettingFragment;
+import com.uart.hbapp.fragment.UserInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.uart.hbapp;
+package com.uart.hbapp.fragment;
 
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.media.MediaPlayer;
@@ -19,13 +19,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.utils.HexUtil;
+import com.uart.hbapp.MainActivity;
+import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.MusicAdapter;
 import com.uart.hbapp.bean.MusicBean;
 import com.uart.hbapp.utils.CommandUtils;

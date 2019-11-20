@@ -1,4 +1,4 @@
-package com.uart.hbapp;
+package com.uart.hbapp.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -18,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.CommonAdapter;
 import com.uart.hbapp.adapter.CommonViewHolder;
 import com.uart.hbapp.bean.RecordBean;

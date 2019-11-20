@@ -1,4 +1,4 @@
-package com.uart.hbapp;
+package com.uart.hbapp.fragment;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -52,6 +52,10 @@ import com.github.mikephil.charting.data.LineData;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.hbapp.HbApplication;
+import com.uart.hbapp.MainActivity;
+import com.uart.hbapp.R;
+import com.uart.hbapp.dialog.EditDeviceDialogFragment;
 import com.uart.hbapp.utils.ByteUtils;
 import com.uart.hbapp.utils.DownLoadFileUtils;
 import com.uart.hbapp.utils.OriginalDataUtil;
