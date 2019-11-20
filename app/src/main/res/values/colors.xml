@@ -6,11 +6,14 @@
 
     <color name="white">#FFFFFF</color>
     <color name="gray">#AEA1A1</color>
+    <color name="dialog_bg">#E63878A1</color>
     <color name="black">#000000</color>
     <color name="lable_blue">#3DB0FD</color>
     <color name="border">#CC4F4F4F</color>
     <color name="nav_bg">#020f2a</color>
     <color name="lucency">#4DFFFFFF</color>
     <color name="device">#00AFBD</color>
+    <color name="edit">#1f4a78</color>
+
 
 </resources>

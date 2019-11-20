@@ -673,7 +673,7 @@ public class DeviceFragment extends Fragment {
     };
 
 
-    @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest})
+    @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest,R.id.btn_edit_device})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_start_rest:
@@ -682,8 +682,14 @@ public class DeviceFragment extends Fragment {
             case R.id.btn_stop_rest:
                 stopRest();
                 break;
+            case R.id.btn_edit_device:
+                EditDeviceDialogFragment fragment = EditDeviceDialogFragment.newInstance("");
+                fragment.show(getFragmentManager(),"");
+
+                break;
         }
     }
+
 
     @Override
     public void onDestroyView() {

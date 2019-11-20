@@ -21,6 +21,7 @@
     <string name="login_welcome_tips">使用注意事项</string>
     <string name="btn_scan_device">寻找设备……</string>
     <string name="btn_skip">跳过</string>
+    <string name="btn_ok">确认</string>
 
 
     <string name="battery">%d%%</string>
@@ -64,5 +65,7 @@
 
     <string name="chain_week">对比上周</string>
 
+    <string name="tab_editname">修改名称</string>
+    <string name="tab_disconnect">断开连接</string>
 
 </resources>
