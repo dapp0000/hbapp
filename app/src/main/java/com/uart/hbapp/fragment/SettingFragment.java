@@ -27,7 +27,7 @@ public class SettingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View v=inflater.inflate(R.layout.setting_fragment, container, false);
+        View v=inflater.inflate(R.layout.fragment_setting, container, false);
         v.findViewById(R.id.changeMessage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

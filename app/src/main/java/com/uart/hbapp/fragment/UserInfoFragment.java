@@ -58,7 +58,7 @@ public class UserInfoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v=inflater.inflate(R.layout.user_info_fragment, container, false);
+        View v=inflater.inflate(R.layout.fragment_user_info, container, false);
         listMusic=v.findViewById(R.id.list_music);
 
         return v;

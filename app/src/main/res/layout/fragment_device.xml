@@ -374,21 +374,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/button_play_bg"
-            android:layout_gravity="center"/>
-
-        <ImageView
-            android:id="@+id/btn_play"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@mipmap/button_play"
-            android:layout_marginStart="6dp"
-            android:layout_gravity="center"/>
-
+        <include layout="@layout/fragment_music_play"/>
     </FrameLayout>
 
     <FrameLayout
@@ -443,6 +429,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/button_menu"
+            android:layout_gravity="end|center_vertical"/>
+
+        <ImageView
+            android:id="@+id/btn_menu_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/button_stop"
             android:layout_gravity="end|center_vertical"/>
 
 

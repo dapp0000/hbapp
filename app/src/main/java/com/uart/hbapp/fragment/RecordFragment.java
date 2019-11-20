@@ -44,7 +44,7 @@ public class RecordFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.record_fragment, container, false);
+        View v = inflater.inflate(R.layout.fragment_record, container, false);
         ButterKnife.bind(this, v);
 
         records.add(new RecordBean());
@@ -73,7 +73,7 @@ public class RecordFragment extends Fragment {
         records.add(new RecordBean());
         records.add(new RecordBean(true,false));
 
-        recordAdapter=new CommonAdapter<RecordBean>(getActivity(),records,R.layout.record_list_item) {
+        recordAdapter=new CommonAdapter<RecordBean>(getActivity(),records,R.layout.adapter_record) {
             @Override
             protected void convertView(CommonViewHolder holder, RecordBean bean) {
                 if(!bean.isweek && !bean.ismonth){

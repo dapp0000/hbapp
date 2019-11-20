@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -56,6 +57,7 @@ import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
 import com.uart.hbapp.dialog.EditDeviceDialogFragment;
+import com.uart.hbapp.dialog.SelectMusicDialogFragment;
 import com.uart.hbapp.utils.ByteUtils;
 import com.uart.hbapp.utils.DownLoadFileUtils;
 import com.uart.hbapp.utils.OriginalDataUtil;
@@ -109,6 +111,8 @@ public class DeviceFragment extends Fragment {
     Button btnStopRest;
     @BindView(R.id.layout_rest)
     LinearLayout layoutRest;
+    @BindView(R.id.seek_music)
+    SeekBar seekMusic;
 
 
     DeviceViewModel mViewModel;
@@ -137,14 +141,13 @@ public class DeviceFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.device_fragment, container, false);
+        View v = inflater.inflate(R.layout.fragment_device, container, false);
         ButterKnife.bind(this, v);
 
         cacheDir = Objects.requireNonNull(getActivity()).getCacheDir();
         lineChartManager = new LineChartManager(lineChartSignal);
-        mediaPlayer = new MediaPlayer();
         timerOriginal.schedule(task, 100, 15000);//15s
-        spinnerInit();
+
         initData();
         initChart();
 
@@ -154,6 +157,33 @@ public class DeviceFragment extends Fragment {
         animationR.setRepeatCount(RotateAnimation.INFINITE);
         animationR.setInterpolator(new LinearInterpolator());
         btnMusic.setAnimation(animationR);
+
+        //播放音乐
+        mediaPlayer=MediaPlayer.create(getActivity(),R.raw.right1);
+        //设置进度条最大长度为音频时长
+        seekMusic.setMax(mediaPlayer.getDuration());
+        mediaPlayer.start();
+        //线程开始运行
+        new MusicThread().start();
+        //设置进度条快进效果
+        seekMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            //值改变
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            //值改变前
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            //值改变后
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekMusic.getProgress());
+            }
+        });
 
         return v;
     }
@@ -470,54 +500,7 @@ public class DeviceFragment extends Fragment {
 
     }
 
-    private void spinnerInit() {
-        Vector<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
-        //原始string数组
-        final String[] spi = new String[musicNames.size()];
-        final String[] spinnerItems = musicNames.toArray(spi);
 
-        //简单的string数组适配器：样式res，数组
-        ArrayAdapter<String> musicAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, spinnerItems);
-        //下拉的样式res
-        musicAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spinnerMusic.setAdapter(musicAdapter);
-
-        String[] spinnerStrList = new String[]{"你好我好大家好", "晚上好我的兄弟"};
-        ArrayAdapter<String> wordAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, spinnerStrList);
-        //下拉的样式res
-        wordAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spinnerText.setAdapter(wordAdapter);
-        //选择监听
-        spinnerMusic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            //parent就是父控件spinner
-            //view就是spinner内填充的textview,id=@android:id/text1
-            //position是值所在数组的位置
-            //id是值所在行的位置，一般来说与positin一致
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                ((TextView) view).setGravity(Gravity.CENTER);
-                musicPath = Environment.getExternalStorageDirectory() + "/HbMusic/" + spinnerItems[pos];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
-            }
-        });
-
-        String[] spinnerSpanList = new String[]{"自然醒", "10分钟", "20分钟", "30分钟", "1小时", "2小时"};
-        ArrayAdapter<String> spanAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, spinnerSpanList);
-        //下拉的样式res
-        spanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        //绑定 Adapter到控件
-        spinnerSpan.setAdapter(spanAdapter);
-    }
 
     private void mediaPlayer(String filePath) {
         try {
@@ -677,7 +660,7 @@ public class DeviceFragment extends Fragment {
     };
 
 
-    @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest,R.id.btn_edit_device})
+    @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest,R.id.btn_edit_device,R.id.btn_menu})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_start_rest:
@@ -687,9 +670,12 @@ public class DeviceFragment extends Fragment {
                 stopRest();
                 break;
             case R.id.btn_edit_device:
-                EditDeviceDialogFragment fragment = EditDeviceDialogFragment.newInstance("");
-                fragment.show(getFragmentManager(),"");
-
+                EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
+                fragmentDevice.show(getFragmentManager(),"");
+                break;
+            case R.id.btn_menu:
+                SelectMusicDialogFragment fragmentMusic = SelectMusicDialogFragment.newInstance("");
+                fragmentMusic.show(getFragmentManager(),"");
                 break;
         }
     }
@@ -719,5 +705,20 @@ public class DeviceFragment extends Fragment {
         super.onPause();
         animationR.cancel();
     }
+
+
+
+
+class  MusicThread extends Thread{
+    @Override
+    public void run() {
+        super.run();
+        //判断当前播放位置是否小于总时长
+        while (seekMusic.getProgress()<=seekMusic.getMax()) {
+            //设置进度条当前位置为音频播放位置
+            seekMusic.setProgress(mediaPlayer.getCurrentPosition());
+        }
+    }
+}
 
 }

@@ -48,7 +48,7 @@ public class EditDeviceDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        final View v = inflater.inflate(R.layout.editdevice_fragment, null);
+        final View v = inflater.inflate(R.layout.dialog_edit_device, null);
         ButterKnife.bind(this, v);
         selectTab(0);
 
