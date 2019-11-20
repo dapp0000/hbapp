@@ -36,11 +36,11 @@ public class LoginUserPwdActivity extends AppCompatActivity {
     @BindView(R.id.password)
     EditText password;
     @BindView(R.id.login)
-    Button login;
+    TextView login;
     @BindView(R.id.phoneLogin)
-    Button phoneLogin;
+    TextView phoneLogin;
     @BindView(R.id.regist)
-    Button regist;
+    TextView regist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

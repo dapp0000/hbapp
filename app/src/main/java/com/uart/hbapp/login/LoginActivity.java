@@ -30,11 +30,11 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.checkCode)
     EditText checkCode;
     @BindView(R.id.sendCode)
-    Button sendCode;
+    TextView sendCode;
     @BindView(R.id.login)
-    Button login;
+    TextView login;
     @BindView(R.id.userPwdLogin)
-    Button userPwdLogin;
+    TextView userPwdLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

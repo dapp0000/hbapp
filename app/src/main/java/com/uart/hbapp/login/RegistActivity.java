@@ -37,9 +37,9 @@ public class RegistActivity extends AppCompatActivity {
     @BindView(R.id.password)
     EditText password;
     @BindView(R.id.regist)
-    Button regist;
+    TextView regist;
     @BindView(R.id.regist_cancel)
-    Button registCancel;
+    TextView registCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +113,7 @@ public class RegistActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.regist_cancel:
-                startActivity(new Intent(RegistActivity.this, LoginUserPwdActivity.class));
+//                startActivity(new Intent(RegistActivity.this, LoginUserPwdActivity.class));
                 finish();
                 break;
         }

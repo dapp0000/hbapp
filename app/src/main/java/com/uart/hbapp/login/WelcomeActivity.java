@@ -45,7 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 message.what = 1;
                 CountHandler.sendMessage(message);
                 if (SPUtils.getInstance().getBoolean("first")){
-                    startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
+                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                     finish();
                 }else {
                     SPUtils.getInstance().put("first",true);
