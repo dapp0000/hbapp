@@ -344,7 +344,7 @@
         app:layout_constraintTop_toBottomOf="@+id/layout_content"
         android:onClick="confirmInfo"
         android:clickable="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="70dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
