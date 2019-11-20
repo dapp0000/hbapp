@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/shape_main_bg"
     android:orientation="vertical"
     tools:context=".login.AdditionalActivity">
 
@@ -11,11 +12,11 @@
         android:id="@+id/layout_welcome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="35dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" >
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/welcome_1"
@@ -23,7 +24,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/login_welcome_1"
-            android:textSize="24sp"/>
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/welcome_2"
@@ -32,11 +35,14 @@
             android:layout_marginTop="15sp"
             android:gravity="center"
             android:text="@string/login_welcome_2"
-            android:textSize="16sp" />
+            android:textColor="@color/device"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
     <LinearLayout
+
         android:id="@+id/layout_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,33 +55,34 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:layout_marginTop="25dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
                 android:gravity="center"
                 android:text="性别：" />
 
             <TextView
-                android:layout_marginTop="50dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
                 android:gravity="center"
                 android:text="身高：" />
 
             <TextView
-                android:layout_marginTop="100dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="100dp"
                 android:gravity="center"
                 android:text="体重：" />
 
             <TextView
-                android:layout_marginTop="130dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="130dp"
                 android:gravity="center"
                 android:text="生日：" />
         </LinearLayout>
@@ -86,164 +93,267 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <RadioGroup
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <RadioButton
-                    android:id="@+id/radioMan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="男" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="3"
+                    android:gravity="center|right"
+                    android:text="性别"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-                <RadioButton
-                    android:id="@+id/radioWoman"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="50dp"
-                    android:text="女" />
-            </RadioGroup>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1"
+                    android:background="@mipmap/round_background"
+                    android:orientation="horizontal">
 
+                    <ImageView
+                        android:id="@+id/sexMan"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="13dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:src="@mipmap/head_man_select" />
 
-            <RelativeLayout
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@color/black" />
+
+                    <ImageView
+                        android:id="@+id/sexWoman"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="13dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:src="@mipmap/head_woman_normal" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
 
-                <com.uart.hbapp.utils.view.scaleruler.ScaleRulerView
-                    android:id="@+id/scaleWheelView_height"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="30dp"
-                    android:background="@android:color/white"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="30dp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="3"
+                    android:gravity="center|right"
+                    android:text="身高"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-                <com.uart.hbapp.utils.view.scaleruler.SlantedTextView
-                    android:id="@+id/slant_one"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:slantedBackgroundColor="@color/colorPrimary"
-                    app:slantedLength="28dp"
-                    app:slantedMode="left_triangle"
-                    app:slantedText="身高"
-                    app:slantedTextColor="#ffffff"
-                    app:slantedTextSize="14sp" />
-
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_below="@+id/scaleWheelView_height"
-                    android:layout_marginTop="8dp"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="30dp">
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1"
+                    android:background="@mipmap/round_background"
+                    android:orientation="horizontal">
+
+
+                    <com.uart.hbapp.utils.view.scaleruler.ScaleRulerView
+                        android:id="@+id/scaleWheelView_height"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"></LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/tv_user_height_value"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:gravity="bottom"
+                        android:layout_weight="1"
+                        android:gravity="bottom|right"
                         android:text="170"
-                        android:textColor="#333333"
-                        android:textSize="24sp"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignBaseline="@id/tv_user_height_value"
                         android:layout_marginLeft="4dp"
-                        android:layout_toRightOf="@id/tv_user_height_value"
+                        android:layout_weight="1"
+                        android:gravity="bottom|left"
                         android:text="cm"
-                        android:textColor="#999999"
-                        android:textSize="15sp" />
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
 
-
-                </RelativeLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp"
+                android:orientation="horizontal">
 
-                <com.uart.hbapp.utils.view.scaleruler.ScaleRulerView
-                    android:id="@+id/scaleWheelView_weight"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="30dp"
-                    android:background="@android:color/white"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="30dp" />
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="3"
+                    android:gravity="center|right"
+                    android:text="体重"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
-                <com.uart.hbapp.utils.view.scaleruler.SlantedTextView
-                    android:id="@+id/slant_two"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:slantedBackgroundColor="@color/colorPrimary"
-                    app:slantedLength="28dp"
-                    app:slantedMode="left"
-                    app:slantedText="体重"
-                    app:slantedTextColor="#ffffff"
-                    app:slantedTextSize="14sp" />
-
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"
-                    android:layout_below="@id/scaleWheelView_weight"
-                    android:layout_marginTop="8dp"
-                    android:paddingLeft="30dp"
-                    android:paddingRight="30dp">
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1"
+                    android:background="@mipmap/round_background"
+                    android:orientation="horizontal">
+
+
+                    <com.uart.hbapp.utils.view.scaleruler.ScaleRulerView
+                        android:id="@+id/scaleWheelView_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"></LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1">
 
                     <TextView
                         android:id="@+id/tv_user_weight_value"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:text="65"
-                        android:textColor="#333333"
-                        android:textSize="24sp"
+                        android:layout_weight="1"
+                        android:gravity="bottom|right"
+                        android:text="60"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignBaseline="@id/tv_user_weight_value"
                         android:layout_marginLeft="4dp"
-                        android:layout_toRightOf="@id/tv_user_weight_value"
+                        android:layout_weight="1"
+                        android:gravity="bottom|left"
                         android:text="kg"
-                        android:textColor="#999999"
-                        android:textSize="15sp" />
-
-                </RelativeLayout>
-            </RelativeLayout>
-
-            <DatePicker
-                android:id="@+id/datepicker"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:calendarViewShown="false"
-                android:datePickerMode="spinner"
-                android:spinnersShown="true"
-                android:startYear="1990"></DatePicker>
+                android:layout_height="130dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:layout_weight="3"
+                    android:gravity="center|right"
+                    android:text="生日"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+
+                    <DatePicker
+                        android:id="@+id/datepicker"
+                        style="@style/Theme.picker"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:calendarTextColor="@color/white"
+                        android:calendarViewShown="false"
+                        android:datePickerMode="spinner"
+                        android:spinnersShown="true"
+                        android:startYear="1950"
+                        android:yearListItemTextAppearance="@color/white"
+                        android:yearListSelectorColor="@color/white"></DatePicker>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
-    <Button
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:onClick="confirmInfo"
-        android:text="确认"
+    <TextView
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_content" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_content"
+        android:onClick="confirmInfo"
+        android:clickable="true"
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginRight="100dp"
+        android:background="@drawable/button_press2"
+        android:gravity="center"
+        android:layout_gravity="center|bottom"
+        android:text="确认"
+        android:textColor="@color/white" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
