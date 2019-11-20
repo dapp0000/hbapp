@@ -1,55 +1,68 @@
 package com.uart.hbapp.login;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
+import com.uart.hbapp.utils.DatePickerUtil;
 import com.uart.hbapp.utils.view.scaleruler.ScaleRulerView;
-import com.uart.hbapp.utils.view.scaleruler.SlantedTextView;
 
+
+import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AdditionalActivity extends AppCompatActivity implements DatePicker.OnDateChangedListener {
+import static com.uart.hbapp.utils.DatePickerUtil.hideDay;
+
+public class AdditionalActivity extends Activity implements DatePicker.OnDateChangedListener {
     @BindView(R.id.welcome_1)
     TextView welcome1;
     @BindView(R.id.welcome_2)
     TextView welcome2;
     @BindView(R.id.layout_welcome)
     LinearLayout layoutWelcome;
-    @BindView(R.id.radioMan)
-    RadioButton radioMan;
-    @BindView(R.id.radioWoman)
-    RadioButton radioWoman;
+
     @BindView(R.id.scaleWheelView_height)
     ScaleRulerView scaleWheelViewHeight;
-    @BindView(R.id.slant_one)
-    SlantedTextView slantOne;
+
     @BindView(R.id.tv_user_height_value)
     TextView tvUserHeightValue;
     @BindView(R.id.scaleWheelView_weight)
     ScaleRulerView scaleWheelViewWeight;
-    @BindView(R.id.slant_two)
-    SlantedTextView slantTwo;
+
     @BindView(R.id.tv_user_weight_value)
     TextView tvUserWeightValue;
-    @BindView(R.id.datepicker)
-    DatePicker datepicker;
     @BindView(R.id.layout_content)
     LinearLayout layoutContent;
+
+    @BindView(R.id.sexMan)
+    ImageView sexMan;
+    @BindView(R.id.sexWoman)
+    ImageView sexWoman;
 
     private float mHeight = 170;
     private float mMaxHeight = 220;
@@ -60,14 +73,15 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
     private float mMaxWeight = 200;
     private float mMinWeight = 25;
 
-    int year, monthOfYear, dayOfMonth;
-    String tag;
+    private int year, monthOfYear, dayOfMonth;
+    private String tag;
+    private String sex="男";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        getActionBar().hide();
         Intent intent = getIntent();
         tag = intent.getStringExtra("AdditionalActivity");
         init();
@@ -78,6 +92,8 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
         monthOfYear = calendar.get(Calendar.MONTH);
         dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         datePicker.init(year, monthOfYear, dayOfMonth, AdditionalActivity.this);
+        DatePickerUtil.setDatePickerDividerColor(this, datePicker);
+        hideDay(datePicker);
     }
 
     @Override
@@ -85,8 +101,7 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
         this.year = year;
         this.monthOfYear = month;
         this.dayOfMonth = day;
-//        Toast.makeText(AdditionalActivity.this,"您选择的日期是："+year+"年"+(month+1)+"月"+day+"日!",Toast
-//                .LENGTH_SHORT).show();
+
     }
 
     private void init() {
@@ -112,6 +127,27 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
             }
         });
 
+        sexMan.setEnabled(false);
+        sexMan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sexMan.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.head_man_select));
+                sexWoman.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.head_woman_normal));
+                sexMan.setEnabled(false);
+                sexWoman.setEnabled(true);
+                sex="男";
+            }
+        });
+        sexWoman.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sexMan.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.head_man_normal));
+                sexWoman.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.head_woman_select));
+                sexWoman.setEnabled(false);
+                sexMan.setEnabled(true);
+                sex="女";
+            }
+        });
     }
 
     public void confirmInfo(View view) {
@@ -122,7 +158,7 @@ public class AdditionalActivity extends AppCompatActivity implements DatePicker.
             startActivity(intent);
             finish();
         }
-        Toast.makeText(this, "选择身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear + "-" + dayOfMonth, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "性别："+sex+" 身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear  , Toast.LENGTH_LONG).show();
     }
 
     private long firstPressedTime;

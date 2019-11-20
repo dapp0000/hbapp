@@ -30,7 +30,8 @@
         <activity android:name=".search.ScanActivity" />
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".login.TipsActivity" />
-        <activity android:name=".login.AdditionalActivity" />
+        <activity android:name=".login.AdditionalActivity"
+            android:theme="@style/Theme.picker"/>
         <activity android:name=".login.SplashActivity" />
         <activity android:name=".login.RegistActivity" />
         <activity android:name=".login.LoginUserPwdActivity" /> <!-- <activity android:name=".login.WelcomeActivity" /> -->

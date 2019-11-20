@@ -41,7 +41,7 @@ public class UserInfoFragment extends Fragment {
 
 //    @BindView(R.id.list_music)
     ListView listMusic;
-    @BindView(R.id.list_text)
+    @BindView(R.id.list_music2)
     ListView listText;
 
 

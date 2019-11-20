@@ -3,100 +3,194 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     android:orientation="vertical"
+    android:padding="5dp"
     tools:context=".UserInfoFragment">
 
 
     <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="我的音乐" />
-
+        android:layout_marginLeft="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="我的音乐" />
+    <View
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/device"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <LinearLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal">
+        <View
+            android:background="@color/device"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:text="选择"
+            android:layout_height="match_parent"
+            android:layout_width="40dp"
+            android:gravity="center"
+            android:textColor="@color/white" />
+        <View
+            android:background="@color/device"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:text="音乐名称"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/white" />
+        <View
+            android:background="@color/device"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="时长"
+            android:textColor="@color/white" />
+        <View
+            android:background="@color/device"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="状态"
+            android:textColor="@color/white" />
+        <View
+            android:background="@color/device"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+    <View
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/device"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
     <ListView
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:id="@+id/list_music"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="0.5dp"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:scrollbars="none"/>
+        android:divider="@color/device"
+        android:dividerHeight="1dp"
+        android:scrollbars="none" />
+
     <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="全选/取消"/>
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_press1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="下载"/>
+            android:text="全选" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/button_press1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="下载" />
+
+        <Button
+            android:layout_weight="1"
+            android:background="@drawable/button_press1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="删除"/>
+            android:text="删除" />
 
     </LinearLayout>
 
     <TextView
+        android:layout_marginLeft="10dp"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="我的指导语" />
 
     <ListView
-        android:id="@+id/list_text"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/list_music2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:layout_marginTop="10dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="0.5dp"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:scrollbars="none"/>
+        android:divider="@color/device"
+        android:dividerHeight="1dp"
+        android:scrollbars="none" />
 
     <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="全选/取消"/>
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/button_press1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="下载"/>
+            android:text="全选" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/button_press1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="下载" />
+
+        <Button
+            android:layout_weight="1"
+            android:background="@drawable/button_press1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="删除"/>
+            android:text="删除" />
 
     </LinearLayout>
 
     <View
         android:layout_width="wrap_content"
-        android:layout_height="60dp"/>
+        android:layout_height="60dp" />
 
 
 </LinearLayout>

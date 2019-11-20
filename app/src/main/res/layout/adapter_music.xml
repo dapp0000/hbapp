@@ -4,28 +4,56 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
+    <View
+        android:background="@color/device"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
     <CheckBox
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:button="@drawable/cb_check_selector"
         android:gravity="center"
+        android:layout_gravity="center"
         android:id="@+id/musicCheck"
         android:layout_width="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="-10dp"
         android:layout_height="match_parent" />
+    <View
+        android:background="@color/device"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
     <TextView
+        android:textColor="@color/white"
         android:gravity="center"
         android:layout_weight="1"
         android:id="@+id/musicName"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <View
+        android:background="@color/device"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
     <TextView
+        android:textColor="@color/white"
         android:gravity="center"
         android:id="@+id/musicTime"
         android:layout_width="80dp"
         android:text=""
         android:layout_height="match_parent" />
+    <View
+        android:background="@color/device"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
     <TextView
+        android:textColor="@color/white"
         android:text="未下载"
         android:gravity="center"
         android:id="@+id/musicState"
         android:layout_width="70dp"
         android:layout_height="match_parent" />
-
+    <View
+        android:background="@color/device"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"/>
 </LinearLayout>
