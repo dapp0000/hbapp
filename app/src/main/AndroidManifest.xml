@@ -24,23 +24,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".history.MonthHistoryActivity"></activity>
-        <activity android:name=".history.WeekHistoryActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".history.MonthHistoryActivity" ></activity>
+        <activity android:name=".history.WeekHistoryActivity"  />
+        <activity android:name=".MainActivity"  />
         <activity android:name=".search.ScanActivity" />
-        <activity android:name=".login.LoginActivity" />
-        <activity android:name=".login.TipsActivity" />
-        <activity android:name=".login.AdditionalActivity"
-            android:theme="@style/Theme.picker"/>
-        <activity android:name=".login.SplashActivity" />
-        <activity android:name=".login.RegistActivity" />
-        <activity android:name=".login.LoginUserPwdActivity" /> <!-- <activity android:name=".login.WelcomeActivity" /> -->
+        <activity android:name=".login.LoginActivity"  />
+        <activity android:name=".login.TipsActivity"  />
+        <activity android:name=".login.AdditionalActivity" android:theme="@style/Theme.picker"/>
+        <activity android:name=".login.SplashActivity"  />
+        <activity android:name=".login.RegistActivity"  />
+        <activity android:name=".login.LoginUserPwdActivity" />
+        <!-- <activity android:name=".login.WelcomeActivity" /> -->
         <activity
             android:name=".login.WelcomeActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,5 +1,6 @@
 package com.uart.hbapp.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,13 +10,18 @@ import com.uart.hbapp.search.ScanActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class TipsActivity extends AppCompatActivity {
+public class TipsActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tips);
-        getSupportActionBar().hide();
+        try {
+            //getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     public void confirmInfo(View view){

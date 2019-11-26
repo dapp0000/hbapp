@@ -53,7 +53,13 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initBottomNavigation();
-        getSupportActionBar().hide();
+
+        try {
+            getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
 
         bleDevice = getIntent().getParcelableExtra(KEY_DATA);
         if (bleDevice == null)

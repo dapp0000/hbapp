@@ -1,5 +1,6 @@
 package com.uart.hbapp.login;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -25,7 +26,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends Activity {
 
     @BindView(R.id.vp_guide)
     ViewPager vpGuide;
@@ -47,7 +48,12 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        try {
+            //getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
 
 
         initData();

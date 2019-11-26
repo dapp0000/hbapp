@@ -1,5 +1,6 @@
 package com.uart.hbapp.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,13 +11,19 @@ import com.uart.hbapp.R;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        getSupportActionBar().hide();
+        try {
+            //getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
         CountHandler.postDelayed(CountRunnable, 1000);
     }
 

@@ -1,5 +1,6 @@
 package com.uart.hbapp.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class RegistActivity extends AppCompatActivity {
+public class RegistActivity extends Activity {
 
     @BindView(R.id.welcome)
     TextView welcome;
@@ -46,7 +47,13 @@ public class RegistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        try {
+            //getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
         HbApplication.getApp().addActivity(this);
 
     }

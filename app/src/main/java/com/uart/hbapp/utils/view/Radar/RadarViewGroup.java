@@ -150,6 +150,7 @@ public class RadarViewGroup  extends ViewGroup implements RadarView.IScanningLis
             deviceName = deviceName.substring(0,7)+"...";
         circleView.setText("    "+deviceName);
         circleView.setTextSize(12);
+        circleView.setTextColor(getResources().getColor(R.color.white));
         circleView.setAngle(random.nextInt(360));
         //根据远近距离的不同计算得到的应该占的半径比例 0.312-0.832
         float proportion = Math.abs(device.getRssi())/150.0f;

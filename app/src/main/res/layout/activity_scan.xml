@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/shape_main_bg">
 
     <com.uart.hbapp.utils.view.Radar.RadarViewGroup
         android:id="@+id/radar"
@@ -50,7 +51,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
+            android:background="@drawable/shape_button"
             android:text="@string/btn_scan_device"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             />
 
         <Button
@@ -58,8 +62,11 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@drawable/shape_button"
             android:layout_marginTop="10dp"
             android:text="@string/btn_skip"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             />
 
     </LinearLayout>

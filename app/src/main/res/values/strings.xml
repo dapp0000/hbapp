@@ -19,8 +19,8 @@
     <string name="login_welcome_2">请填写真实数据，以免影响产品体验</string>
     <string name="login_welcome_content">好心情是一天活力的源泉。</string>
     <string name="login_welcome_tips">使用注意事项</string>
-    <string name="btn_scan_device">寻找设备……</string>
-    <string name="btn_skip">跳过</string>
+    <string name="btn_scan_device">重新搜索</string>
+    <string name="btn_skip">跳过连接</string>
     <string name="btn_ok">确认</string>
 
 

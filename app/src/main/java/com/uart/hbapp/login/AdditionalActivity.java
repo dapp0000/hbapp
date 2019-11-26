@@ -81,7 +81,13 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_additional);
         ButterKnife.bind(this);
-        getActionBar().hide();
+        try {
+            //getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
         Intent intent = getIntent();
         tag = intent.getStringExtra("AdditionalActivity");
         init();

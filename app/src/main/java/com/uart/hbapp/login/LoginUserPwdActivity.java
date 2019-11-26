@@ -1,5 +1,6 @@
 package com.uart.hbapp.login;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginUserPwdActivity extends AppCompatActivity {
+public class LoginUserPwdActivity extends Activity {
     @BindView(R.id.welcome)
     TextView welcome;
     @BindView(R.id.username)
@@ -47,7 +48,13 @@ public class LoginUserPwdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loginuserpwd);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
+        try {
+            //getSupportActionBar().hide();
+            getActionBar().hide();
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
         HbApplication.getApp().addActivity(this);
     }
 
