@@ -6,9 +6,7 @@ import android.bluetooth.BluetoothGattService;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,13 +16,10 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -59,7 +54,6 @@ import com.uart.hbapp.R;
 import com.uart.hbapp.dialog.EditDeviceDialogFragment;
 import com.uart.hbapp.dialog.SelectMusicDialogFragment;
 import com.uart.hbapp.utils.ByteUtils;
-import com.uart.hbapp.utils.DownLoadFileUtils;
 import com.uart.hbapp.utils.OriginalDataUtil;
 import com.uart.hbapp.utils.URLUtil;
 import com.uart.hbapp.utils.view.LineChart.LineChartManager;
@@ -75,46 +69,42 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Vector;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class DeviceFragment extends Fragment {
+    @BindView(R.id.btn_edit_device)
+    TextView btnEditDevice;
+    @BindView(R.id.layout_device)
+    LinearLayout layoutDevice;
+    @BindView(R.id.layout_title)
+    LinearLayout layoutTitle;
+    @BindView(R.id.line_chart_signal)
+    LineChart lineChartSignal;
+    @BindView(R.id.btn_play)
+    ImageView btnPlay;
+    @BindView(R.id.layout_control)
+    FrameLayout layoutControl;
+    @BindView(R.id.seek_music)
+    SeekBar seekMusic;
+    @BindView(R.id.layout_playing)
+    FrameLayout layoutPlaying;
+    @BindView(R.id.btn_music)
+    ImageView btnMusic;
+    @BindView(R.id.btn_menu)
+    ImageView btnMenu;
+    @BindView(R.id.btn_menu_stop)
+    ImageView btnMenuStop;
+
     private static final String TAG = DeviceFragment.class.getSimpleName();
     public static final int PROPERTY_READ = 1;
     public static final int PROPERTY_WRITE = 2;
     public static final int PROPERTY_WRITE_NO_RESPONSE = 3;
     public static final int PROPERTY_NOTIFY = 4;
     public static final int PROPERTY_INDICATE = 5;
-
-    @BindView(R.id.view_signal)
-    View viewSignal;
-    @BindView(R.id.tv_signal)
-    TextView tvSignal;
-    @BindView(R.id.btn_start_rest)
-    Button btnStartRest;
-    @BindView(R.id.txt_device_name)
-    TextView txtDeviceName;
-    @BindView(R.id.line_chart_signal)
-    LineChart lineChartSignal;
-    @BindView(R.id.spinner_music)
-    Spinner spinnerMusic;
-    @BindView(R.id.spinner_text)
-    Spinner spinnerText;
-    @BindView(R.id.spinner_span)
-    Spinner spinnerSpan;
-    @BindView(R.id.layout_ready)
-    LinearLayout layoutReady;
-    @BindView(R.id.btn_stop_rest)
-    Button btnStopRest;
-    @BindView(R.id.layout_rest)
-    LinearLayout layoutRest;
-    @BindView(R.id.seek_music)
-    SeekBar seekMusic;
-
-
+    RotateAnimation animationR;
     DeviceViewModel mViewModel;
     ActionBar actionBar;
     LineChartManager lineChartManager;
@@ -129,14 +119,8 @@ public class DeviceFragment extends Fragment {
     long startTime;
     long endTime;
     boolean isResting;
+    int restMinute = 10;
 
-    RotateAnimation animationR;
-    @BindView(R.id.btn_play)
-    ImageView btnPlay;
-    @BindView(R.id.btn_music)
-    ImageView btnMusic;
-    @BindView(R.id.btn_menu)
-    ImageView btnMenu;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -158,32 +142,6 @@ public class DeviceFragment extends Fragment {
         animationR.setInterpolator(new LinearInterpolator());
         btnMusic.setAnimation(animationR);
 
-        //播放音乐
-        mediaPlayer=MediaPlayer.create(getActivity(),R.raw.right1);
-        //设置进度条最大长度为音频时长
-        seekMusic.setMax(mediaPlayer.getDuration());
-        mediaPlayer.start();
-        //线程开始运行
-        new MusicThread().start();
-        //设置进度条快进效果
-        seekMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            //值改变
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            }
-
-            //值改变前
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            //值改变后
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(seekMusic.getProgress());
-            }
-        });
 
         return v;
     }
@@ -204,8 +162,7 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (actionBar != null && !hidden)
-        {
+        if (actionBar != null && !hidden) {
             actionBar.setTitle(R.string.title_home);
         }
     }
@@ -232,30 +189,31 @@ public class DeviceFragment extends Fragment {
         bleDevice = ((MainActivity) getActivity()).getBleDevice();
         if (bleDevice == null) {
             lineChartSignal.setNoDataText("设备未连接");
-            btnStartRest.setEnabled(false);
+            btnPlay.setEnabled(false);
             return;
         } else {
             lineChartSignal.setNoDataText("设备准备就绪");
-            btnStartRest.setEnabled(true);
+            btnPlay.setEnabled(true);
         }
 
-        txtDeviceName.setText(bleDevice.getName());
-
-        //设置信号
-        int signal = Math.abs(bleDevice.getRssi());
-        if (signal > 80) {
-            tvSignal.setText("很差");
-            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_1_bar_black_24dp));
-        } else if (signal > 70) {
-            tvSignal.setText("差");
-            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_2_bar_black_24dp));
-        } else if (signal > 60) {
-            tvSignal.setText("正常");
-            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_3_bar_black_24dp));
-        } else {
-            tvSignal.setText("很好");
-            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_4_bar_black_24dp));
-        }
+//
+//        txtDeviceName.setText(bleDevice.getName());
+//
+//        //设置信号
+//        int signal = Math.abs(bleDevice.getRssi());
+//        if (signal > 80) {
+//            tvSignal.setText("很差");
+//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_1_bar_black_24dp));
+//        } else if (signal > 70) {
+//            tvSignal.setText("差");
+//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_2_bar_black_24dp));
+//        } else if (signal > 60) {
+//            tvSignal.setText("正常");
+//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_3_bar_black_24dp));
+//        } else {
+//            tvSignal.setText("很好");
+//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_4_bar_black_24dp));
+//        }
 
 
         BleManager.getInstance().readRssi(bleDevice, new BleRssiCallback() {
@@ -439,7 +397,7 @@ public class DeviceFragment extends Fragment {
 
         lineChartManager.showLineChart(xValues, yValues, "", Color.GREEN);
         lineChartManager.setYAxis(100, 0, 0);
-        lineChartManager.setYAxis(10,0,0);
+        lineChartManager.setYAxis(10, 0, 0);
 
         LineData lineData = lineChartSignal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
@@ -501,7 +459,6 @@ public class DeviceFragment extends Fragment {
     }
 
 
-
     private void mediaPlayer(String filePath) {
         try {
             mediaPlayer.reset();
@@ -514,8 +471,6 @@ public class DeviceFragment extends Fragment {
     }
 
     private void startRest() {
-        layoutReady.setVisibility(View.GONE);
-        layoutRest.setVisibility(View.VISIBLE);
         mediaPlayer(musicPath);
 
         isResting = true;
@@ -524,20 +479,59 @@ public class DeviceFragment extends Fragment {
         dataFileName = fileName + ".txt";
         zipFileName = fileName + ".zip";
         originalList.clear();
+
+        btnMenu.setVisibility(View.GONE);
+        btnMenuStop.setVisibility(View.VISIBLE);
+        layoutControl.setVisibility(View.GONE);
+        layoutPlaying.setVisibility(View.VISIBLE);
+        //播放音乐
+        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.right1);
+        //设置进度条最大长度为音频时长
+        seekMusic.setMax(mediaPlayer.getDuration());
+        mediaPlayer.start();
+        //线程开始运行
+        new MusicThread().start();
+        //设置进度条快进效果
+//        seekMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            //值改变
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//            }
+//
+//            //值改变前
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            //值改变后
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                mediaPlayer.seekTo(seekMusic.getProgress());
+//            }
+//        });
+
+        seekMusic.setEnabled(false);
+
+        animationR.startNow();
     }
 
     private void stopRest() {
-        layoutReady.setVisibility(View.VISIBLE);
-        layoutRest.setVisibility(View.GONE);
-        mediaPlayer.reset();
-
         isResting = false;
         endTime = System.currentTimeMillis();
         originalList.clear();
 
-        if(bleDevice!=null){
+        if (bleDevice != null) {
+            mediaPlayer.reset();
             updateNet();
         }
+
+        btnMenu.setVisibility(View.VISIBLE);
+        btnMenuStop.setVisibility(View.GONE);
+        layoutControl.setVisibility(View.VISIBLE);
+        layoutPlaying.setVisibility(View.GONE);
+
+        animationR.cancel();
     }
 
     private void updateNet() {
@@ -660,22 +654,22 @@ public class DeviceFragment extends Fragment {
     };
 
 
-    @OnClick({R.id.btn_start_rest, R.id.btn_stop_rest,R.id.btn_edit_device,R.id.btn_menu})
+    @OnClick({R.id.btn_play, R.id.btn_menu_stop, R.id.btn_edit_device, R.id.btn_menu})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn_start_rest:
+            case R.id.btn_play:
                 startRest();
                 break;
-            case R.id.btn_stop_rest:
+            case R.id.btn_menu_stop:
                 stopRest();
                 break;
             case R.id.btn_edit_device:
                 EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
-                fragmentDevice.show(getFragmentManager(),"");
+                fragmentDevice.show(getFragmentManager(), "");
                 break;
             case R.id.btn_menu:
                 SelectMusicDialogFragment fragmentMusic = SelectMusicDialogFragment.newInstance("");
-                fragmentMusic.show(getFragmentManager(),"");
+                fragmentMusic.show(getFragmentManager(), "");
                 break;
         }
     }
@@ -707,18 +701,16 @@ public class DeviceFragment extends Fragment {
     }
 
 
-
-
-class  MusicThread extends Thread{
-    @Override
-    public void run() {
-        super.run();
-        //判断当前播放位置是否小于总时长
-        while (seekMusic.getProgress()<=seekMusic.getMax()) {
-            //设置进度条当前位置为音频播放位置
-            seekMusic.setProgress(mediaPlayer.getCurrentPosition());
+    class MusicThread extends Thread {
+        @Override
+        public void run() {
+            super.run();
+            //判断当前播放位置是否小于总时长
+            while (seekMusic.getProgress() <= seekMusic.getMax()) {
+                //设置进度条当前位置为音频播放位置
+                seekMusic.setProgress(mediaPlayer.getCurrentPosition());
+            }
         }
     }
-}
 
 }
