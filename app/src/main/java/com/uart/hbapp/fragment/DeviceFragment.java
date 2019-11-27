@@ -48,6 +48,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
@@ -237,7 +238,7 @@ public class DeviceFragment extends Fragment {
             String uuid = service.getUuid().toString();
             LogUtils.i("BluetoothGattService:" + uuid);
             switch (uuid) {
-                case HbApplication.man_service_uuid://脑电波服务
+                case AppConstants.man_service_uuid://脑电波服务
                     ((MainActivity) getActivity()).setBluetoothGattService(service);
                     List<BluetoothGattCharacteristic> characteristics = service.getCharacteristics();
                     heartRateCharacteristic = characteristics.get(0);
@@ -249,7 +250,7 @@ public class DeviceFragment extends Fragment {
 
                     openNotify(bleDevice, heartRateCharacteristic);
                     break;
-                case HbApplication.device_info_service_uuid://设备信息服务
+                case AppConstants.device_info_service_uuid://设备信息服务
                     configDIS(service);
                     break;
                 default:
@@ -264,7 +265,7 @@ public class DeviceFragment extends Fragment {
             String uuid = characteristic.getUuid().toString();
             LogUtils.i("DISService:" + uuid);
             switch (uuid) {
-                case HbApplication.device_info_serial_number://Serial Number String (d@后对应音频蓝牙地址)
+                case AppConstants.device_info_serial_number://Serial Number String (d@后对应音频蓝牙地址)
                     BleManager.getInstance().read(
                             bleDevice,
                             characteristic.getService().getUuid().toString(),
@@ -475,7 +476,7 @@ public class DeviceFragment extends Fragment {
 
         isResting = true;
         startTime = System.currentTimeMillis();
-        String fileName = HbApplication.loginUser + "_" + System.currentTimeMillis();
+        String fileName = HbApplication.getInstance().loginUser + "_" + System.currentTimeMillis();
         dataFileName = fileName + ".txt";
         zipFileName = fileName + ".zip";
         originalList.clear();
@@ -535,7 +536,7 @@ public class DeviceFragment extends Fragment {
     }
 
     private void updateNet() {
-        updateSleepInfo(bleDevice.getName(), bleDevice.getMac(), HbApplication.loginUser, startTime, endTime);
+        updateSleepInfo(bleDevice.getName(), bleDevice.getMac(), HbApplication.getInstance().loginUser, startTime, endTime);
     }
 
     private void updateSleepInfo(String deviceName, String deviceMac, String userName, long startTime, long endTime) {

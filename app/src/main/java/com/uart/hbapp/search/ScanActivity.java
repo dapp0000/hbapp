@@ -1,12 +1,9 @@
 package com.uart.hbapp.search;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattService;
-import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,12 +21,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.blankj.utilcode.constant.PermissionConstants;
-import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleGattCallback;
@@ -40,7 +36,7 @@ import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.data.BleScanState;
 import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
-import com.uart.hbapp.HbApplication;
+import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.DeviceAdapter;
@@ -48,7 +44,6 @@ import com.uart.hbapp.comm.ObserverManager;
 import com.uart.hbapp.utils.view.Radar.RadarView;
 import com.uart.hbapp.utils.view.Radar.RadarViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -70,6 +65,7 @@ public class ScanActivity extends AppCompatActivity {
     Button btnskip;
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int REQUEST_ENABLE_BT = 100;
     private static final int REQUEST_CODE_OPEN_GPS = 1;
     private static final long SCAN_DURATION = 5000;
 
@@ -88,7 +84,6 @@ public class ScanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan);
         ButterKnife.bind(this);
         getSupportActionBar().hide();
-
 
         radar.setiRadarClickListener(new RadarViewGroup.IRadarClickListener() {
             @Override
@@ -126,7 +121,6 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
 
-
         listDevice.setAdapter(mDeviceAdapter);
 
         BleManager.getInstance().init(getApplication());
@@ -139,7 +133,6 @@ public class ScanActivity extends AppCompatActivity {
 
     }
 
-
     public void updateRadar(BleDevice mDatas) {
         radar.setDatas(mDatas);
     }
@@ -147,8 +140,6 @@ public class ScanActivity extends AppCompatActivity {
     public void clearRadar(){
         radar.clearDatas();
     }
-
-
 
     private void setScanRule() {
         String[] uuids;
@@ -190,7 +181,6 @@ public class ScanActivity extends AppCompatActivity {
         BleManager.getInstance().initScanRule(scanRuleConfig);
     }
 
-
     private void connect(final BleDevice bleDevice) {
 
         BleManager.getInstance().connect(bleDevice, new BleGattCallback() {
@@ -209,7 +199,7 @@ public class ScanActivity extends AppCompatActivity {
                 //mDeviceAdapter.addDevice(bleDevice);
                 //mDeviceAdapter.notifyDataSetChanged();
                 ToastUtils.showShort(getString(R.string.connect_success));
-                BluetoothGattService manService = gatt.getService(UUID.fromString(HbApplication.man_service_uuid));
+                BluetoothGattService manService = gatt.getService(UUID.fromString(AppConstants.man_service_uuid));
                 if(manService==null){
                     BleManager.getInstance().disconnect(bleDevice);
                     ToastUtils.showShort("设备未能识别");
@@ -264,7 +254,6 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
     }
-
 
     public void scanDevice() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -323,7 +312,6 @@ public class ScanActivity extends AppCompatActivity {
         BleManager.getInstance().cancelScan();
     }
 
-
     public void skip() {
         Intent intent = new Intent(ScanActivity.this, MainActivity.class);
         intent.setAction("skip");
@@ -333,102 +321,6 @@ public class ScanActivity extends AppCompatActivity {
                 stopScanDevice();
             }
         }, SCAN_DURATION);
-    }
-
-
-
-    @SuppressLint("WrongConstant")
-    private void checkPermissions() {
-        String[] requestPermissions = new String[]{
-                PermissionConstants.LOCATION,
-                PermissionConstants.STORAGE
-        };
-
-        if(!PermissionUtils.isGranted(requestPermissions)){
-//           getPermissions : 获取应用权限
-//           isGranted : 判断权限是否被授予
-//           isGrantedWriteSettings : 判断修改系统权限是否被授予
-//           requestWriteSettings : 申请修改系统权限
-//           isGrantedDrawOverlays : 判断悬浮窗权限是否被授予
-//           requestDrawOverlays : 申请悬浮窗权限
-//           launchAppDetailsSettings: 打开应用具体设置
-//           permission : 设置请求权限
-//           rationale : 设置拒绝权限后再次请求的回调接口
-//           callback : 设置回调
-//           theme : 设置主题
-//           request : 开始请求
-            PermissionUtils.permission(requestPermissions).rationale(new PermissionUtils.OnRationaleListener() {
-                @Override
-                public void rationale(ShouldRequest shouldRequest) {
-                    ToastUtils.showShort("拒绝权限可能无法使用app");
-                }
-            }).callback(new PermissionUtils.SimpleCallback() {
-                @Override
-                public void onGranted() {
-                    ToastUtils.showShort("权限申请成功");
-                    onPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION);
-                }
-                @Override
-                public void onDenied() {
-                    ToastUtils.showShort("权限申请失败，请前往系统设置页面手动设置");
-                }
-
-            }).request();
-        }
-        else{
-            onPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION);
-        }
-    }
-
-    private void onPermissionGranted(String permission) {
-        switch (permission) {
-            case Manifest.permission.ACCESS_FINE_LOCATION:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkGPSIsOpen()) {
-                    new AlertDialog.Builder(this)
-                            .setTitle(R.string.notifyTitle)
-                            .setMessage(R.string.gpsNotifyMsg)
-                            .setNegativeButton(R.string.cancel,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            finish();
-                                        }
-                                    })
-                            .setPositiveButton(R.string.setting,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                            startActivityForResult(intent, REQUEST_CODE_OPEN_GPS);
-                                        }
-                                    })
-
-                            .setCancelable(false)
-                            .show();
-                } else {
-                    setScanRule();
-                    scanDevice();
-                }
-                break;
-        }
-    }
-
-    private boolean checkGPSIsOpen() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager == null)
-            return false;
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_OPEN_GPS) {
-            if (checkGPSIsOpen()) {
-                setScanRule();
-                scanDevice();
-            }
-        }
     }
 
     @OnClick({R.id.btnscan, R.id.btnskip})
@@ -450,14 +342,12 @@ public class ScanActivity extends AppCompatActivity {
         if (System.currentTimeMillis() - firstPressedTime < 2000) {
             super.onBackPressed();
             finish();
-            //System.exit(0);
-            HbApplication.getApp().exit();
+            System.exit(0);
         } else {
             ToastUtils.showShort("再按一次退出");
             firstPressedTime = System.currentTimeMillis();
         }
     }
-
 
     @Override
     protected void onPause() {
@@ -470,6 +360,61 @@ public class ScanActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        checkPermissions();
+        checkBluetoothPermission();
     }
+
+    /*
+    校验蓝牙权限
+   */
+    private void checkBluetoothPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkGPSIsOpen()) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.notifyTitle)
+                    .setMessage(R.string.gpsNotifyMsg)
+                    .setNegativeButton(R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                    .setPositiveButton(R.string.setting,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                    startActivityForResult(intent, REQUEST_CODE_OPEN_GPS);
+                                }
+                            })
+
+                    .setCancelable(false)
+                    .show();
+        } else {
+            setScanRule();
+            scanDevice();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_ENABLE_BT){
+            if (checkGPSIsOpen()) {
+                setScanRule();
+                scanDevice();
+            }else{
+                ToastUtils.showShort("蓝牙权限未开启,请设置");
+            }
+        }
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+
+    private boolean checkGPSIsOpen() {
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager == null)
+            return false;
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
 }

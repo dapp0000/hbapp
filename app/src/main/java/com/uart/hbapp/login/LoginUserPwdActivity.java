@@ -1,5 +1,6 @@
 package com.uart.hbapp.login;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.blankj.utilcode.constant.PermissionConstants;
+import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
@@ -55,7 +58,8 @@ public class LoginUserPwdActivity extends Activity {
             ex.printStackTrace();
         }
 
-        HbApplication.getApp().addActivity(this);
+        checkPermissions();
+
     }
 
 
@@ -83,7 +87,7 @@ public class LoginUserPwdActivity extends Activity {
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
-                                HbApplication.loginUser = uname;
+                                HbApplication.getInstance().loginUser = uname;
                                 Intent intent=new Intent(LoginUserPwdActivity.this, AdditionalActivity.class);
                                 intent.putExtra("AdditionalActivity","login");
                                 startActivity(intent);
@@ -122,10 +126,40 @@ public class LoginUserPwdActivity extends Activity {
                 break;
             case R.id.phoneLogin:
                 startActivity(new Intent(LoginUserPwdActivity.this, LoginActivity.class));
+                finish();
                 break;
             case R.id.regist:
                 startActivity(new Intent(LoginUserPwdActivity.this, RegistActivity.class));
+                finish();
                 break;
         }
+    }
+
+    @SuppressLint("WrongConstant")
+    private void checkPermissions() {
+        String[] requestPermissions = new String[]{
+                PermissionConstants.LOCATION,
+                PermissionConstants.STORAGE
+        };
+
+        if(!PermissionUtils.isGranted(requestPermissions)){
+            PermissionUtils.permission(requestPermissions).rationale(new PermissionUtils.OnRationaleListener() {
+                @Override
+                public void rationale(ShouldRequest shouldRequest) {
+                    ToastUtils.showShort("拒绝权限可能无法使用app");
+                }
+            }).callback(new PermissionUtils.SimpleCallback() {
+                @Override
+                public void onGranted() {
+                    //ToastUtils.showShort("权限申请成功");
+                }
+                @Override
+                public void onDenied() {
+                    ToastUtils.showShort("权限申请失败，请前往系统设置页面手动设置");
+                }
+
+            }).request();
+        }
+
     }
 }

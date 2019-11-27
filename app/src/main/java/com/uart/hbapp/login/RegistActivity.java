@@ -54,8 +54,6 @@ public class RegistActivity extends Activity {
             ex.printStackTrace();
         }
 
-        HbApplication.getApp().addActivity(this);
-
     }
 
     private void regist(String uname, String pwd) {
@@ -120,7 +118,7 @@ public class RegistActivity extends Activity {
                 }
                 break;
             case R.id.regist_cancel:
-//                startActivity(new Intent(RegistActivity.this, LoginUserPwdActivity.class));
+                startActivity(new Intent(RegistActivity.this, LoginUserPwdActivity.class));
                 finish();
                 break;
         }

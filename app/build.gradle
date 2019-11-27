@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 28
@@ -35,11 +34,7 @@ android {
         flatDir { dirs 'libs' }
     }
 }
-greendao {
-    schemaVersion 1
-    //targetGenDir 'src/main/java'
-    //daoPackage 'com.uart.hbapp.greendao'
-}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -58,7 +53,6 @@ dependencies {
     implementation 'com.blankj:utilcodex:1.23.7'
     implementation 'com.jakewharton:butterknife:10.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
-    implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
 
@@ -68,6 +62,9 @@ dependencies {
     implementation 'com.lzy.net:okrx2:2.0.2'
     implementation 'com.lzy.net:okserver:2.0.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
+    implementation project(path: ':Entitylib')
+    //greendao
+    implementation 'org.greenrobot:greendao:3.2.2'
 
 
 }

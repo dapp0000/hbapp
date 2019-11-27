@@ -178,7 +178,7 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
             if (System.currentTimeMillis() - firstPressedTime < 2000) {
                 super.onBackPressed();
                 finish();
-                HbApplication.getApp().exit();
+                System.exit(0);
             } else {
                 ToastUtils.showShort("再按一次退出");
                 firstPressedTime = System.currentTimeMillis();
