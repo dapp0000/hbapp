@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.R;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -51,16 +52,16 @@ public class WelcomeActivity extends Activity {
             if (recLen == 0) {
                 message.what = 1;
                 CountHandler.sendMessage(message);
-                if (SPUtils.getInstance().getBoolean("first")){
+                if (SPUtils.getInstance().getBoolean(AppConstants.ACTIVATED_KEY)){
                     startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
                     finish();
                 }else {
-                    SPUtils.getInstance().put("first",true);
+                    SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY,true);
                     startActivity(new Intent(WelcomeActivity.this, SplashActivity.class));
                     finish();
                 }
-
             }
+
             CountHandler.postDelayed(this, 1000);
         }
     };
