@@ -23,12 +23,26 @@ public class DaoMaster extends AbstractDaoMaster {
     public static void createAllTables(Database db, boolean ifNotExists) {
         SysConfigDao.createTable(db, ifNotExists);
         SysConfigVersionDao.createTable(db, ifNotExists);
+        RelaxDataDao.createTable(db, ifNotExists);
+        ResourceDao.createTable(db, ifNotExists);
+        RestDurationDao.createTable(db, ifNotExists);
+        SleepDataDao.createTable(db, ifNotExists);
+        SysLogDao.createTable(db, ifNotExists);
+        UsageRecordDao.createTable(db, ifNotExists);
+        UserInfoDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
         SysConfigDao.dropTable(db, ifExists);
         SysConfigVersionDao.dropTable(db, ifExists);
+        RelaxDataDao.dropTable(db, ifExists);
+        ResourceDao.dropTable(db, ifExists);
+        RestDurationDao.dropTable(db, ifExists);
+        SleepDataDao.dropTable(db, ifExists);
+        SysLogDao.dropTable(db, ifExists);
+        UsageRecordDao.dropTable(db, ifExists);
+        UserInfoDao.dropTable(db, ifExists);
     }
 
     /**
@@ -49,6 +63,13 @@ public class DaoMaster extends AbstractDaoMaster {
         super(db, SCHEMA_VERSION);
         registerDaoClass(SysConfigDao.class);
         registerDaoClass(SysConfigVersionDao.class);
+        registerDaoClass(RelaxDataDao.class);
+        registerDaoClass(ResourceDao.class);
+        registerDaoClass(RestDurationDao.class);
+        registerDaoClass(SleepDataDao.class);
+        registerDaoClass(SysLogDao.class);
+        registerDaoClass(UsageRecordDao.class);
+        registerDaoClass(UserInfoDao.class);
     }
 
     public DaoSession newSession() {
