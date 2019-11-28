@@ -129,21 +129,9 @@ public class DeviceFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_device, container, false);
         ButterKnife.bind(this, v);
 
-        cacheDir = Objects.requireNonNull(getActivity()).getCacheDir();
-        lineChartManager = new LineChartManager(lineChartSignal);
-        timerOriginal.schedule(task, 100, 15000);//15s
-
+        initView();
         initData();
         initChart();
-
-        /* 设置旋转动画*/
-        animationR = new RotateAnimation(360, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animationR.setDuration(3000);
-        animationR.setRepeatCount(RotateAnimation.INFINITE);
-        animationR.setInterpolator(new LinearInterpolator());
-        btnMusic.setAnimation(animationR);
-
-
         return v;
     }
 
@@ -156,8 +144,6 @@ public class DeviceFragment extends Fragment {
         if (actionBar != null)
             actionBar.setTitle(R.string.title_home);
         // TODO: Use the ViewModel
-
-        animationR.startNow();
     }
 
     @Override
@@ -184,6 +170,18 @@ public class DeviceFragment extends Fragment {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initView(){
+        cacheDir = Objects.requireNonNull(getActivity()).getCacheDir();
+        lineChartManager = new LineChartManager(lineChartSignal);
+        timerOriginal.schedule(task, 100, 15000);//15s
+        /* 设置旋转动画*/
+        animationR = new RotateAnimation(360, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animationR.setDuration(3000);
+        animationR.setRepeatCount(RotateAnimation.INFINITE);
+        animationR.setInterpolator(new LinearInterpolator());
+        btnMusic.setAnimation(animationR);
     }
 
     private void initData() {
@@ -492,25 +490,6 @@ public class DeviceFragment extends Fragment {
         mediaPlayer.start();
         //线程开始运行
         new MusicThread().start();
-        //设置进度条快进效果
-//        seekMusic.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            //值改变
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//            }
-//
-//            //值改变前
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            //值改变后
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//                mediaPlayer.seekTo(seekMusic.getProgress());
-//            }
-//        });
 
         seekMusic.setEnabled(false);
 
@@ -547,7 +526,6 @@ public class DeviceFragment extends Fragment {
 //                "startTime":1571626067000,
 //                "endTime":1571626067000
 //        }
-
 
         HashMap<String, Object> params = new HashMap<>();
         params.put("deviceName", deviceName);
@@ -685,11 +663,6 @@ public class DeviceFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         animationR.startNow();
@@ -700,7 +673,6 @@ public class DeviceFragment extends Fragment {
         super.onPause();
         animationR.cancel();
     }
-
 
     class MusicThread extends Thread {
         @Override
@@ -713,5 +685,6 @@ public class DeviceFragment extends Fragment {
             }
         }
     }
+
 
 }

@@ -37,7 +37,7 @@
     <TextView
         android:textColor="@color/white"
         android:gravity="center"
-        android:id="@+id/musicTime"
+        android:id="@+id/musicSpeaker"
         android:layout_width="80dp"
         android:text=""
         android:layout_height="match_parent" />

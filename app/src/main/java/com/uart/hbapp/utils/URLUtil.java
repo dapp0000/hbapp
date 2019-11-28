@@ -11,7 +11,6 @@ public class URLUtil {
     public static String historyQuery = "/sleep/SleepLog/query";//历史记录查询
     public static String weekSleepLogQuery = "/sleep/SleepLog/weekSleepLog";//历史周报查询
     public static String monthSleepLogQuery = "/sleep/SleepLog/monthSleepLog";//历史月报查询
-
-
+    public static String musicListQuery = "/sleep/music/query";//获取音乐列表
 
 }

@@ -21,9 +21,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.uart.entitylib.entity.Resource;
+import com.uart.entitylib.entity.RestDuration;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
+import com.uart.hbapp.adapter.CommonAdapter;
+import com.uart.hbapp.adapter.CommonViewHolder;
 import com.uart.hbapp.utils.DownLoadFileUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import butterknife.BindView;
@@ -31,7 +38,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SelectMusicDialogFragment extends DialogFragment {
-
     @BindView(R.id.layout_title)
     LinearLayout layoutTitle;
     @BindView(R.id.spinnerMusic)
@@ -58,6 +64,7 @@ public class SelectMusicDialogFragment extends DialogFragment {
         final View v = inflater.inflate(R.layout.dialog_select_music, null);
         ButterKnife.bind(this, v);
 
+        spinnerInit();
 
         return v;
     }
@@ -93,44 +100,40 @@ public class SelectMusicDialogFragment extends DialogFragment {
 
 
     private void spinnerInit() {
-//        Vector<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
-//        //原始string数组
-//        final String[] spi = new String[musicNames.size()];
-//        final String[] spinnerItems = musicNames.toArray(spi);
-//
-//        ArrayAdapter<String> musicAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, spinnerItems);
-//        musicAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spinnerMusic.setAdapter(musicAdapter);
-//
-//        String[] spinnerStrList = new String[]{"你好我好大家好", "晚上好我的兄弟"};
-//        ArrayAdapter<String> wordAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, spinnerStrList);
-//        spinnerText.setAdapter(wordAdapter);
-//
-//
-//        //选择监听
-//        spinnerMusic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            //parent就是父控件spinner
-//            //view就是spinner内填充的textview,id=@android:id/text1
-//            //position是值所在数组的位置
-//            //id是值所在行的位置，一般来说与positin一致
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view,int pos, long id) {
-//                //((TextView) view).setGravity(Gravity.CENTER);
-//                //musicPath = Environment.getExternalStorageDirectory() + "/HbMusic/" + spinnerItems[pos];
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//                // Another interface callback
-//            }
-//        });
-//
-//        String[] spinnerSpanList = new String[]{"自然醒", "10分钟", "20分钟", "30分钟", "1小时", "2小时"};
-//        ArrayAdapter<String> spanAdapter = new ArrayAdapter<String>(getActivity(),
-//                android.R.layout.simple_spinner_item, spinnerSpanList);
-//        //下拉的样式res
-//        spanAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        //绑定 Adapter到控件
-//        spinnerSpan.setAdapter(spanAdapter);
+        List<RestDuration> restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
+        CommonAdapter<RestDuration> spanAdapter = new CommonAdapter<RestDuration>(getActivity(), restDurationList,R.layout.adapter_spinner_dropdown_item) {
+            @Override
+            protected void convertView(CommonViewHolder holder, RestDuration restDuration) {
+                holder.setText(R.id.text_name,restDuration.getName());
+            }
+        };
+        spinnerSpan.setAdapter(spanAdapter);
+
+        List<Resource> musicList = new ArrayList<Resource>();
+        List<Resource> speakList = new ArrayList<Resource>();
+        List<Resource> resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
+        for (Resource res : resourceList){
+            if(res.getType()==0)
+                musicList.add(res);
+            else
+                speakList.add(res);
+        }
+
+        CommonAdapter<Resource> musicAdapter = new CommonAdapter<Resource>(getActivity(),musicList,R.layout.adapter_spinner_dropdown_item) {
+            @Override
+            protected void convertView(CommonViewHolder holder, Resource resource) {
+                holder.setText(R.id.text_name,resource.getName());
+
+            }
+        };
+        spinnerMusic.setAdapter(musicAdapter);
+
+        CommonAdapter<Resource> speakAdapter = new CommonAdapter<Resource>(getActivity(),speakList,R.layout.adapter_spinner_dropdown_item) {
+            @Override
+            protected void convertView(CommonViewHolder holder, Resource resource) {
+                holder.setText(R.id.text_name,resource.getName());
+            }
+        };
+        spinnerStyle.setAdapter(speakAdapter);
     }
 }
