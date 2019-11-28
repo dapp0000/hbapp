@@ -18,4 +18,16 @@ public class CommandUtils {
         return ByteUtils.hexToByteArray(BT_DISPAIR.split(SPLITCHAR));
     }
 
+    public static int getSexVaue(String sex){
+        int value = 2;
+        switch (sex) {
+            case "女":
+                value = 0;
+                break;
+            case "男":
+                value = 1;
+                break;
+        }
+        return value;
+    }
 }

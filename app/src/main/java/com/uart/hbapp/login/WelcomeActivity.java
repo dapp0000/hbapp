@@ -53,7 +53,7 @@ public class WelcomeActivity extends Activity {
                 message.what = 1;
                 CountHandler.sendMessage(message);
                 if (SPUtils.getInstance().getBoolean(AppConstants.ACTIVATED_KEY)){
-                    startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                    startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
                     finish();
                 }else {
                     SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY,true);

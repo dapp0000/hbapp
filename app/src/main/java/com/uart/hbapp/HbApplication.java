@@ -5,6 +5,9 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.uart.entitylib.DbManage;
 import com.uart.entitylib.dao.DaoSession;
+import com.uart.entitylib.entity.UsageRecord;
+import com.uart.entitylib.entity.UserInfo;
+
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import okhttp3.OkHttpClient;
@@ -19,7 +22,8 @@ public class HbApplication extends Application {
         return daoSession;
     }
 
-    public String loginUser;
+    public UserInfo loginUser;
+    public UsageRecord usageRecord;
     @Override
     public void onCreate() {
         super.onCreate();

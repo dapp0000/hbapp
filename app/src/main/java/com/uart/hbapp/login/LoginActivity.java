@@ -16,6 +16,7 @@ import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 
@@ -69,13 +70,19 @@ public class LoginActivity extends Activity {
                     return;
                 }
 
-                HbApplication.getInstance().loginUser = userName;
+                UserInfo user = new UserInfo();
+                user.setUserName(userName);
+                user.setLastlogin(System.currentTimeMillis());
+                user.setToken("g9eVCGW7wxkZutLbglsl9g==");
+
+                HbApplication.getInstance().loginUser = user;
 
                 //手机号登录接口
                 Intent intent = new Intent(LoginActivity.this, AdditionalActivity.class);
                 intent.putExtra("AdditionalActivity", "login");
                 startActivity(intent);
                 finish();
+
                 break;
             case R.id.userPwdLogin:
                 startActivity(new Intent(LoginActivity.this, LoginUserPwdActivity.class));

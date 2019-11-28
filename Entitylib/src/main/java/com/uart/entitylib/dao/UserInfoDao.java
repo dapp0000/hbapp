@@ -29,11 +29,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         public final static Property UserName = new Property(2, String.class, "userName", false, "USER_NAME");
         public final static Property Mobile = new Property(3, String.class, "mobile", false, "MOBILE");
         public final static Property Password = new Property(4, String.class, "password", false, "PASSWORD");
-        public final static Property Sex = new Property(5, int.class, "sex", false, "SEX");
-        public final static Property Height = new Property(6, int.class, "height", false, "HEIGHT");
-        public final static Property Weight = new Property(7, int.class, "weight", false, "WEIGHT");
-        public final static Property Birthday = new Property(8, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property Lastlogin = new Property(9, Long.class, "lastlogin", false, "LASTLOGIN");
+        public final static Property Token = new Property(5, String.class, "token", false, "TOKEN");
+        public final static Property Sex = new Property(6, int.class, "sex", false, "SEX");
+        public final static Property Height = new Property(7, int.class, "height", false, "HEIGHT");
+        public final static Property Weight = new Property(8, int.class, "weight", false, "WEIGHT");
+        public final static Property Birthday = new Property(9, String.class, "birthday", false, "BIRTHDAY");
+        public final static Property Lastlogin = new Property(10, Long.class, "lastlogin", false, "LASTLOGIN");
     }
 
 
@@ -54,11 +55,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
                 "\"USER_NAME\" TEXT," + // 2: userName
                 "\"MOBILE\" TEXT," + // 3: mobile
                 "\"PASSWORD\" TEXT," + // 4: password
-                "\"SEX\" INTEGER NOT NULL ," + // 5: sex
-                "\"HEIGHT\" INTEGER NOT NULL ," + // 6: height
-                "\"WEIGHT\" INTEGER NOT NULL ," + // 7: weight
-                "\"BIRTHDAY\" TEXT," + // 8: birthday
-                "\"LASTLOGIN\" INTEGER);"); // 9: lastlogin
+                "\"TOKEN\" TEXT," + // 5: token
+                "\"SEX\" INTEGER NOT NULL ," + // 6: sex
+                "\"HEIGHT\" INTEGER NOT NULL ," + // 7: height
+                "\"WEIGHT\" INTEGER NOT NULL ," + // 8: weight
+                "\"BIRTHDAY\" TEXT," + // 9: birthday
+                "\"LASTLOGIN\" INTEGER);"); // 10: lastlogin
     }
 
     /** Drops the underlying database table. */
@@ -95,18 +97,23 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (password != null) {
             stmt.bindString(5, password);
         }
-        stmt.bindLong(6, entity.getSex());
-        stmt.bindLong(7, entity.getHeight());
-        stmt.bindLong(8, entity.getWeight());
+ 
+        String token = entity.getToken();
+        if (token != null) {
+            stmt.bindString(6, token);
+        }
+        stmt.bindLong(7, entity.getSex());
+        stmt.bindLong(8, entity.getHeight());
+        stmt.bindLong(9, entity.getWeight());
  
         String birthday = entity.getBirthday();
         if (birthday != null) {
-            stmt.bindString(9, birthday);
+            stmt.bindString(10, birthday);
         }
  
         Long lastlogin = entity.getLastlogin();
         if (lastlogin != null) {
-            stmt.bindLong(10, lastlogin);
+            stmt.bindLong(11, lastlogin);
         }
     }
 
@@ -138,18 +145,23 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (password != null) {
             stmt.bindString(5, password);
         }
-        stmt.bindLong(6, entity.getSex());
-        stmt.bindLong(7, entity.getHeight());
-        stmt.bindLong(8, entity.getWeight());
+ 
+        String token = entity.getToken();
+        if (token != null) {
+            stmt.bindString(6, token);
+        }
+        stmt.bindLong(7, entity.getSex());
+        stmt.bindLong(8, entity.getHeight());
+        stmt.bindLong(9, entity.getWeight());
  
         String birthday = entity.getBirthday();
         if (birthday != null) {
-            stmt.bindString(9, birthday);
+            stmt.bindString(10, birthday);
         }
  
         Long lastlogin = entity.getLastlogin();
         if (lastlogin != null) {
-            stmt.bindLong(10, lastlogin);
+            stmt.bindLong(11, lastlogin);
         }
     }
 
@@ -166,11 +178,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // userName
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // mobile
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // password
-            cursor.getInt(offset + 5), // sex
-            cursor.getInt(offset + 6), // height
-            cursor.getInt(offset + 7), // weight
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // birthday
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9) // lastlogin
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // token
+            cursor.getInt(offset + 6), // sex
+            cursor.getInt(offset + 7), // height
+            cursor.getInt(offset + 8), // weight
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // birthday
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10) // lastlogin
         );
         return entity;
     }
@@ -182,11 +195,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         entity.setUserName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setMobile(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setPassword(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setSex(cursor.getInt(offset + 5));
-        entity.setHeight(cursor.getInt(offset + 6));
-        entity.setWeight(cursor.getInt(offset + 7));
-        entity.setBirthday(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setLastlogin(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setToken(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setSex(cursor.getInt(offset + 6));
+        entity.setHeight(cursor.getInt(offset + 7));
+        entity.setWeight(cursor.getInt(offset + 8));
+        entity.setBirthday(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setLastlogin(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
      }
     
     @Override

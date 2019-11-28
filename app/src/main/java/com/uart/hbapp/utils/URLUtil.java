@@ -1,7 +1,7 @@
 package com.uart.hbapp.utils;
 
 public class URLUtil {
-    public static String url="http://192.168.3.79:8887";//服务器地址
+    public static String url="http://192.168.3.188:8080";//服务器地址
     public static String login = "/sleep/userinfo/login";//登录
     public static String regist = "/sleep/userinfo/registered";//注册
     public static String getUser = "/sleep/userinfo/getUser";//获取user

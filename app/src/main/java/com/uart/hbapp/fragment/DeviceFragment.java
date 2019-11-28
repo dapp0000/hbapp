@@ -536,7 +536,7 @@ public class DeviceFragment extends Fragment {
     }
 
     private void updateNet() {
-        updateSleepInfo(bleDevice.getName(), bleDevice.getMac(), HbApplication.getInstance().loginUser, startTime, endTime);
+        updateSleepInfo(bleDevice.getName(), bleDevice.getMac(), HbApplication.getInstance().loginUser.getUserName(), startTime, endTime);
     }
 
     private void updateSleepInfo(String deviceName, String deviceMac, String userName, long startTime, long endTime) {

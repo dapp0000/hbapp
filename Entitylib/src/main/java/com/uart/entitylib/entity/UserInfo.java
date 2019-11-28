@@ -15,20 +15,22 @@ public class UserInfo {
     private String userName;//用户名称
     private String mobile;//手机号
     private String password;//密码
+    private String token;//访问令牌
     private int sex;//性别（女0，男1，未知2）
     private int height;//身高（厘米）
     private int weight;//体重（kg)
     private String birthday;//生日（1982-02-05）
     private Long lastlogin;//最后登录时间
-    @Generated(hash = 861931419)
+    @Generated(hash = 2104237385)
     public UserInfo(Long id, String userCode, String userName, String mobile,
-            String password, int sex, int height, int weight, String birthday,
-            Long lastlogin) {
+            String password, String token, int sex, int height, int weight,
+            String birthday, Long lastlogin) {
         this.id = id;
         this.userCode = userCode;
         this.userName = userName;
         this.mobile = mobile;
         this.password = password;
+        this.token = token;
         this.sex = sex;
         this.height = height;
         this.weight = weight;
@@ -97,5 +99,11 @@ public class UserInfo {
     }
     public void setLastlogin(Long lastlogin) {
         this.lastlogin = lastlogin;
+    }
+    public String getToken() {
+        return this.token;
+    }
+    public void setToken(String token) {
+        this.token = token;
     }
 }

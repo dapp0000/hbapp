@@ -19,6 +19,7 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.utils.DialogUtils;
@@ -81,20 +82,32 @@ public class LoginUserPwdActivity extends Activity {
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
-
                         try {
                             Log.e("eee", "AddFaceT:" + response.body());
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
-                                HbApplication.getInstance().loginUser = uname;
+                                UserInfo user = new UserInfo();
+                                user.setUserName(uname);
+                                user.setLastlogin(System.currentTimeMillis());
+                                user.setToken("g9eVCGW7wxkZutLbglsl9g==");
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                if(data!=null){
+                                    String token = data.getString("token");
+                                    user.setToken(token);
+                                }
+
+                                HbApplication.getInstance().loginUser = user;
+
                                 Intent intent=new Intent(LoginUserPwdActivity.this, AdditionalActivity.class);
                                 intent.putExtra("AdditionalActivity","login");
                                 startActivity(intent);
                                 finish();
+
                             } else {
                                 ToastUtils.showShort(jsonObject.getString("message"));
                             }
+
                             DialogUtils.closeProgressDialog();
 
                         } catch (Exception e) {

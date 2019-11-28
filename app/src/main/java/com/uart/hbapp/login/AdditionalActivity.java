@@ -23,9 +23,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
+import com.uart.hbapp.utils.CommandUtils;
 import com.uart.hbapp.utils.DatePickerUtil;
 import com.uart.hbapp.utils.view.scaleruler.ScaleRulerView;
 
@@ -157,6 +159,12 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
     }
 
     public void confirmInfo(View view) {
+        UserInfo user = HbApplication.getInstance().loginUser;
+        user.setSex(CommandUtils.getSexVaue(sex));
+        user.setHeight((int)mHeight);
+        user.setWeight((int)mWeight);
+        user.setBirthday(year+"-"+monthOfYear+"-"+dayOfMonth);
+
         if (tag.equals("changeMessage")) {
 
         } else {
@@ -164,7 +172,16 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
             startActivity(intent);
             finish();
         }
+
         Toast.makeText(this, "性别："+sex+" 身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear  , Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //记录登录用户信息
+        HbApplication.getDaoInstance().getUserInfoDao().insertOrReplace(HbApplication.getInstance().loginUser);
     }
 
     private long firstPressedTime;
