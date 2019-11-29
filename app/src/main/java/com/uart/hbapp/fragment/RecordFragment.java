@@ -21,6 +21,7 @@ import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.CommonAdapter;
 import com.uart.hbapp.adapter.CommonViewHolder;
 import com.uart.hbapp.bean.RecordBean;
+import com.uart.hbapp.history.DayHistoryActivity;
 import com.uart.hbapp.history.MonthHistoryActivity;
 import com.uart.hbapp.history.WeekHistoryActivity;
 
@@ -79,6 +80,15 @@ public class RecordFragment extends Fragment {
                 if(!bean.isweek && !bean.ismonth){
                     holder.setVisibility(R.id.layout_week,View.GONE)
                     .setVisibility(R.id.layout_month,View.GONE);
+
+                    View day = holder.getView(R.id.layout_content);
+                    day.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(getActivity(), DayHistoryActivity.class);
+                            startActivity(intent);
+                        }
+                    });
                 }
                 else{
                     holder.setVisibility(R.id.layout_content,View.GONE);

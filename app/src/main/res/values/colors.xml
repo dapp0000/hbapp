@@ -15,5 +15,15 @@
     <color name="device">#00AFBD</color>
     <color name="edit">#1f4a78</color>
 
+    <color name="status_1">#E60012</color>
+    <color name="status_2">#F08200</color>
+    <color name="status_3">#FFF100</color>
+    <color name="status_4">#CAD900</color>
+    <color name="status_5">#009944</color>
+
+
+
+
+
 
 </resources>

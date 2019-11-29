@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/txt_Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_marginStart="10dp"
+        android:text="休息状态"
+        android:textSize="20sp"/>
+
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal"
+        android:layout_width="500px"
+        android:layout_height="50px">
+        <TextView
+            android:background="@color/status_1"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:id="@+id/myTextView1"/>
+        <TextView
+            android:background="@color/status_2"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:id="@+id/myTextView2"/>
+        <TextView
+            android:background="@color/status_3"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:id="@+id/myTextView3"/>
+        <TextView
+            android:background="@color/status_4"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:id="@+id/myTextView4"/>
+        <TextView
+            android:background="@color/status_5"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:id="@+id/myTextView5"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:orientation="horizontal"
+        android:layout_width="500px"
+        android:layout_height="50px">
+        <TextView
+            android:text="0"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:text="10"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:text="20"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:text="30"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            />
+        <TextView
+            android:text="40"
+            android:layout_width="100px"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            />
+    </LinearLayout>
+
+    <!-- 值标记 -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:background="@color/status_1"
+                    android:layout_width="30dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/txt_title_status1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="完全清醒"/>
+
+                <TextView
+                    android:id="@+id/txt_title_status1_value"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="10分钟"/>
+
+
+
+                <LinearLayout
+                    android:id="@+id/ll_mode0_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:background="@color/status_2"
+                    android:layout_width="30dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/txt_title_status2"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="倒入睡眠"/>
+
+                <TextView
+                    android:id="@+id/txt_title_status2_value"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="10分钟"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode0_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_mode1_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:background="@color/status_3"
+                    android:layout_width="30dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/txt_title_status3"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="浅度睡眠"/>
+
+                <TextView
+                    android:id="@+id/txt_title_status3_value"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="10分钟"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode0_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/white"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode1_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:background="@color/status_4"
+                    android:layout_width="30dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/txt_title_status4"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="深度睡眠"/>
+
+                <TextView
+                    android:id="@+id/txt_title_status4_value"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="10分钟"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode0_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode1_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="5dp"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:background="@color/status_5"
+                    android:layout_width="30dp"
+                    android:layout_height="10dp"
+                    android:layout_gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/txt_title_status5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="延续睡眠"/>
+
+                <TextView
+                    android:id="@+id/txt_title_status5_value"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="10分钟"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode0_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_mode1_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <View
+                        android:layout_width="5dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/white"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/white"/>
+
+                </LinearLayout>
+
+
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_mode0_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/white"
+            android:text="导眠和清醒：20分钟"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/txt_mode0_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="65dp"
+            android:textColor="@color/white"
+            android:text="有效睡眠：25分钟"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/txt_mode1_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="185dp"
+            android:layout_marginTop="55dp"
+            android:textColor="@color/white"
+            android:text="放松状态：35分钟"/>
+
+
+    </FrameLayout>
+
+
+</LinearLayout>

@@ -64,6 +64,8 @@
     <string name="enter">进入操作</string>
 
     <string name="chain_week">对比上周</string>
+    <string name="chain_month">对比上月</string>
+    <string name="vigor_add">精力回升</string>
 
     <string name="tab_editname">修改名称</string>
     <string name="tab_disconnect">断开连接</string>

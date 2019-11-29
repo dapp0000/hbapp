@@ -2,25 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@drawable/shape_main_bg">
 
-    <View
-        android:layout_width="2dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/border"/>
+        android:orientation="vertical">
+
+        <ImageView
+            android:scaleType="fitXY"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="-10dp"
+            android:src="@mipmap/point2"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@color/colorPrimary"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="-8dp"
         android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/layout_week"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -30,37 +45,65 @@
 <!--                android:background="@color/border"-->
 <!--                android:layout_marginStart="15dp"/>-->
 
-            <ImageView
-                android:scaleType="fitXY"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@mipmap/u700"/>
+<!--            <ImageView-->
+<!--                android:scaleType="fitXY"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="32dp"-->
+<!--                android:src="@mipmap/u700"/>-->
+
+
 
             <TextView
                 android:id="@+id/btn_week"
                 android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="15dp"
+                android:textColor="@color/white"
                 android:textSize="20sp"
                 android:text="周报详情"/>
+
+
+            <ImageView
+                android:id="@+id/btn_share_friend"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="5dp"
+                android:src="@mipmap/share_friend"/>
+
+            <ImageView
+                android:id="@+id/btn_share_send"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="5dp"
+                android:src="@mipmap/share_send"/>
+
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
                 android:text="2019年7月1日"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
                 android:text="~"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:textStyle="bold"
                 android:text="2019年7月7日"/>
 
         </LinearLayout>
@@ -74,7 +117,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="概览"
+            android:textColor="@color/white"
             android:textSize="20sp"/>
 
         <LinearLayout
@@ -90,6 +135,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="有效使用次数"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -103,6 +149,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="5 次"/>
             </LinearLayout>
             <LinearLayout
@@ -113,6 +160,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="@string/chain_week"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -126,6 +174,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="5 次"/>
             </LinearLayout>
 
@@ -138,6 +187,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="平均精力充电"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -151,6 +201,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20 %"/>
             </LinearLayout>
             <LinearLayout
@@ -161,6 +212,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="@string/chain_week"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -174,6 +226,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20 %"/>
 
             </LinearLayout>
@@ -187,6 +240,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="平均使用时间"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -200,6 +254,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20分钟"/>
             </LinearLayout>
             <LinearLayout
@@ -210,6 +265,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="@string/chain_week"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -223,6 +279,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20分钟"/>
 
             </LinearLayout>
@@ -236,6 +293,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="平均有效睡眠"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -249,6 +307,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20分钟"/>
             </LinearLayout>
             <LinearLayout
@@ -259,6 +318,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="@string/chain_week"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -272,6 +332,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20分钟"/>
 
             </LinearLayout>
@@ -285,6 +346,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="平均放松时间"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -298,6 +360,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20分钟"/>
             </LinearLayout>
             <LinearLayout
@@ -308,6 +371,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
+                    android:textColor="@color/white"
                     android:text="@string/chain_week"/>
                 <ProgressBar
                     style="?android:attr/progressBarStyleHorizontal"
@@ -321,6 +385,7 @@
                 <TextView
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="20分钟"/>
 
             </LinearLayout>
@@ -337,6 +402,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"
             android:text="使用时长（单位：分钟）"
             android:textSize="20sp"/>
 
@@ -354,6 +421,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_marginStart="10dp"
             android:text="有效睡眠（单位：分钟）"
             android:textSize="20sp"/>
 
@@ -370,6 +439,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
             android:text="放松时长（单位：分钟）"
             android:textSize="20sp"/>
 
@@ -386,19 +457,38 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
             android:text="小结与建议"
             android:textSize="20sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/white"
             android:text="你本周休息次数比上周有所减少，但使用效果有小
 幅度提升；有效睡眠时间占比较少，建议你适当调
 整休息环境，有利于提升休息质量！"
             />
 
 
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorPrimary"/>
+        </RelativeLayout>
+
     </LinearLayout>
+
+
 
 
 </LinearLayout>

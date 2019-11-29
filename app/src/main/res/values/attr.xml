@@ -17,4 +17,14 @@
             <enum name="right_bottom_triangle" value="7"></enum>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="RestColorView">
+        <attr name="title_text_clolor" format="color"></attr>
+        <attr name="title_text" format="string"></attr>
+        <attr name="rest_mode">
+            <enum name="sleep" value="0" />
+            <enum name="relax" value="1" />
+        </attr>
+    </declare-styleable>
+
 </resources>
