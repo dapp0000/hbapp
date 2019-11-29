@@ -22,8 +22,15 @@ public class HbApplication extends Application {
         return daoSession;
     }
 
-    public UserInfo loginUser;
-    public UsageRecord usageRecord;
+    /**
+     * 当前登录用户
+     */
+    public UserInfo loginUser=new UserInfo();
+    /**
+     * 当前设备使用记录
+     */
+    public UsageRecord usageRecord=new UsageRecord();
+
     @Override
     public void onCreate() {
         super.onCreate();
