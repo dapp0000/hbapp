@@ -14,5 +14,6 @@ public class URLUtil {
     public static String musicListQuery = "/sleep/music/query";//获取音乐列表
 
     public static String userinfoUpdate = "/sleep/userinfo/update";//更新用户信息
+    public static String randomHome = "/sleep/pageHome/randomHome";//更新用户信息
 
 }

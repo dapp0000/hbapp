@@ -5,16 +5,33 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.blankj.utilcode.util.SPUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.bumptech.glide.Glide;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
+import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.AppConstants;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
+import com.uart.hbapp.utils.DialogUtils;
+import com.uart.hbapp.utils.URLUtil;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class WelcomeActivity extends Activity {
-
+    TextView welcome;
+    ImageView img_welcome;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +43,51 @@ public class WelcomeActivity extends Activity {
             ex.printStackTrace();
         }
 
+        welcome=findViewById(R.id.welcome);
+        img_welcome=findViewById(R.id.img_welcome);
+        getRandomHome();
         CountHandler.postDelayed(CountRunnable, 1000);
+    }
+
+    private void getRandomHome() {
+        String base_url = URLUtil.url + URLUtil.randomHome;
+        OkGo.<String>get(base_url)
+                .tag(this)
+//                .cacheKey("cachePostKey")
+//                .cacheMode(CacheMode.DEFAULT)
+//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
+//                .headers("Content-Type","application/json")
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        try {
+                            Log.e("eee", "AddFaceT:" + response.body());
+                            JSONObject jsonObject = new JSONObject(response.body());
+                            int error = jsonObject.getInt("error");
+                            if (error == 0) {
+                                JSONObject data=jsonObject.getJSONObject("data");
+                                JSONObject pageHome=data.getJSONObject("pageHome");
+                                if (pageHome!=null){
+                                    String homePageLang=pageHome.getString("homePageLang");
+                                    String imageUrl=pageHome.getString("imageUrl");
+                                    welcome.setText(homePageLang);
+                                    Glide.with(WelcomeActivity.this).load(imageUrl).into(img_welcome);
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            DialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        DialogUtils.closeProgressDialog();
+                        ToastUtils.showShort("服务器异常");
+                    }
+                });
     }
 
     private Message message = new Message();
