@@ -21,14 +21,7 @@ public class Resource {
     private String localFilePath;//本地文件路径
 
     @Transient
-    private boolean isChecked;//选中状态
-    public boolean isChecked() {
-        return isChecked;
-    }
-
-    public void setChecked(boolean checked) {
-        isChecked = checked;
-    }
+    public boolean isChecked;//选中状态
 
     @Generated(hash = 1073998471)
     public Resource(Long id, String name, int type, int duration, int status,
