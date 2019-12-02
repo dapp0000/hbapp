@@ -22,18 +22,28 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
 import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
 import com.uart.hbapp.utils.CommandUtils;
 import com.uart.hbapp.utils.DatePickerUtil;
+import com.uart.hbapp.utils.DialogUtils;
+import com.uart.hbapp.utils.TimeUtil;
+import com.uart.hbapp.utils.URLUtil;
 import com.uart.hbapp.utils.view.scaleruler.ScaleRulerView;
 
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Field;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,16 +175,68 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
         user.setWeight((int)mWeight);
         user.setBirthday(year+"-"+monthOfYear+"-"+dayOfMonth);
 
-        if (tag.equals("changeMessage")) {
-
-        } else {
-            Intent intent = new Intent(this, ScanActivity.class);
-            startActivity(intent);
-            finish();
-        }
-
+        updateMessage();
         Toast.makeText(this, "性别："+sex+" 身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear  , Toast.LENGTH_LONG).show();
 
+    }
+
+    private void updateMessage() {
+        DialogUtils.showProgressDialog(this, "请稍等...");
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("token", SPUtils.getInstance().getString("token"));
+        params.put("userName", HbApplication.getInstance().loginUser.getUserName());
+        params.put("gender",CommandUtils.getSexVaue(sex) );
+        try {
+            params.put("age", TimeUtil.getAge(year+"-"+monthOfYear+"-"+dayOfMonth));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        params.put("height", mHeight);
+        params.put("weight", mWeight);
+
+        JSONObject jsonObject = new JSONObject(params);
+        String base_url = URLUtil.url + URLUtil.userinfoUpdate;
+        OkGo.<String>post(base_url)
+                .tag(this)
+                .cacheKey("cachePostKey")
+//                .cacheMode(CacheMode.DEFAULT)
+//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
+                .headers("Content-Type","application/json")
+                .upJson(jsonObject.toString())
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        try {
+                            Log.e("eee", "AddFaceT:" + response.body());
+                            JSONObject jsonObject = new JSONObject(response.body());
+                            int error = jsonObject.getInt("error");
+                            if (error == 0) {
+                                if (tag.equals("changeMessage")) {
+                                    ToastUtils.showShort(jsonObject.getString("修改成功"));
+                                } else {
+                                    Intent intent = new Intent(AdditionalActivity.this, ScanActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            } else {
+                                ToastUtils.showShort(jsonObject.getString("message"));
+                            }
+
+                            DialogUtils.closeProgressDialog();
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            DialogUtils.closeProgressDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        DialogUtils.closeProgressDialog();
+                        ToastUtils.showShort("服务器异常");
+                    }
+                });
     }
 
     @Override

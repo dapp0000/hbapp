@@ -14,12 +14,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
 import com.uart.entitylib.entity.UserInfo;
+import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.utils.DialogUtils;
@@ -90,11 +92,14 @@ public class LoginUserPwdActivity extends Activity {
                                 UserInfo user = new UserInfo();
                                 user.setUserName(uname);
                                 user.setLastlogin(System.currentTimeMillis());
-                                user.setToken("g9eVCGW7wxkZutLbglsl9g==");
+                                //user.setToken("g9eVCGW7wxkZutLbglsl9g==");
                                 JSONObject data = jsonObject.getJSONObject("data");
                                 if(data!=null){
                                     String token = data.getString("token");
                                     user.setToken(token);
+                                    SPUtils.getInstance().put("token",token);
+                                    SPUtils.getInstance().put("uname",uname);
+                                    SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY,true);
                                 }
 
                                 HbApplication.getInstance().loginUser = user;
@@ -143,7 +148,7 @@ public class LoginUserPwdActivity extends Activity {
                 break;
             case R.id.regist:
                 startActivity(new Intent(LoginUserPwdActivity.this, RegistActivity.class));
-                finish();
+//                finish();
                 break;
         }
     }

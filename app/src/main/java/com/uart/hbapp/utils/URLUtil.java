@@ -13,4 +13,6 @@ public class URLUtil {
     public static String monthSleepLogQuery = "/sleep/SleepLog/monthSleepLog";//历史月报查询
     public static String musicListQuery = "/sleep/music/query";//获取音乐列表
 
+    public static String userinfoUpdate = "/sleep/userinfo/update";//更新用户信息
+
 }

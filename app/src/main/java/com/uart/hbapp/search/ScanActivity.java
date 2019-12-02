@@ -209,6 +209,7 @@ public class ScanActivity extends AppCompatActivity {
                 Intent intent = new Intent(ScanActivity.this, MainActivity.class);
                 intent.putExtra(MainActivity.KEY_DATA, bleDevice);
                 startActivity(intent);
+                finish();
             }
 
             @Override
@@ -310,6 +311,7 @@ public class ScanActivity extends AppCompatActivity {
 
     public void stopScanDevice() {
         BleManager.getInstance().cancelScan();
+
     }
 
     public void skip() {
@@ -321,6 +323,7 @@ public class ScanActivity extends AppCompatActivity {
                 stopScanDevice();
             }
         }, SCAN_DURATION);
+        finish();
     }
 
     @OnClick({R.id.btnscan, R.id.btnskip})
@@ -335,19 +338,19 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    private long firstPressedTime;
-
-    @Override
-    public void onBackPressed() {
-        if (System.currentTimeMillis() - firstPressedTime < 2000) {
-            super.onBackPressed();
-            finish();
-            System.exit(0);
-        } else {
-            ToastUtils.showShort("再按一次退出");
-            firstPressedTime = System.currentTimeMillis();
-        }
-    }
+//    private long firstPressedTime;
+//
+//    @Override
+//    public void onBackPressed() {
+//        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+//            super.onBackPressed();
+//            finish();
+//            System.exit(0);
+//        } else {
+//            ToastUtils.showShort("再按一次退出");
+//            firstPressedTime = System.currentTimeMillis();
+//        }
+//    }
 
     @Override
     protected void onPause() {

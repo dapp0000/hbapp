@@ -62,10 +62,10 @@ public class RegistActivity extends Activity {
         params.put("userName", uname);
         params.put("nickName", "");
         params.put("passWord", pwd);
-        params.put("gender", "");
-        params.put("age", "");
-        params.put("height", "");
-        params.put("weight", "");
+        params.put("gender", 1);
+        params.put("age", 1);
+        params.put("height", 1);
+        params.put("weight", 1);
 
         JSONObject jsonObject = new JSONObject(params);
         String base_url =URLUtil.url + URLUtil.regist;

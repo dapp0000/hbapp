@@ -9,6 +9,7 @@ import android.os.Message;
 import com.blankj.utilcode.util.SPUtils;
 import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.R;
+import com.uart.hbapp.search.ScanActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,7 +22,7 @@ public class WelcomeActivity extends Activity {
         try {
             //getSupportActionBar().hide();
             getActionBar().hide();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -52,11 +53,16 @@ public class WelcomeActivity extends Activity {
             if (recLen == 0) {
                 message.what = 1;
                 CountHandler.sendMessage(message);
-                if (SPUtils.getInstance().getBoolean(AppConstants.ACTIVATED_KEY)){
-                    startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
-                    finish();
-                }else {
-                    SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY,true);
+                if (SPUtils.getInstance().getBoolean(AppConstants.ACTIVATED_KEY)) {
+                    if (SPUtils.getInstance().getString("token") != null && !SPUtils.getInstance().getString("token").isEmpty()) {
+                        startActivity(new Intent(WelcomeActivity.this, ScanActivity.class));
+                        finish();
+                    } else {
+                        startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
+                        finish();
+                    }
+                } else {
+                    SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY, true);
                     startActivity(new Intent(WelcomeActivity.this, SplashActivity.class));
                     finish();
                 }

@@ -179,4 +179,16 @@ public class MainActivity extends AppCompatActivity implements Observer {
         this.charaProp = charaProp;
     }
 
+    private long firstPressedTime;
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - firstPressedTime < 2000) {
+            super.onBackPressed();
+            finish();
+            System.exit(0);
+        } else {
+            ToastUtils.showShort("再按一次退出");
+            firstPressedTime = System.currentTimeMillis();
+        }
+    }
 }

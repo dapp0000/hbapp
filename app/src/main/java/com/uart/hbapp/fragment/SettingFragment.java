@@ -14,9 +14,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.blankj.utilcode.util.SPUtils;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.login.AdditionalActivity;
+import com.uart.hbapp.login.LoginUserPwdActivity;
 
 public class SettingFragment extends Fragment {
 
@@ -28,7 +32,7 @@ public class SettingFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View v=inflater.inflate(R.layout.fragment_setting, container, false);
-        v.findViewById(R.id.changeMessage).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.headImg).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(getActivity(), AdditionalActivity.class);
@@ -36,6 +40,23 @@ public class SettingFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        v.findViewById(R.id.nickName).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), AdditionalActivity.class);
+                intent.putExtra("AdditionalActivity","changeMessage");
+                startActivity(intent);
+            }
+        });
+        v.findViewById(R.id.exit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), LoginUserPwdActivity.class));
+                getActivity().finish();
+            }
+        });
+        TextView textView=v.findViewById(R.id.nickName);
+        textView.setText(SPUtils.getInstance().getString("uname"));
         return v;
     }
 
