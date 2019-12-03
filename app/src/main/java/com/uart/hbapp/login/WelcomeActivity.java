@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 
-import com.blankj.utilcode.util.SPUtils;
-import com.uart.hbapp.AppConstants;
+
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.search.ScanActivity;
 
-import androidx.appcompat.app.AppCompatActivity;
+
 
 public class WelcomeActivity extends Activity {
 
@@ -53,16 +54,21 @@ public class WelcomeActivity extends Activity {
             if (recLen == 0) {
                 message.what = 1;
                 CountHandler.sendMessage(message);
-                if (SPUtils.getInstance().getBoolean(AppConstants.ACTIVATED_KEY)) {
-                    if (SPUtils.getInstance().getString("token") != null && !SPUtils.getInstance().getString("token").isEmpty()) {
-                        startActivity(new Intent(WelcomeActivity.this, ScanActivity.class));
-                        finish();
+                if (HbApplication.getInstance().loginUser.getActivated()) {
+                    if (!TextUtils.isEmpty(HbApplication.getInstance().loginUser.getToken())) {
+                        if(HbApplication.getInstance().loginUser.getSign()==0){
+                            startActivity(new Intent(WelcomeActivity.this, ScanActivity.class));
+                            finish();
+                        }
+                        else{
+                            startActivity(new Intent(WelcomeActivity.this, AdditionalActivity.class));
+                            finish();
+                        }
                     } else {
                         startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
                         finish();
                     }
                 } else {
-                    SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY, true);
                     startActivity(new Intent(WelcomeActivity.this, SplashActivity.class));
                     finish();
                 }

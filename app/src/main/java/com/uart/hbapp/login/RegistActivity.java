@@ -72,19 +72,17 @@ public class RegistActivity extends Activity {
         OkGo.<String>post(base_url)
                 .tag(this)
                 .cacheKey("cachePostKey")
-//                .cacheMode(CacheMode.DEFAULT)
-//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
                 .headers("Content-Type","application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
-
                         try {
                             Log.e("eee", "AddFaceT:" + response.body());
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
+                                ToastUtils.showShort("注册成功");
                                 finish();
                             } else {
                                 ToastUtils.showShort(jsonObject.getString("message"));

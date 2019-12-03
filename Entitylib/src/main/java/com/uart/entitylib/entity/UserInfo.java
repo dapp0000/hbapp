@@ -20,11 +20,13 @@ public class UserInfo {
     private int height;//身高（厘米）
     private int weight;//体重（kg)
     private String birthday;//生日（1982-02-05）
+    private int sign;//是否完善信息(0--信息全,1--需要补足信息)
+    private boolean activated;//是否激活
     private Long lastlogin;//最后登录时间
-    @Generated(hash = 2104237385)
+    @Generated(hash = 1242237078)
     public UserInfo(Long id, String userCode, String userName, String mobile,
             String password, String token, int sex, int height, int weight,
-            String birthday, Long lastlogin) {
+            String birthday, int sign, boolean activated, Long lastlogin) {
         this.id = id;
         this.userCode = userCode;
         this.userName = userName;
@@ -35,6 +37,8 @@ public class UserInfo {
         this.height = height;
         this.weight = weight;
         this.birthday = birthday;
+        this.sign = sign;
+        this.activated = activated;
         this.lastlogin = lastlogin;
     }
     @Generated(hash = 1279772520)
@@ -105,5 +109,17 @@ public class UserInfo {
     }
     public void setToken(String token) {
         this.token = token;
+    }
+    public int getSign() {
+        return this.sign;
+    }
+    public void setSign(int sign) {
+        this.sign = sign;
+    }
+    public boolean getActivated() {
+        return this.activated;
+    }
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 }

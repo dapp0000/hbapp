@@ -14,16 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.entitylib.dao.UserInfoDao;
 import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
+import com.uart.hbapp.search.ScanActivity;
 import com.uart.hbapp.utils.DialogUtils;
 import com.uart.hbapp.utils.URLUtil;
 
@@ -62,7 +63,6 @@ public class LoginUserPwdActivity extends Activity {
         }
 
         checkPermissions();
-
     }
 
 
@@ -77,8 +77,6 @@ public class LoginUserPwdActivity extends Activity {
         OkGo.<String>post(base_url)
                 .tag(this)
                 .cacheKey("cachePostKey")
-//                .cacheMode(CacheMode.DEFAULT)
-//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
                 .headers("Content-Type","application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
@@ -89,25 +87,33 @@ public class LoginUserPwdActivity extends Activity {
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
-                                UserInfo user = new UserInfo();
-                                user.setUserName(uname);
-                                user.setLastlogin(System.currentTimeMillis());
-                                //user.setToken("g9eVCGW7wxkZutLbglsl9g==");
-                                JSONObject data = jsonObject.getJSONObject("data");
-                                if(data!=null){
-                                    String token = data.getString("token");
-                                    user.setToken(token);
-                                    SPUtils.getInstance().put("token",token);
-                                    SPUtils.getInstance().put("uname",uname);
-                                    SPUtils.getInstance().put(AppConstants.ACTIVATED_KEY,true);
+                                //查找本地用户
+                                UserInfo user = HbApplication.getDaoInstance().getUserInfoDao().queryBuilder().where(UserInfoDao.Properties.UserName.eq(uname)).unique();
+                                if(user == null){
+                                    user = new UserInfo();
+                                    user.setActivated(false);//未激活
+                                    user.setToken("");//未登录
+                                    user.setSign(1);//未完善信息
                                 }
 
                                 HbApplication.getInstance().loginUser = user;
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                if(data!=null){
+                                    String token = data.getString("token");
+                                    user.setUserName(uname);
+                                    user.setPassword(pwd);
+                                    user.setLastlogin(System.currentTimeMillis());
+                                    user.setToken(token);
+                                    user.setActivated(true);
+                                }
 
-                                Intent intent=new Intent(LoginUserPwdActivity.this, AdditionalActivity.class);
-                                intent.putExtra("AdditionalActivity","login");
-                                startActivity(intent);
-                                finish();
+                                if (user.getSign()==0) {
+                                    startActivity(new Intent(LoginUserPwdActivity.this, ScanActivity.class));
+                                    finish();
+                                } else {
+                                    startActivity(new Intent(LoginUserPwdActivity.this, AdditionalActivity.class));
+                                    finish();
+                                }
 
                             } else {
                                 ToastUtils.showShort(jsonObject.getString("message"));

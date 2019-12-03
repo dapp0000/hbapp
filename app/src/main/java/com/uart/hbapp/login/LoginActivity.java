@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
+import com.uart.hbapp.search.ScanActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -70,18 +71,19 @@ public class LoginActivity extends Activity {
                     return;
                 }
 
-                UserInfo user = new UserInfo();
-                user.setUserName(userName);
-                user.setLastlogin(System.currentTimeMillis());
-                user.setToken("g9eVCGW7wxkZutLbglsl9g==");
-
-                HbApplication.getInstance().loginUser = user;
-
-                //手机号登录接口
-                Intent intent = new Intent(LoginActivity.this, AdditionalActivity.class);
-                intent.putExtra("AdditionalActivity", "login");
-                startActivity(intent);
-                finish();
+//                UserInfo user = HbApplication.getInstance().loginUser;
+//                user.setUserName(userName);
+//                user.setLastlogin(System.currentTimeMillis());
+//                user.setToken("g9eVCGW7wxkZutLbglsl9g==");
+//                user.setActivated(true);
+//
+//                if (user.getSign()==0) {
+//                    startActivity(new Intent(LoginActivity.this, ScanActivity.class));
+//                    finish();
+//                } else {
+//                    startActivity(new Intent(LoginActivity.this, AdditionalActivity.class));
+//                    finish();
+//                }
 
                 break;
             case R.id.userPwdLogin:

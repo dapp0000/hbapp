@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.blankj.utilcode.util.SPUtils;
+
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.login.AdditionalActivity;
@@ -56,7 +56,7 @@ public class SettingFragment extends Fragment {
             }
         });
         TextView textView=v.findViewById(R.id.nickName);
-        textView.setText(SPUtils.getInstance().getString("uname"));
+        textView.setText(HbApplication.getInstance().loginUser.getUserName());
         return v;
     }
 

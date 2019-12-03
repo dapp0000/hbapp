@@ -19,10 +19,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
@@ -86,7 +83,6 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
     private float mMinWeight = 25;
 
     private int year, monthOfYear, dayOfMonth;
-    private String tag;
     private String sex="男";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +97,6 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
         }
 
         Intent intent = getIntent();
-        tag = intent.getStringExtra("AdditionalActivity");
         init();
 
         DatePicker datePicker = (DatePicker) findViewById(R.id.datepicker);
@@ -169,21 +164,14 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
     }
 
     public void confirmInfo(View view) {
-        UserInfo user = HbApplication.getInstance().loginUser;
-        user.setSex(CommandUtils.getSexVaue(sex));
-        user.setHeight((int)mHeight);
-        user.setWeight((int)mWeight);
-        user.setBirthday(year+"-"+monthOfYear+"-"+dayOfMonth);
-
         updateMessage();
-        Toast.makeText(this, "性别："+sex+" 身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear  , Toast.LENGTH_LONG).show();
-
-    }
+        //Toast.makeText(this, "性别："+sex+" 身高： " + mHeight + " 体重： " + mWeight + " 生日是：" + year + "-" + monthOfYear  , Toast.LENGTH_LONG).show();
+   }
 
     private void updateMessage() {
         DialogUtils.showProgressDialog(this, "请稍等...");
         HashMap<String, Object> params = new HashMap<>();
-        params.put("token", SPUtils.getInstance().getString("token"));
+        params.put("token", HbApplication.getInstance().loginUser.getToken());
         params.put("userName", HbApplication.getInstance().loginUser.getUserName());
         params.put("gender",CommandUtils.getSexVaue(sex) );
         try {
@@ -199,8 +187,6 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
         OkGo.<String>post(base_url)
                 .tag(this)
                 .cacheKey("cachePostKey")
-//                .cacheMode(CacheMode.DEFAULT)
-//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
                 .headers("Content-Type","application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {
@@ -211,9 +197,17 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
-                                if (tag.equals("changeMessage")) {
-                                    ToastUtils.showShort(jsonObject.getString("修改成功"));
+                                UserInfo user = HbApplication.getInstance().loginUser;
+                                user.setSex(CommandUtils.getSexVaue(sex));
+                                user.setHeight((int)mHeight);
+                                user.setWeight((int)mWeight);
+                                user.setBirthday(year+"-"+monthOfYear+"-"+dayOfMonth);
+
+                                if (user.getSign()==0) {
+                                    ToastUtils.showShort("修改成功");
+                                    finish();
                                 } else {
+                                    user.setSign(0);//已完善
                                     Intent intent = new Intent(AdditionalActivity.this, ScanActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -246,23 +240,6 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
         HbApplication.getDaoInstance().getUserInfoDao().insertOrReplace(HbApplication.getInstance().loginUser);
     }
 
-    private long firstPressedTime;
 
-    @Override
-    public void onBackPressed() {
 
-        if (tag.equals("changeMessage")) {
-            finish();
-        } else {
-            if (System.currentTimeMillis() - firstPressedTime < 2000) {
-                super.onBackPressed();
-                finish();
-                System.exit(0);
-            } else {
-                ToastUtils.showShort("再按一次退出");
-                firstPressedTime = System.currentTimeMillis();
-            }
-        }
-
-    }
 }

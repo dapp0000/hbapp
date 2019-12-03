@@ -34,7 +34,9 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         public final static Property Height = new Property(7, int.class, "height", false, "HEIGHT");
         public final static Property Weight = new Property(8, int.class, "weight", false, "WEIGHT");
         public final static Property Birthday = new Property(9, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property Lastlogin = new Property(10, Long.class, "lastlogin", false, "LASTLOGIN");
+        public final static Property Sign = new Property(10, int.class, "sign", false, "SIGN");
+        public final static Property Activated = new Property(11, boolean.class, "activated", false, "ACTIVATED");
+        public final static Property Lastlogin = new Property(12, Long.class, "lastlogin", false, "LASTLOGIN");
     }
 
 
@@ -60,7 +62,9 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
                 "\"HEIGHT\" INTEGER NOT NULL ," + // 7: height
                 "\"WEIGHT\" INTEGER NOT NULL ," + // 8: weight
                 "\"BIRTHDAY\" TEXT," + // 9: birthday
-                "\"LASTLOGIN\" INTEGER);"); // 10: lastlogin
+                "\"SIGN\" INTEGER NOT NULL ," + // 10: sign
+                "\"ACTIVATED\" INTEGER NOT NULL ," + // 11: activated
+                "\"LASTLOGIN\" INTEGER);"); // 12: lastlogin
     }
 
     /** Drops the underlying database table. */
@@ -110,10 +114,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (birthday != null) {
             stmt.bindString(10, birthday);
         }
+        stmt.bindLong(11, entity.getSign());
+        stmt.bindLong(12, entity.getActivated() ? 1L: 0L);
  
         Long lastlogin = entity.getLastlogin();
         if (lastlogin != null) {
-            stmt.bindLong(11, lastlogin);
+            stmt.bindLong(13, lastlogin);
         }
     }
 
@@ -158,10 +164,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (birthday != null) {
             stmt.bindString(10, birthday);
         }
+        stmt.bindLong(11, entity.getSign());
+        stmt.bindLong(12, entity.getActivated() ? 1L: 0L);
  
         Long lastlogin = entity.getLastlogin();
         if (lastlogin != null) {
-            stmt.bindLong(11, lastlogin);
+            stmt.bindLong(13, lastlogin);
         }
     }
 
@@ -183,7 +191,9 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
             cursor.getInt(offset + 7), // height
             cursor.getInt(offset + 8), // weight
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // birthday
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10) // lastlogin
+            cursor.getInt(offset + 10), // sign
+            cursor.getShort(offset + 11) != 0, // activated
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // lastlogin
         );
         return entity;
     }
@@ -200,7 +210,9 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         entity.setHeight(cursor.getInt(offset + 7));
         entity.setWeight(cursor.getInt(offset + 8));
         entity.setBirthday(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setLastlogin(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setSign(cursor.getInt(offset + 10));
+        entity.setActivated(cursor.getShort(offset + 11) != 0);
+        entity.setLastlogin(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
      }
     
     @Override

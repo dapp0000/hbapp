@@ -52,6 +52,7 @@ import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
+import com.uart.hbapp.bean.SleepDataInfo;
 import com.uart.hbapp.dialog.EditDeviceDialogFragment;
 import com.uart.hbapp.dialog.SelectMusicDialogFragment;
 import com.uart.hbapp.utils.ByteUtils;
@@ -340,18 +341,74 @@ public class DeviceFragment extends Fragment {
                         });
                     }
 
+                    private String hexString1080="";
+                    private String hexString2002="";
                     @Override
-                    public void onCharacteristicChanged(byte[] data) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //addText(txt, HexUtil.formatHexString(characteristic.getValue(), true));
-                                addLineData(characteristic.getValue());
+                    public void onCharacteristicChanged(byte[] datas) {
+                        //aa aa 10 80 07ff07ff064a04b9038b02adf8000691
+                        //aa aa 20 02 64831802621616ffd9022d3e043fd60302980235490147181055ea0400050065
+                        if(datas==null || datas.length<=4)//非法长度字符
+                            return;
+
+                        if(isData1080(datas)){
+                            hexString1080 = ByteUtils.bytesToHex(datas);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isResting) {
+                                        originalList.add(hexString1080);
+                                    }
+                                    addLineData(datas);
+                                    hexString2002="";
+                                }
+                            });
+                        }
+                        else if(isData2002((datas))){
+                            hexString2002 = ByteUtils.bytesToHex(datas);
+                        }
+                        else if(isData2002_end(datas)){
+                            if(hexString2002.length()==40){
+                                hexString2002+=ByteUtils.bytesToHex(datas);
+                                final SleepDataInfo dataInfo = OriginalDataUtil.parseSleepData(hexString2002);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (isResting) {
+                                            originalList.add(hexString2002);
+                                        }
+
+                                        hexString2002="";
+                                    }
+                                });
                             }
-                        });
+                        }
                     }
                 });
     }
+
+    private boolean isData1080(byte[] datas){
+        //aaaa1080fe7cfb560009042502fbfcfbfb1b036a
+        return datas.length == 20
+                &&(datas[0] & 0xFF) == 170
+                &&(datas[1] & 0xFF) == 170
+                &&(datas[2] & 0xFF) == 16
+                &&(datas[3] & 0xFF) == 128;
+    }
+
+    private boolean isData2002(byte[] datas){
+        //aaaa200264831807072a04843f0136d403312901
+        return datas.length == 20
+                &&(datas[0] & 0xFF) == 170
+                &&(datas[1] & 0xFF) == 170
+                &&(datas[2] & 0xFF) == 32
+                &&(datas[3] & 0xFF) == 2;
+    }
+
+    private boolean isData2002_end(byte[] datas){
+        //d36605d58c00f4b203494a040005004e
+        return datas.length == 16;
+    }
+
 
     private void closeNotify(BleDevice bleDevice, BluetoothGattCharacteristic characteristic) {
         boolean connected = BleManager.getInstance().isConnected(bleDevice);
@@ -412,30 +469,9 @@ public class DeviceFragment extends Fragment {
     }
 
     private void showChart(byte[] datas) {
-        boolean isData = true;
+        //aaaa108007ff07ff064a04b9038b02adf8000691
         int maxValue = 100;
         int size = datas.length;
-        if (size != 20)
-            isData = false;
-        if ((datas[0] & 0xFF) != 170)
-            isData = false;
-        if ((datas[1] & 0xFF) != 170)
-            isData = false;
-        if ((datas[2] & 0xFF) != 16)
-            isData = false;
-        if ((datas[3] & 0xFF) != 128)
-            isData = false;
-
-        String hexString = ByteUtils.bytesToHex(datas);
-        if (!isData) {
-            LogUtils.e(hexString);
-            //LogUtils.e(ByteUtils.bytesToUTF8(datas));
-            return;
-        } else {
-            if (isResting) {
-                originalList.add(hexString);
-            }
-        }
 
         //设置y轴的数据()
         List<Float> yValue = new ArrayList<>();
@@ -446,7 +482,6 @@ public class DeviceFragment extends Fragment {
             if (point > maxValue)
                 maxValue = (int) point + 100;
 
-
             yValue.add(point);
         }
 
@@ -454,7 +489,6 @@ public class DeviceFragment extends Fragment {
         lineChartManager.setYAxis(maxValue, 0, 0);
         LineData lineData = lineChartSignal.getLineData();
         lineData.setValueTextColor(Color.GREEN);
-
     }
 
 
@@ -474,7 +508,7 @@ public class DeviceFragment extends Fragment {
 
         isResting = true;
         startTime = System.currentTimeMillis();
-        String fileName = HbApplication.getInstance().loginUser + "_" + System.currentTimeMillis();
+        String fileName = HbApplication.getInstance().loginUser.getUserName() + "_" + System.currentTimeMillis();
         dataFileName = fileName + ".txt";
         zipFileName = fileName + ".zip";
         originalList.clear();
@@ -497,15 +531,17 @@ public class DeviceFragment extends Fragment {
     }
 
     private void stopRest() {
-        isResting = false;
-        endTime = System.currentTimeMillis();
-        originalList.clear();
-
         if (bleDevice != null) {
-            mediaPlayer.reset();
             updateNet();
         }
 
+        if(isResting){
+            mediaPlayer.reset();
+        }
+
+        isResting = false;
+        endTime = System.currentTimeMillis();
+        originalList.clear();
         btnMenu.setVisibility(View.VISIBLE);
         btnMenuStop.setVisibility(View.GONE);
         layoutControl.setVisibility(View.VISIBLE);
@@ -539,8 +575,6 @@ public class DeviceFragment extends Fragment {
         OkGo.<String>post(base_url)
                 .tag(this)
 //                .cacheKey("cachePostKey")
-//                .cacheMode(CacheMode.DEFAULT)
-//                .headers("token", SpUtils.get(DynameicFaceApplication.myContext, "token", "") + "")
                 .headers("Content-Type", "application/json")
                 .upJson(jsonObject.toString())
                 .execute(new StringCallback() {

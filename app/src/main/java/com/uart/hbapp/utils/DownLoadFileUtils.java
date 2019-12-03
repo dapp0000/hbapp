@@ -49,14 +49,12 @@ public class DownLoadFileUtils {
             public void onFinish() {
                 super.onFinish();
                 ToastUtils.showShort("下载完成");
-                //SpUtils.put(context,"localPath",mBasePath);
             }
 
             @Override
             public void onError(com.lzy.okgo.model.Response<File> response) {
                 super.onError(response);
                 ToastUtils.showShort("下载文件出错："+response.message());
-
             }
 
             @Override

@@ -5,9 +5,12 @@ import com.lzy.okgo.OkGo;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.uart.entitylib.DbManage;
 import com.uart.entitylib.dao.DaoSession;
+import com.uart.entitylib.dao.UsageRecordDao;
+import com.uart.entitylib.dao.UserInfoDao;
 import com.uart.entitylib.entity.UsageRecord;
 import com.uart.entitylib.entity.UserInfo;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import okhttp3.OkHttpClient;
@@ -25,11 +28,11 @@ public class HbApplication extends Application {
     /**
      * 当前登录用户
      */
-    public UserInfo loginUser=new UserInfo();
+    public UserInfo loginUser;
     /**
      * 当前设备使用记录
      */
-    public UsageRecord usageRecord=new UsageRecord();
+    public UsageRecord usageRecord;
 
     @Override
     public void onCreate() {
@@ -37,6 +40,23 @@ public class HbApplication extends Application {
         mInstance = this;
         daoSession = DbManage.setupDatabase(this,"hbapp");
         initOkGo();
+
+        List<UserInfo> userInfos = daoSession.getUserInfoDao().queryBuilder().orderDesc(UserInfoDao.Properties.Lastlogin).limit(1).list();
+        if(userInfos.size()>0)
+            loginUser = userInfos.get(0);
+        else
+        {
+            loginUser = new UserInfo();
+            loginUser.setActivated(false);//未激活
+            loginUser.setToken("");//未登录
+            loginUser.setSign(1);//未完善信息
+        }
+
+        List<UsageRecord> usageRecords = daoSession.getUsageRecordDao().queryBuilder().orderDesc(UsageRecordDao.Properties.Id).limit(1).list();
+        if(usageRecords.size()>0)
+            usageRecord = usageRecords.get(0);
+        else
+            usageRecord = new UsageRecord();
     }
 
     private void initOkGo() {
