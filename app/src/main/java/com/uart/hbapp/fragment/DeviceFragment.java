@@ -2,7 +2,6 @@ package com.uart.hbapp.fragment;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.Dialog;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
@@ -51,8 +50,10 @@ import com.github.mikephil.charting.data.LineData;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.entitylib.entity.RelaxData;
 import com.uart.entitylib.entity.Resource;
 import com.uart.entitylib.entity.RestDuration;
+import com.uart.entitylib.entity.SleepData;
 import com.uart.entitylib.entity.UsageRecord;
 import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
@@ -115,6 +116,14 @@ public class DeviceFragment extends Fragment {
     ImageView ivBattery;
     @BindView(R.id.iv_signal)
     ImageView ivSignal;
+    @BindView(R.id.iv_relax_type)
+    ImageView ivRelaxType;
+    @BindView(R.id.txt_relax_type)
+    TextView txtRelaxType;
+    @BindView(R.id.iv_sleep_type)
+    ImageView ivSleepType;
+    @BindView(R.id.txt_sleep_type)
+    TextView txtSleepType;
 
     private static final String TAG = DeviceFragment.class.getSimpleName();
     public static final int PROPERTY_READ = 1;
@@ -139,6 +148,7 @@ public class DeviceFragment extends Fragment {
     boolean isResting;
     List<Resource> resourceList;
     List<RestDuration> restDurationList;
+
 
 
     @Override
@@ -236,25 +246,24 @@ public class DeviceFragment extends Fragment {
         Long selectMusicId = usageRecord.getMusicId();
         Long selectSpeakId = usageRecord.getSpeakId();
         Long selectDurationId = usageRecord.getRestDurationId();
-        for (Resource resource : resourceList){
-            if(resource.getType()==0){
-                if(HbApplication.getInstance().selectMusic==null)
-                    HbApplication.getInstance().selectMusic=resource;
-                if(selectMusicId==resource.getId())
-                    HbApplication.getInstance().selectMusic=resource;
-            }
-            else{
-                if(HbApplication.getInstance().selectSpeak==null)
-                    HbApplication.getInstance().selectSpeak=resource;
-                if(selectSpeakId==resource.getId())
-                    HbApplication.getInstance().selectSpeak=resource;
+        for (Resource resource : resourceList) {
+            if (resource.getType() == 0) {
+                if (HbApplication.getInstance().selectMusic == null)
+                    HbApplication.getInstance().selectMusic = resource;
+                if (selectMusicId == resource.getId())
+                    HbApplication.getInstance().selectMusic = resource;
+            } else {
+                if (HbApplication.getInstance().selectSpeak == null)
+                    HbApplication.getInstance().selectSpeak = resource;
+                if (selectSpeakId == resource.getId())
+                    HbApplication.getInstance().selectSpeak = resource;
             }
         }
-        for (RestDuration restDuration : restDurationList){
-            if(HbApplication.getInstance().selectDuration==null)
-                HbApplication.getInstance().selectDuration=restDuration;
-            if(selectDurationId==restDuration.getId())
-                HbApplication.getInstance().selectDuration=restDuration;
+        for (RestDuration restDuration : restDurationList) {
+            if (HbApplication.getInstance().selectDuration == null)
+                HbApplication.getInstance().selectDuration = restDuration;
+            if (selectDurationId == restDuration.getId())
+                HbApplication.getInstance().selectDuration = restDuration;
         }
 
         setMusicAbout();
@@ -300,17 +309,17 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void setMusicAbout(){
+    private void setMusicAbout() {
         txtRecordMusicName.setText(HbApplication.getInstance().selectMusic.getName());
         txtRecordSpeakName.setText(HbApplication.getInstance().selectSpeak.getName());
-        txtRecordDuration.setText(HbApplication.getInstance().selectDuration.getMinute()+"min");
+        txtRecordDuration.setText(HbApplication.getInstance().selectDuration.getMinute() + "min");
     }
 
 
-    private void initResourceData(){
+    private void initResourceData() {
         //设备使用初始数据
         restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
-        if(restDurationList==null||restDurationList.size()==0){
+        if (restDurationList == null || restDurationList.size() == 0) {
             RestDuration r10 = new RestDuration();
             r10.setName("10分钟体验");
             r10.setMinute(10);
@@ -340,7 +349,7 @@ public class DeviceFragment extends Fragment {
         }
 
         resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
-        if(resourceList==null||resourceList.size()==0){
+        if (resourceList == null || resourceList.size() == 0) {
             Resource res1 = new Resource();
             res1.setType(0);
             res1.setName("高山流水");
@@ -386,26 +395,26 @@ public class DeviceFragment extends Fragment {
     private void setDeviceBattery(int battery) {
         //设置信号
         if (battery > 80) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p4));
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p4));
         } else if (battery > 70) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p3));
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p3));
         } else if (battery > 60) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p2));
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p2));
         } else {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p1));
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p1));
         }
     }
 
     private void setDeviceSignal(int signal) {
         //设置信号
         if (signal > 80) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s05));
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s05));
         } else if (signal > 70) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s03));
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s03));
         } else if (signal > 60) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s02));
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s02));
         } else {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s00));
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s00));
         }
     }
 
@@ -530,12 +539,87 @@ public class DeviceFragment extends Fragment {
                                         }
 
                                         hexString2002 = "";
+
+                                        //处理放松度
+                                        handleRelaxData(dataInfo);
+                                        //处理睡眠质量
+                                        handleSleepData(dataInfo);
                                     }
                                 });
                             }
                         }
                     }
                 });
+    }
+
+    private void handleRelaxData(SleepDataInfo dataInfo) {
+        RelaxData data = new RelaxData();
+        data.setEndTime(System.currentTimeMillis());
+        data.setUsageRecordId(HbApplication.getInstance().usageRecord.getId());
+        data.setRelax(dataInfo.getRelax());
+        data.setType(dataInfo.getRelaxType());
+        data.setTypeName(dataInfo.getRelaxTypeName());
+        relaxDataList.add(data);
+
+        txtRelaxType.setText(data.getTypeName());
+        switch (data.getType()){
+            case 0:
+                ivRelaxType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.relax_0));
+                break;
+            case 1:
+                ivRelaxType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.relax_1));
+                break;
+            case 2:
+                ivRelaxType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.relax_2));
+                break;
+            case 3:
+                ivRelaxType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.relax_3));
+                break;
+            case 4:
+                ivRelaxType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.relax_4));
+                break;
+        }
+    }
+
+    private void handleSleepData(SleepDataInfo dataInfo) {
+        SleepData data = new SleepData();
+        data.setEndTime(System.currentTimeMillis());
+        data.setUsageRecordId(HbApplication.getInstance().usageRecord.getId());
+        data.setType(dataInfo.getQuality());
+        data.setTypeName(dataInfo.getQualityTypeName());
+        int relaxSize = relaxDataList.size();
+        if (relaxSize >= 200) {
+            int startSum = 0;
+            int endSum = 0;
+            for (int i = 0; i < 100; i++) {
+                RelaxData startItem = relaxDataList.get(i);
+                RelaxData endItem = relaxDataList.get(relaxSize - 1 - i);
+                startSum += startItem.getRelax();
+                endSum += endItem.getRelax();
+            }
+            int vigor = Math.abs(startSum - endSum) / 100;
+            data.setVigor(vigor);
+        }
+        sleepDataList.add(data);
+
+        txtSleepType.setText(data.getTypeName());
+        switch (data.getType()){
+            case 0:
+                ivSleepType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.sleep_0));
+                break;
+            case 1:
+                ivSleepType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.sleep_1));
+                break;
+            case 2:
+                ivSleepType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.sleep_2));
+                break;
+            case 3:
+                ivSleepType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.sleep_3));
+                break;
+            case 4:
+                ivSleepType.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.sleep_4));
+                break;
+        }
     }
 
     private boolean isData1080(byte[] datas) {
@@ -658,7 +742,7 @@ public class DeviceFragment extends Fragment {
 
     private void startRest() {
         isResting = true;
-        initZipFile();
+        initUsageRecord();
 
         btnMenu.setVisibility(View.GONE);
         btnMenuStop.setVisibility(View.VISIBLE);
@@ -672,7 +756,7 @@ public class DeviceFragment extends Fragment {
         //设置进度条最大长度为音频时长
         //seekMusic.setMax(mediaPlayer.getDuration());
         int minute = HbApplication.getInstance().selectDuration.getMinute();
-        seekMusic.setMax(minute*60);
+        seekMusic.setMax(minute * 60);
 
         //线程开始运行
         startTimerTask();
@@ -705,6 +789,7 @@ public class DeviceFragment extends Fragment {
         animationR.pause();
 
         //记录使用记录
+        HbApplication.getInstance().usageRecord.setEndTime(endTime);
         HbApplication.getDaoInstance().getUsageRecordDao().insertOrReplace(HbApplication.getInstance().usageRecord);
     }
 
@@ -764,13 +849,7 @@ public class DeviceFragment extends Fragment {
 
     }
 
-    private void initZipFile(){
-        startTime = System.currentTimeMillis();
-        String fileName = HbApplication.getInstance().loginUser.getUserName() + "_" + System.currentTimeMillis();
-        dataFileName = fileName + ".txt";
-        zipFileName = fileName + ".zip";
-        originalList.clear();
-    }
+
 
     private void updateZipFile() {
         File srcFile = new File(cacheDir, dataFileName);
@@ -807,10 +886,44 @@ public class DeviceFragment extends Fragment {
         }
     }
 
+    /**
+     * Todo:上传失败后补传
+     */
     private void updateFail() {
 
     }
 
+    private void initUsageRecord() {
+        //记录使用记录
+        HbApplication.getDaoInstance().getUsageRecordDao().insertOrReplace(HbApplication.getInstance().usageRecord);
+        UsageRecord newRecord = new UsageRecord();
+        newRecord.setUserId(HbApplication.getInstance().usageRecord.getUserId());
+        newRecord.setUserCode(HbApplication.getInstance().usageRecord.getUserCode());
+        newRecord.setUserName(HbApplication.getInstance().usageRecord.getUserName());
+        newRecord.setMusicId(HbApplication.getInstance().usageRecord.getMusicId());
+        newRecord.setSpeakId(HbApplication.getInstance().usageRecord.getSpeakId());
+        newRecord.setRestDurationId(HbApplication.getInstance().usageRecord.getRestDurationId());
+        newRecord.setDeviceSN(HbApplication.getInstance().usageRecord.getDeviceSN());
+        newRecord.setDeviceMac(HbApplication.getInstance().usageRecord.getDeviceMac());
+        newRecord.setDeviceName(HbApplication.getInstance().usageRecord.getDeviceName());
+        newRecord.setDeviceBattery(HbApplication.getInstance().usageRecord.getDeviceBattery());
+        newRecord.setDeviceSignal(HbApplication.getInstance().usageRecord.getDeviceSignal());
+        HbApplication.getInstance().usageRecord = newRecord;
+
+        startTime = System.currentTimeMillis();
+        String fileName = HbApplication.getInstance().loginUser.getUserName() + "_" + System.currentTimeMillis();
+        dataFileName = fileName + ".txt";
+        zipFileName = fileName + ".zip";
+        originalList.clear();
+
+        relaxDataList.clear();
+        sleepDataList.clear();
+
+        HbApplication.getInstance().usageRecord.setStartTime(startTime);
+    }
+
+    private List<RelaxData> relaxDataList = new ArrayList<>();
+    private List<SleepData> sleepDataList = new ArrayList<>();
     private List<String> originalList = new ArrayList<>();
     private Timer timerOriginal = new Timer();
     TimerTask task = new TimerTask() {
@@ -883,9 +996,10 @@ public class DeviceFragment extends Fragment {
 
     private int currentSecond;
     private Timer timerMusic = new Timer();
-    private TimerTask timerTask=null;
-    private void startTimerTask(){
-        if(timerTask==null){
+    private TimerTask timerTask = null;
+
+    private void startTimerTask() {
+        if (timerTask == null) {
             timerTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -909,14 +1023,10 @@ public class DeviceFragment extends Fragment {
         timerMusic.schedule(timerTask, 0, 1000);
     }
 
-    private void endTimerTask(){
+    private void endTimerTask() {
         timerTask.cancel();
-        timerTask=null;
+        timerTask = null;
     }
-
-
-
-
 
 
 }
