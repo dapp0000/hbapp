@@ -507,9 +507,10 @@ public class DeviceFragment extends Fragment {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (isResting) {
-                                        originalList.add(hexString1080);
-                                    }
+                                    //小包数据不上传
+//                                    if (isResting) {
+//                                        originalList.add(hexString1080);
+//                                    }
                                     addLineData(datas);
                                     hexString2002 = "";
                                 }
@@ -523,6 +524,7 @@ public class DeviceFragment extends Fragment {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        //大包数据上传
                                         if (isResting) {
                                             originalList.add(hexString2002);
                                         }
@@ -656,11 +658,7 @@ public class DeviceFragment extends Fragment {
 
     private void startRest() {
         isResting = true;
-        startTime = System.currentTimeMillis();
-        String fileName = HbApplication.getInstance().loginUser.getUserName() + "_" + System.currentTimeMillis();
-        dataFileName = fileName + ".txt";
-        zipFileName = fileName + ".zip";
-        originalList.clear();
+        initZipFile();
 
         btnMenu.setVisibility(View.GONE);
         btnMenuStop.setVisibility(View.VISIBLE);
@@ -686,6 +684,7 @@ public class DeviceFragment extends Fragment {
 
     private void stopRest() {
         if (bleDevice != null) {
+            //停止休息上传睡眠数据(包括记录和文件）
             updateNet();
         }
 
@@ -765,6 +764,14 @@ public class DeviceFragment extends Fragment {
 
     }
 
+    private void initZipFile(){
+        startTime = System.currentTimeMillis();
+        String fileName = HbApplication.getInstance().loginUser.getUserName() + "_" + System.currentTimeMillis();
+        dataFileName = fileName + ".txt";
+        zipFileName = fileName + ".zip";
+        originalList.clear();
+    }
+
     private void updateZipFile() {
         File srcFile = new File(cacheDir, dataFileName);
         File zipFile = new File(cacheDir, zipFileName);
@@ -772,7 +779,7 @@ public class DeviceFragment extends Fragment {
         try {
             boolean result = ZipUtils.zipFile(srcFile, zipFile);
             if (result) {
-                ToastUtils.showShort("数据文件准备上传");
+                LogUtils.i("数据文件准备上传");
                 FileUtils.delete(srcFile);//删除原始文件
                 String base_url = URLUtil.url + URLUtil.fileData;
                 OkGo.<String>post(base_url)
@@ -782,18 +789,18 @@ public class DeviceFragment extends Fragment {
                         .execute(new StringCallback() {
                             @Override
                             public void onSuccess(Response<String> response) {
-                                ToastUtils.showShort("上传成功" + response.body());
+                                LogUtils.i("上传成功" + response.body());
                                 FileUtils.delete(zipFile);
                             }
 
                             @Override
                             public void onError(Response<String> response) {
-                                ToastUtils.showShort("上传失败" + response.body());
+                                LogUtils.i("上传失败" + response.body());
                             }
                         });
 
             } else {
-                ToastUtils.showShort("数据文件丢失");
+                LogUtils.i("数据文件丢失");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -815,10 +822,7 @@ public class DeviceFragment extends Fragment {
                     Object[] datas = originalList.toArray();
                     originalList.clear();
                     OriginalDataUtil.writeListIntoCache(cacheDir, dataFileName, datas);
-                } else {
-                    updateFail();
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

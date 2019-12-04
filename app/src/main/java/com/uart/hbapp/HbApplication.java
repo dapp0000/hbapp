@@ -74,9 +74,9 @@ public class HbApplication extends Application {
         loggingInterceptor.setColorLevel(Level.INFO);
         builder.addInterceptor(loggingInterceptor);
         //全局的读取超时时间
-        builder.readTimeout(15000, TimeUnit.MILLISECONDS);
+        builder.readTimeout(60000, TimeUnit.MILLISECONDS);
         //全局的写入超时时间
-        builder.writeTimeout(15000, TimeUnit.MILLISECONDS);
+        builder.writeTimeout(60000, TimeUnit.MILLISECONDS);
         //全局的连接超时时间
         builder.connectTimeout(5000, TimeUnit.MILLISECONDS);
 
