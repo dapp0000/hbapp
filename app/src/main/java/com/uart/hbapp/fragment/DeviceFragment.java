@@ -1024,8 +1024,10 @@ public class DeviceFragment extends Fragment {
     }
 
     private void endTimerTask() {
-        timerTask.cancel();
-        timerTask = null;
+        if(timerTask!=null){
+            timerTask.cancel();
+            timerTask = null;
+        }
     }
 
 

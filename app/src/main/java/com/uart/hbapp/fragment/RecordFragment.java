@@ -17,6 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.blankj.utilcode.util.ToastUtils;
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
+import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.CommonAdapter;
 import com.uart.hbapp.adapter.CommonViewHolder;
@@ -24,8 +29,12 @@ import com.uart.hbapp.bean.RecordBean;
 import com.uart.hbapp.history.DayHistoryActivity;
 import com.uart.hbapp.history.MonthHistoryActivity;
 import com.uart.hbapp.history.WeekHistoryActivity;
+import com.uart.hbapp.utils.URLUtil;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -47,33 +56,6 @@ public class RecordFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_record, container, false);
         ButterKnife.bind(this, v);
-
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean(true,false));
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean(true,false));
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean(true,false));
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean(true,true));
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean());
-        records.add(new RecordBean(true,false));
-
         recordAdapter=new CommonAdapter<RecordBean>(getActivity(),records,R.layout.adapter_record) {
             @Override
             protected void convertView(CommonViewHolder holder, RecordBean bean) {
@@ -120,10 +102,48 @@ public class RecordFragment extends Fragment {
                 }
             }
         };
-
         listRecord.setAdapter(recordAdapter);
 
+        initDatas();
         return v;
+    }
+
+    private void initDatas(){
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("token", HbApplication.getInstance().loginUser.getToken());
+        params.put("pageNo", 1);
+        params.put("pageRows", 1000);
+        params.put("type", 2);
+        JSONObject jsonObject = new JSONObject(params);
+        String base_url = URLUtil.url + URLUtil.historyQuery;
+        OkGo.<String>post(base_url)
+                .tag(this)
+                .cacheKey("cachePostKey")
+                .headers("Content-Type","application/json")
+                .upJson(jsonObject.toString())
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response.body());
+                            int error = jsonObject.getInt("error");
+                            if (error == 0) {
+//                                records.add(new RecordBean());
+//                                records.add(new RecordBean(true,false));
+
+                            } else {
+                                ToastUtils.showShort(jsonObject.getString("message"));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        ToastUtils.showShort("服务器异常");
+                    }
+                });
     }
 
     @Override

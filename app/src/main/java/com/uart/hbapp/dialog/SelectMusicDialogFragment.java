@@ -75,8 +75,6 @@ public class SelectMusicDialogFragment extends DialogFragment {
 
         spinnerInit();
 
-        getDialog().setOnDismissListener(_onDismissListener);
-
         return v;
     }
 
@@ -98,6 +96,14 @@ public class SelectMusicDialogFragment extends DialogFragment {
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         win.setAttributes(params);
+
+        getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if(_onDismissListener!=null)
+                    _onDismissListener.onDismiss(null);
+            }
+        });
     }
 
     @OnClick({R.id.layout_title})
@@ -105,8 +111,6 @@ public class SelectMusicDialogFragment extends DialogFragment {
         switch (view.getId()) {
             case R.id.layout_title:
                 getDialog().dismiss();
-                if(_onDismissListener!=null)
-                    _onDismissListener.onDismiss(null);
                 break;
         }
     }
@@ -121,10 +125,12 @@ public class SelectMusicDialogFragment extends DialogFragment {
             }
         };
         spinnerSpan.setAdapter(spanAdapter);
-        for (int i=0;i<restDurationList.size();i++){
-            RestDuration item = restDurationList.get(i);
-            if(item.getId().equals(HbApplication.getInstance().selectDuration.getId()))
-                spinnerSpan.setSelection(i);
+        if(HbApplication.getInstance().selectDuration!=null){
+            for (int i=0;i<restDurationList.size();i++){
+                RestDuration item = restDurationList.get(i);
+                if(item.getId().equals(HbApplication.getInstance().selectDuration.getId()))
+                    spinnerSpan.setSelection(i);
+            }
         }
         spinnerSpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -148,6 +154,7 @@ public class SelectMusicDialogFragment extends DialogFragment {
                 speakList.add(res);
         }
 
+
         CommonAdapter<Resource> musicAdapter = new CommonAdapter<Resource>(getActivity(),musicList,R.layout.adapter_spinner_dropdown_item) {
             @Override
             protected void convertView(CommonViewHolder holder, Resource resource) {
@@ -156,11 +163,14 @@ public class SelectMusicDialogFragment extends DialogFragment {
             }
         };
         spinnerMusic.setAdapter(musicAdapter);
-        for (int i=0;i<musicList.size();i++){
-            Resource item = musicList.get(i);
-            if(item.getId().equals(HbApplication.getInstance().selectMusic.getId()))
-                spinnerMusic.setSelection(i);
+        if(HbApplication.getInstance().selectMusic!=null){
+            for (int i=0;i<musicList.size();i++){
+                Resource item = musicList.get(i);
+                if(item.getId().equals(HbApplication.getInstance().selectMusic.getId()))
+                    spinnerMusic.setSelection(i);
+            }
         }
+
         spinnerMusic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -180,11 +190,14 @@ public class SelectMusicDialogFragment extends DialogFragment {
             }
         };
         spinnerStyle.setAdapter(speakAdapter);
-        for (int i=0;i<speakList.size();i++){
-            Resource item = speakList.get(i);
-            if(item.getId().equals(HbApplication.getInstance().selectSpeak.getId()))
-                spinnerStyle.setSelection(i);
+        if(HbApplication.getInstance().selectSpeak!=null){
+            for (int i=0;i<speakList.size();i++){
+                Resource item = speakList.get(i);
+                if(item.getId().equals(HbApplication.getInstance().selectSpeak.getId()))
+                    spinnerStyle.setSelection(i);
+            }
         }
+
         spinnerStyle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
