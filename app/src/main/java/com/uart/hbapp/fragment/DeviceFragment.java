@@ -63,6 +63,7 @@ import com.uart.hbapp.bean.SleepDataInfo;
 import com.uart.hbapp.dialog.EditDeviceDialogFragment;
 import com.uart.hbapp.dialog.SelectMusicDialogFragment;
 import com.uart.hbapp.utils.ByteUtils;
+import com.uart.hbapp.utils.CommandUtils;
 import com.uart.hbapp.utils.OriginalDataUtil;
 import com.uart.hbapp.utils.URLUtil;
 import com.uart.hbapp.utils.view.LineChart.LineChartManager;
@@ -224,10 +225,19 @@ public class DeviceFragment extends Fragment {
         bleDevice = ((MainActivity) getActivity()).getBleDevice();
         if (bleDevice == null) {
             lineChartSignal.setNoDataText("设备未连接");
+            //设置设备名称
+            btnEditDevice.setText(CommandUtils.getUIDeviceName(null));
+            //设置电量
+            ivBattery.setImageBitmap(CommandUtils.getUIDeviceBattery(getContext(),null));
+            //设置信号
+            ivSignal.setImageBitmap(CommandUtils.getUIDeviceSignal(getContext(),null));
+
+            btnEditDevice.setEnabled(false);
             btnPlay.setEnabled(false);
             return;
         } else {
             lineChartSignal.setNoDataText("设备准备就绪");
+            btnEditDevice.setEnabled(true);
             btnPlay.setEnabled(true);
         }
 
@@ -239,11 +249,13 @@ public class DeviceFragment extends Fragment {
         usageRecord.setDeviceSignal(Math.abs(100 - Math.abs(bleDevice.getRssi())));
 
         //设置设备名称
-        btnEditDevice.setText("我的设备:"+usageRecord.getDeviceName());
+        btnEditDevice.setText(CommandUtils.getUIDeviceName(HbApplication.getInstance().usageRecord.getDeviceName()));
         //设置电量
-        setDeviceBattery(usageRecord.getDeviceBattery());
+        ivBattery.setImageBitmap(CommandUtils.getUIDeviceBattery(getContext(),HbApplication.getInstance().usageRecord.getDeviceBattery()));
         //设置信号
-        setDeviceSignal(usageRecord.getDeviceSignal());
+        ivSignal.setImageBitmap(CommandUtils.getUIDeviceSignal(getContext(),HbApplication.getInstance().usageRecord.getDeviceSignal()));
+
+
         //设置音乐
         Long selectMusicId = usageRecord.getMusicId();
         Long selectSpeakId = usageRecord.getSpeakId();
@@ -394,35 +406,10 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void setDeviceBattery(Integer battery) {
-        if(battery==null)
-            return;
 
-        if (battery > 80) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p4));
-        } else if (battery > 70) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p3));
-        } else if (battery > 60) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p2));
-        } else {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p1));
-        }
-    }
 
-    private void setDeviceSignal(Integer signal) {
-        if(signal==null)
-            return;
 
-        if (signal > 50) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s05));
-        } else if (signal > 30) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s03));
-        } else if (signal > 10) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s02));
-        } else {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s00));
-        }
-    }
+
 
     private void configDIS(BluetoothGattService service) {
         List<BluetoothGattCharacteristic> characteristics_DIS = service.getCharacteristics();
@@ -959,8 +946,10 @@ public class DeviceFragment extends Fragment {
                 stopRest();
                 break;
             case R.id.btn_edit_device:
-                EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
-                fragmentDevice.show(getFragmentManager(), "");
+                if(((MainActivity) getActivity()).getBleDevice()!=null){
+                    EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
+                    fragmentDevice.show(getFragmentManager(), "");
+                }
                 break;
             case R.id.btn_menu:
                 SelectMusicDialogFragment fragmentMusic = SelectMusicDialogFragment.newInstance("");
