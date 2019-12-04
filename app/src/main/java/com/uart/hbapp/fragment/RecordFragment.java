@@ -113,7 +113,7 @@ public class RecordFragment extends Fragment {
         params.put("token", HbApplication.getInstance().loginUser.getToken());
         params.put("pageNo", 1);
         params.put("pageRows", 1000);
-        params.put("type", 2);
+        //params.put("type", 2);
         JSONObject jsonObject = new JSONObject(params);
         String base_url = URLUtil.url + URLUtil.historyQuery;
         OkGo.<String>post(base_url)

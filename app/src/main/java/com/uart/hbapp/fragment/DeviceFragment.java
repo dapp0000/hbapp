@@ -238,6 +238,8 @@ public class DeviceFragment extends Fragment {
         usageRecord.setDeviceBattery(100);
         usageRecord.setDeviceSignal(Math.abs(100 - Math.abs(bleDevice.getRssi())));
 
+        //设置设备名称
+        btnEditDevice.setText("我的设备:"+usageRecord.getDeviceName());
         //设置电量
         setDeviceBattery(usageRecord.getDeviceBattery());
         //设置信号
@@ -392,8 +394,10 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void setDeviceBattery(int battery) {
-        //设置信号
+    private void setDeviceBattery(Integer battery) {
+        if(battery==null)
+            return;
+
         if (battery > 80) {
             ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p4));
         } else if (battery > 70) {
@@ -405,13 +409,15 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private void setDeviceSignal(int signal) {
-        //设置信号
-        if (signal > 80) {
+    private void setDeviceSignal(Integer signal) {
+        if(signal==null)
+            return;
+
+        if (signal > 50) {
             ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s05));
-        } else if (signal > 70) {
+        } else if (signal > 30) {
             ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s03));
-        } else if (signal > 60) {
+        } else if (signal > 10) {
             ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s02));
         } else {
             ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s00));

@@ -62,6 +62,7 @@ public class LoginUserPwdActivity extends Activity {
             ex.printStackTrace();
         }
 
+        username.setText(HbApplication.getInstance().loginUser.getUserName());
         checkPermissions();
     }
 

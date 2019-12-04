@@ -54,6 +54,8 @@ public class LoginActivity extends Activity {
             ex.printStackTrace();
         }
 
+        username.setText(HbApplication.getInstance().loginUser.getUserName());
+
         checkPermissions();
     }
 
