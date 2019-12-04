@@ -34,7 +34,7 @@ public class HbApplication extends Application {
     /**
      * 当前设备使用记录
      */
-    public UsageRecord usageRecord;
+    public UsageRecord usageRecord = new UsageRecord();
 
     public Resource selectMusic;
     public Resource selectSpeak;
@@ -57,12 +57,6 @@ public class HbApplication extends Application {
             loginUser.setToken("");//未登录
             loginUser.setSign(1);//未完善信息
         }
-
-        List<UsageRecord> usageRecords = daoSession.getUsageRecordDao().queryBuilder().orderDesc(UsageRecordDao.Properties.Id).limit(1).list();
-        if(usageRecords.size()>0)
-            usageRecord = usageRecords.get(0);
-        else
-            usageRecord = new UsageRecord();
     }
 
     private void initOkGo() {

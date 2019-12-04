@@ -16,6 +16,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.data.BleDevice;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.uart.entitylib.entity.UsageRecord;
 import com.uart.hbapp.comm.Observer;
 import com.uart.hbapp.comm.ObserverManager;
 import com.uart.hbapp.fragment.DeviceFragment;
@@ -135,13 +136,15 @@ public class MainActivity extends AppCompatActivity implements Observer {
             ObserverManager.getInstance().deleteObserver(this);
             if (bleDevice != null && BleManager.getInstance().isConnected(bleDevice)) {
                 BleManager.getInstance().disconnect(bleDevice);
-                //ToastUtils.showShort("蓝牙设备断开了");
             }
 
             //记录登录用户信息
             HbApplication.getDaoInstance().getUserInfoDao().insertOrReplace(HbApplication.getInstance().loginUser);
             //记录使用记录
             HbApplication.getDaoInstance().getUsageRecordDao().insertOrReplace(HbApplication.getInstance().usageRecord);
+
+
+            HbApplication.getInstance().usageRecord = new UsageRecord();
 
         }catch (Exception ex){
             ex.printStackTrace();

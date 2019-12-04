@@ -1,5 +1,6 @@
 package com.uart.hbapp.dialog;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.uart.hbapp.R;
+import com.uart.hbapp.search.ScanActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,6 +104,8 @@ public class EditDeviceDialogFragment extends DialogFragment {
                 getDialog().dismiss();
                 break;
             case R.id.btn_disconnect_ok:
+                startActivity(new Intent(getActivity(), ScanActivity.class));
+                getActivity().finish();
                 getDialog().dismiss();
                 break;
         }

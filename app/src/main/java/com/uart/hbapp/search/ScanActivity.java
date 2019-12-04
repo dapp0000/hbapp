@@ -38,6 +38,7 @@ import com.clj.fastble.exception.BleException;
 import com.clj.fastble.scan.BleScanRuleConfig;
 import com.uart.entitylib.entity.Resource;
 import com.uart.entitylib.entity.RestDuration;
+import com.uart.entitylib.entity.UsageRecord;
 import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
@@ -133,7 +134,7 @@ public class ScanActivity extends AppCompatActivity {
                 .setConnectOverTime(20000)
                 .setOperateTimeout(5000);
 
-
+        HbApplication.getInstance().usageRecord = new UsageRecord();
     }
 
     public void updateRadar(BleDevice mDatas) {

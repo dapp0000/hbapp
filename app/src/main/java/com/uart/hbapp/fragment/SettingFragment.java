@@ -18,11 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.clj.fastble.data.BleDevice;
 import com.uart.hbapp.HbApplication;
+import com.uart.hbapp.MainActivity;
 import com.uart.hbapp.R;
 import com.uart.hbapp.dialog.EditDeviceDialogFragment;
 import com.uart.hbapp.login.AdditionalActivity;
 import com.uart.hbapp.login.LoginUserPwdActivity;
+import com.uart.hbapp.utils.CommandUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,53 +59,16 @@ public class SettingFragment extends Fragment {
 
         nickName.setText(HbApplication.getInstance().loginUser.getUserName());
         //设置设备名称
-        setDeviceName(HbApplication.getInstance().usageRecord.getDeviceName());
+        btnEditDevice.setText(CommandUtils.getUIDeviceName(HbApplication.getInstance().usageRecord.getDeviceName()));
         //设置电量
-        setDeviceBattery(HbApplication.getInstance().usageRecord.getDeviceBattery());
+        ivBattery.setImageBitmap(CommandUtils.getUIDeviceBattery(getContext(),HbApplication.getInstance().usageRecord.getDeviceBattery()));
         //设置信号
-        setDeviceSignal(HbApplication.getInstance().usageRecord.getDeviceSignal());
+        ivSignal.setImageBitmap(CommandUtils.getUIDeviceSignal(getContext(),HbApplication.getInstance().usageRecord.getDeviceSignal()));
 
         return v;
     }
 
-    private void setDeviceName(String name){
-        if(TextUtils.isEmpty(name))
-            return;
 
-        btnEditDevice.setText("我的设备:"+name);
-    }
-
-    private void setDeviceBattery(Integer battery) {
-        if(battery==null)
-            return;
-
-        //设置信号
-        if (battery > 80) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p4));
-        } else if (battery > 70) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p3));
-        } else if (battery > 60) {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p2));
-        } else {
-            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.p1));
-        }
-    }
-
-    private void setDeviceSignal(Integer signal) {
-        if(signal==null)
-            return;
-
-        //设置信号
-        if (signal > 50) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s05));
-        } else if (signal > 30) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s03));
-        } else if (signal > 10) {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s02));
-        } else {
-            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.s00));
-        }
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -129,8 +95,10 @@ public class SettingFragment extends Fragment {
                 getActivity().finish();
                 break;
             case R.id.btnEditDevice:
-                EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
-                fragmentDevice.show(getFragmentManager(), "");
+                if(((MainActivity) getActivity()).getBleDevice()!=null){
+                    EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
+                    fragmentDevice.show(getFragmentManager(), "");
+                }
                 break;
         }
     }
