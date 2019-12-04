@@ -25,10 +25,10 @@ public class SysConfigVersionDao extends AbstractDao<SysConfigVersion, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Version = new Property(1, int.class, "version", false, "VERSION");
-        public final static Property PreviousVersion = new Property(2, int.class, "previousVersion", false, "PREVIOUS_VERSION");
+        public final static Property Version = new Property(1, Integer.class, "version", false, "VERSION");
+        public final static Property PreviousVersion = new Property(2, Integer.class, "previousVersion", false, "PREVIOUS_VERSION");
         public final static Property Remark = new Property(3, String.class, "remark", false, "REMARK");
-        public final static Property CreateTime = new Property(4, long.class, "createTime", false, "CREATE_TIME");
+        public final static Property CreateTime = new Property(4, Long.class, "createTime", false, "CREATE_TIME");
         public final static Property Creator = new Property(5, String.class, "creator", false, "CREATOR");
     }
 
@@ -46,10 +46,10 @@ public class SysConfigVersionDao extends AbstractDao<SysConfigVersion, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SYS_CONFIG_VERSION\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"VERSION\" INTEGER NOT NULL ," + // 1: version
-                "\"PREVIOUS_VERSION\" INTEGER NOT NULL ," + // 2: previousVersion
+                "\"VERSION\" INTEGER," + // 1: version
+                "\"PREVIOUS_VERSION\" INTEGER," + // 2: previousVersion
                 "\"REMARK\" TEXT," + // 3: remark
-                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 4: createTime
+                "\"CREATE_TIME\" INTEGER," + // 4: createTime
                 "\"CREATOR\" TEXT);"); // 5: creator
     }
 
@@ -67,14 +67,26 @@ public class SysConfigVersionDao extends AbstractDao<SysConfigVersion, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getVersion());
-        stmt.bindLong(3, entity.getPreviousVersion());
+ 
+        Integer version = entity.getVersion();
+        if (version != null) {
+            stmt.bindLong(2, version);
+        }
+ 
+        Integer previousVersion = entity.getPreviousVersion();
+        if (previousVersion != null) {
+            stmt.bindLong(3, previousVersion);
+        }
  
         String remark = entity.getRemark();
         if (remark != null) {
             stmt.bindString(4, remark);
         }
-        stmt.bindLong(5, entity.getCreateTime());
+ 
+        Long createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(5, createTime);
+        }
  
         String creator = entity.getCreator();
         if (creator != null) {
@@ -90,14 +102,26 @@ public class SysConfigVersionDao extends AbstractDao<SysConfigVersion, Long> {
         if (id != null) {
             stmt.bindLong(1, id);
         }
-        stmt.bindLong(2, entity.getVersion());
-        stmt.bindLong(3, entity.getPreviousVersion());
+ 
+        Integer version = entity.getVersion();
+        if (version != null) {
+            stmt.bindLong(2, version);
+        }
+ 
+        Integer previousVersion = entity.getPreviousVersion();
+        if (previousVersion != null) {
+            stmt.bindLong(3, previousVersion);
+        }
  
         String remark = entity.getRemark();
         if (remark != null) {
             stmt.bindString(4, remark);
         }
-        stmt.bindLong(5, entity.getCreateTime());
+ 
+        Long createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(5, createTime);
+        }
  
         String creator = entity.getCreator();
         if (creator != null) {
@@ -114,10 +138,10 @@ public class SysConfigVersionDao extends AbstractDao<SysConfigVersion, Long> {
     public SysConfigVersion readEntity(Cursor cursor, int offset) {
         SysConfigVersion entity = new SysConfigVersion( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // version
-            cursor.getInt(offset + 2), // previousVersion
+            cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1), // version
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // previousVersion
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // remark
-            cursor.getLong(offset + 4), // createTime
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // createTime
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // creator
         );
         return entity;
@@ -126,10 +150,10 @@ public class SysConfigVersionDao extends AbstractDao<SysConfigVersion, Long> {
     @Override
     public void readEntity(Cursor cursor, SysConfigVersion entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setVersion(cursor.getInt(offset + 1));
-        entity.setPreviousVersion(cursor.getInt(offset + 2));
+        entity.setVersion(cursor.isNull(offset + 1) ? null : cursor.getInt(offset + 1));
+        entity.setPreviousVersion(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
         entity.setRemark(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setCreateTime(cursor.getLong(offset + 4));
+        entity.setCreateTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setCreator(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     

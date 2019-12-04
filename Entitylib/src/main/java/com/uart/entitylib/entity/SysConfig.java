@@ -13,14 +13,14 @@ public class SysConfig {
     private Long id;
     private String configKey;//配置key
     private String configValue;//配置value
-    private int version;//当前版本号
-    private long createTime;//创建时间
+    private Integer version;//当前版本号
+    private Long createTime;//创建时间
     private String creator;//创建者
-    private long editTime;//编辑时间
+    private Long editTime;//编辑时间
     private String editor;//编辑者
-    @Generated(hash = 327036165)
-    public SysConfig(Long id, String configKey, String configValue, int version,
-            long createTime, String creator, long editTime, String editor) {
+    @Generated(hash = 776682216)
+    public SysConfig(Long id, String configKey, String configValue, Integer version,
+            Long createTime, String creator, Long editTime, String editor) {
         this.id = id;
         this.configKey = configKey;
         this.configValue = configValue;
@@ -51,16 +51,16 @@ public class SysConfig {
     public void setConfigValue(String configValue) {
         this.configValue = configValue;
     }
-    public int getVersion() {
+    public Integer getVersion() {
         return this.version;
     }
-    public void setVersion(int version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
-    public long getCreateTime() {
+    public Long getCreateTime() {
         return this.createTime;
     }
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
     public String getCreator() {
@@ -69,10 +69,10 @@ public class SysConfig {
     public void setCreator(String creator) {
         this.creator = creator;
     }
-    public long getEditTime() {
+    public Long getEditTime() {
         return this.editTime;
     }
-    public void setEditTime(long editTime) {
+    public void setEditTime(Long editTime) {
         this.editTime = editTime;
     }
     public String getEditor() {
@@ -81,5 +81,6 @@ public class SysConfig {
     public void setEditor(String editor) {
         this.editor = editor;
     }
+
 
 }

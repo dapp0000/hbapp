@@ -26,7 +26,7 @@ public class SysLogDao extends AbstractDao<SysLog, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property LogType = new Property(1, String.class, "logType", false, "LOG_TYPE");
-        public final static Property LogTime = new Property(2, long.class, "logTime", false, "LOG_TIME");
+        public final static Property LogTime = new Property(2, Long.class, "logTime", false, "LOG_TIME");
         public final static Property Content = new Property(3, String.class, "content", false, "CONTENT");
     }
 
@@ -45,7 +45,7 @@ public class SysLogDao extends AbstractDao<SysLog, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"SYS_LOG\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"LOG_TYPE\" TEXT NOT NULL ," + // 1: logType
-                "\"LOG_TIME\" INTEGER NOT NULL ," + // 2: logTime
+                "\"LOG_TIME\" INTEGER," + // 2: logTime
                 "\"CONTENT\" TEXT);"); // 3: content
     }
 
@@ -64,7 +64,11 @@ public class SysLogDao extends AbstractDao<SysLog, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindString(2, entity.getLogType());
-        stmt.bindLong(3, entity.getLogTime());
+ 
+        Long logTime = entity.getLogTime();
+        if (logTime != null) {
+            stmt.bindLong(3, logTime);
+        }
  
         String content = entity.getContent();
         if (content != null) {
@@ -81,7 +85,11 @@ public class SysLogDao extends AbstractDao<SysLog, Long> {
             stmt.bindLong(1, id);
         }
         stmt.bindString(2, entity.getLogType());
-        stmt.bindLong(3, entity.getLogTime());
+ 
+        Long logTime = entity.getLogTime();
+        if (logTime != null) {
+            stmt.bindLong(3, logTime);
+        }
  
         String content = entity.getContent();
         if (content != null) {
@@ -99,7 +107,7 @@ public class SysLogDao extends AbstractDao<SysLog, Long> {
         SysLog entity = new SysLog( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // logType
-            cursor.getLong(offset + 2), // logTime
+            cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // logTime
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // content
         );
         return entity;
@@ -109,7 +117,7 @@ public class SysLogDao extends AbstractDao<SysLog, Long> {
     public void readEntity(Cursor cursor, SysLog entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setLogType(cursor.getString(offset + 1));
-        entity.setLogTime(cursor.getLong(offset + 2));
+        entity.setLogTime(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setContent(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     

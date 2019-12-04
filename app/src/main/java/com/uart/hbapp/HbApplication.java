@@ -7,6 +7,8 @@ import com.uart.entitylib.DbManage;
 import com.uart.entitylib.dao.DaoSession;
 import com.uart.entitylib.dao.UsageRecordDao;
 import com.uart.entitylib.dao.UserInfoDao;
+import com.uart.entitylib.entity.Resource;
+import com.uart.entitylib.entity.RestDuration;
 import com.uart.entitylib.entity.UsageRecord;
 import com.uart.entitylib.entity.UserInfo;
 
@@ -33,6 +35,10 @@ public class HbApplication extends Application {
      * 当前设备使用记录
      */
     public UsageRecord usageRecord;
+
+    public Resource selectMusic;
+    public Resource selectSpeak;
+    public RestDuration selectDuration;
 
     @Override
     public void onCreate() {

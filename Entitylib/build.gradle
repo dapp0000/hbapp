@@ -23,7 +23,7 @@ android {
         }
     }
     greendao{
-        schemaVersion 2
+        schemaVersion 3
         daoPackage 'com.uart.entitylib.dao'
         targetGenDir 'src/main/java'
         //generateTests true

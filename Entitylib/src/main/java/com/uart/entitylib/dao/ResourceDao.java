@@ -26,9 +26,9 @@ public class ResourceDao extends AbstractDao<Resource, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
-        public final static Property Duration = new Property(3, int.class, "duration", false, "DURATION");
-        public final static Property Status = new Property(4, int.class, "status", false, "STATUS");
+        public final static Property Type = new Property(2, Integer.class, "type", false, "TYPE");
+        public final static Property Duration = new Property(3, Integer.class, "duration", false, "DURATION");
+        public final static Property Status = new Property(4, Integer.class, "status", false, "STATUS");
         public final static Property Speaker = new Property(5, String.class, "speaker", false, "SPEAKER");
         public final static Property UrlPath = new Property(6, String.class, "urlPath", false, "URL_PATH");
         public final static Property LocalFilePath = new Property(7, String.class, "localFilePath", false, "LOCAL_FILE_PATH");
@@ -49,9 +49,9 @@ public class ResourceDao extends AbstractDao<Resource, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"RESOURCE\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"NAME\" TEXT," + // 1: name
-                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
-                "\"DURATION\" INTEGER NOT NULL ," + // 3: duration
-                "\"STATUS\" INTEGER NOT NULL ," + // 4: status
+                "\"TYPE\" INTEGER," + // 2: type
+                "\"DURATION\" INTEGER," + // 3: duration
+                "\"STATUS\" INTEGER," + // 4: status
                 "\"SPEAKER\" TEXT," + // 5: speaker
                 "\"URL_PATH\" TEXT," + // 6: urlPath
                 "\"LOCAL_FILE_PATH\" TEXT);"); // 7: localFilePath
@@ -76,9 +76,21 @@ public class ResourceDao extends AbstractDao<Resource, Long> {
         if (name != null) {
             stmt.bindString(2, name);
         }
-        stmt.bindLong(3, entity.getType());
-        stmt.bindLong(4, entity.getDuration());
-        stmt.bindLong(5, entity.getStatus());
+ 
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(3, type);
+        }
+ 
+        Integer duration = entity.getDuration();
+        if (duration != null) {
+            stmt.bindLong(4, duration);
+        }
+ 
+        Integer status = entity.getStatus();
+        if (status != null) {
+            stmt.bindLong(5, status);
+        }
  
         String speaker = entity.getSpeaker();
         if (speaker != null) {
@@ -109,9 +121,21 @@ public class ResourceDao extends AbstractDao<Resource, Long> {
         if (name != null) {
             stmt.bindString(2, name);
         }
-        stmt.bindLong(3, entity.getType());
-        stmt.bindLong(4, entity.getDuration());
-        stmt.bindLong(5, entity.getStatus());
+ 
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(3, type);
+        }
+ 
+        Integer duration = entity.getDuration();
+        if (duration != null) {
+            stmt.bindLong(4, duration);
+        }
+ 
+        Integer status = entity.getStatus();
+        if (status != null) {
+            stmt.bindLong(5, status);
+        }
  
         String speaker = entity.getSpeaker();
         if (speaker != null) {
@@ -139,9 +163,9 @@ public class ResourceDao extends AbstractDao<Resource, Long> {
         Resource entity = new Resource( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.getInt(offset + 2), // type
-            cursor.getInt(offset + 3), // duration
-            cursor.getInt(offset + 4), // status
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // type
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // duration
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // status
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // speaker
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // urlPath
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // localFilePath
@@ -153,9 +177,9 @@ public class ResourceDao extends AbstractDao<Resource, Long> {
     public void readEntity(Cursor cursor, Resource entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setType(cursor.getInt(offset + 2));
-        entity.setDuration(cursor.getInt(offset + 3));
-        entity.setStatus(cursor.getInt(offset + 4));
+        entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setDuration(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setStatus(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
         entity.setSpeaker(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setUrlPath(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setLocalFilePath(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));

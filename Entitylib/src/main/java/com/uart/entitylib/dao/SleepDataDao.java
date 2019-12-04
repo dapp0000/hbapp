@@ -26,9 +26,10 @@ public class SleepDataDao extends AbstractDao<SleepData, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property UsageRecordId = new Property(1, Long.class, "usageRecordId", false, "USAGE_RECORD_ID");
-        public final static Property Type = new Property(2, int.class, "type", false, "TYPE");
-        public final static Property StartTime = new Property(3, Long.class, "startTime", false, "START_TIME");
-        public final static Property EndTime = new Property(4, Long.class, "endTime", false, "END_TIME");
+        public final static Property Type = new Property(2, Integer.class, "type", false, "TYPE");
+        public final static Property Vigor = new Property(3, Integer.class, "vigor", false, "VIGOR");
+        public final static Property StartTime = new Property(4, Long.class, "startTime", false, "START_TIME");
+        public final static Property EndTime = new Property(5, Long.class, "endTime", false, "END_TIME");
     }
 
 
@@ -46,9 +47,10 @@ public class SleepDataDao extends AbstractDao<SleepData, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"SLEEP_DATA\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"USAGE_RECORD_ID\" INTEGER," + // 1: usageRecordId
-                "\"TYPE\" INTEGER NOT NULL ," + // 2: type
-                "\"START_TIME\" INTEGER," + // 3: startTime
-                "\"END_TIME\" INTEGER);"); // 4: endTime
+                "\"TYPE\" INTEGER," + // 2: type
+                "\"VIGOR\" INTEGER," + // 3: vigor
+                "\"START_TIME\" INTEGER," + // 4: startTime
+                "\"END_TIME\" INTEGER);"); // 5: endTime
     }
 
     /** Drops the underlying database table. */
@@ -70,16 +72,25 @@ public class SleepDataDao extends AbstractDao<SleepData, Long> {
         if (usageRecordId != null) {
             stmt.bindLong(2, usageRecordId);
         }
-        stmt.bindLong(3, entity.getType());
+ 
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(3, type);
+        }
+ 
+        Integer vigor = entity.getVigor();
+        if (vigor != null) {
+            stmt.bindLong(4, vigor);
+        }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(4, startTime);
+            stmt.bindLong(5, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(5, endTime);
+            stmt.bindLong(6, endTime);
         }
     }
 
@@ -96,16 +107,25 @@ public class SleepDataDao extends AbstractDao<SleepData, Long> {
         if (usageRecordId != null) {
             stmt.bindLong(2, usageRecordId);
         }
-        stmt.bindLong(3, entity.getType());
+ 
+        Integer type = entity.getType();
+        if (type != null) {
+            stmt.bindLong(3, type);
+        }
+ 
+        Integer vigor = entity.getVigor();
+        if (vigor != null) {
+            stmt.bindLong(4, vigor);
+        }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(4, startTime);
+            stmt.bindLong(5, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(5, endTime);
+            stmt.bindLong(6, endTime);
         }
     }
 
@@ -119,9 +139,10 @@ public class SleepDataDao extends AbstractDao<SleepData, Long> {
         SleepData entity = new SleepData( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // usageRecordId
-            cursor.getInt(offset + 2), // type
-            cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3), // startTime
-            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4) // endTime
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // type
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // vigor
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // startTime
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5) // endTime
         );
         return entity;
     }
@@ -130,9 +151,10 @@ public class SleepDataDao extends AbstractDao<SleepData, Long> {
     public void readEntity(Cursor cursor, SleepData entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUsageRecordId(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
-        entity.setType(cursor.getInt(offset + 2));
-        entity.setStartTime(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
-        entity.setEndTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setType(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setVigor(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setStartTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setEndTime(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
      }
     
     @Override

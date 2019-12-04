@@ -16,17 +16,18 @@ public class UserInfo {
     private String mobile;//手机号
     private String password;//密码
     private String token;//访问令牌
-    private int sex;//性别（女0，男1，未知2）
-    private int height;//身高（厘米）
-    private int weight;//体重（kg)
+    private Integer sex;//性别（女0，男1，未知2）
+    private Integer height;//身高（厘米）
+    private Integer weight;//体重（kg)
     private String birthday;//生日（1982-02-05）
-    private int sign;//是否完善信息(0--信息全,1--需要补足信息)
-    private boolean activated;//是否激活
+    private Integer sign;//是否完善信息(0--信息全,1--需要补足信息)
+    private Boolean activated;//是否激活
     private Long lastlogin;//最后登录时间
-    @Generated(hash = 1242237078)
+    @Generated(hash = 1350998147)
     public UserInfo(Long id, String userCode, String userName, String mobile,
-            String password, String token, int sex, int height, int weight,
-            String birthday, int sign, boolean activated, Long lastlogin) {
+            String password, String token, Integer sex, Integer height,
+            Integer weight, String birthday, Integer sign, Boolean activated,
+            Long lastlogin) {
         this.id = id;
         this.userCode = userCode;
         this.userName = userName;
@@ -74,22 +75,28 @@ public class UserInfo {
     public void setPassword(String password) {
         this.password = password;
     }
-    public int getSex() {
+    public String getToken() {
+        return this.token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+    public Integer getSex() {
         return this.sex;
     }
-    public void setSex(int sex) {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
-    public int getHeight() {
+    public Integer getHeight() {
         return this.height;
     }
-    public void setHeight(int height) {
+    public void setHeight(Integer height) {
         this.height = height;
     }
-    public int getWeight() {
+    public Integer getWeight() {
         return this.weight;
     }
-    public void setWeight(int weight) {
+    public void setWeight(Integer weight) {
         this.weight = weight;
     }
     public String getBirthday() {
@@ -98,28 +105,24 @@ public class UserInfo {
     public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
+    public Integer getSign() {
+        return this.sign;
+    }
+    public void setSign(Integer sign) {
+        this.sign = sign;
+    }
+    public Boolean getActivated() {
+        return this.activated;
+    }
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
+    }
     public Long getLastlogin() {
         return this.lastlogin;
     }
     public void setLastlogin(Long lastlogin) {
         this.lastlogin = lastlogin;
     }
-    public String getToken() {
-        return this.token;
-    }
-    public void setToken(String token) {
-        this.token = token;
-    }
-    public int getSign() {
-        return this.sign;
-    }
-    public void setSign(int sign) {
-        this.sign = sign;
-    }
-    public boolean getActivated() {
-        return this.activated;
-    }
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
+
+
 }

@@ -12,15 +12,17 @@ public class SleepData {
     @Id(autoincrement = true)
     private Long id;
     private Long usageRecordId;//使用记录id
-    private int type;//数据类型（完全清醒0，导眠入睡1，浅度睡眠2，深度睡眠3，持续睡眠4）
+    private Integer type;//数据类型（完全清醒0，导眠入睡1，浅度睡眠2，深度睡眠3，持续睡眠4）
+    private Integer vigor;//精力回升 ，精力回升值 = abs（初始100个放松度的和 – 最后100个放松度的值）/100
     private Long startTime;//开始时间
     private Long endTime;//结束时间
-    @Generated(hash = 378385672)
-    public SleepData(Long id, Long usageRecordId, int type, Long startTime,
-            Long endTime) {
+    @Generated(hash = 1961748596)
+    public SleepData(Long id, Long usageRecordId, Integer type, Integer vigor,
+            Long startTime, Long endTime) {
         this.id = id;
         this.usageRecordId = usageRecordId;
         this.type = type;
+        this.vigor = vigor;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -39,10 +41,10 @@ public class SleepData {
     public void setUsageRecordId(Long usageRecordId) {
         this.usageRecordId = usageRecordId;
     }
-    public int getType() {
+    public Integer getType() {
         return this.type;
     }
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
     public Long getStartTime() {
@@ -57,5 +59,13 @@ public class SleepData {
     public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
+    public Integer getVigor() {
+        return this.vigor;
+    }
+    public void setVigor(Integer vigor) {
+        this.vigor = vigor;
+    }
+
+
 
 }

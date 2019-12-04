@@ -30,12 +30,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         public final static Property Mobile = new Property(3, String.class, "mobile", false, "MOBILE");
         public final static Property Password = new Property(4, String.class, "password", false, "PASSWORD");
         public final static Property Token = new Property(5, String.class, "token", false, "TOKEN");
-        public final static Property Sex = new Property(6, int.class, "sex", false, "SEX");
-        public final static Property Height = new Property(7, int.class, "height", false, "HEIGHT");
-        public final static Property Weight = new Property(8, int.class, "weight", false, "WEIGHT");
+        public final static Property Sex = new Property(6, Integer.class, "sex", false, "SEX");
+        public final static Property Height = new Property(7, Integer.class, "height", false, "HEIGHT");
+        public final static Property Weight = new Property(8, Integer.class, "weight", false, "WEIGHT");
         public final static Property Birthday = new Property(9, String.class, "birthday", false, "BIRTHDAY");
-        public final static Property Sign = new Property(10, int.class, "sign", false, "SIGN");
-        public final static Property Activated = new Property(11, boolean.class, "activated", false, "ACTIVATED");
+        public final static Property Sign = new Property(10, Integer.class, "sign", false, "SIGN");
+        public final static Property Activated = new Property(11, Boolean.class, "activated", false, "ACTIVATED");
         public final static Property Lastlogin = new Property(12, Long.class, "lastlogin", false, "LASTLOGIN");
     }
 
@@ -58,12 +58,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
                 "\"MOBILE\" TEXT," + // 3: mobile
                 "\"PASSWORD\" TEXT," + // 4: password
                 "\"TOKEN\" TEXT," + // 5: token
-                "\"SEX\" INTEGER NOT NULL ," + // 6: sex
-                "\"HEIGHT\" INTEGER NOT NULL ," + // 7: height
-                "\"WEIGHT\" INTEGER NOT NULL ," + // 8: weight
+                "\"SEX\" INTEGER," + // 6: sex
+                "\"HEIGHT\" INTEGER," + // 7: height
+                "\"WEIGHT\" INTEGER," + // 8: weight
                 "\"BIRTHDAY\" TEXT," + // 9: birthday
-                "\"SIGN\" INTEGER NOT NULL ," + // 10: sign
-                "\"ACTIVATED\" INTEGER NOT NULL ," + // 11: activated
+                "\"SIGN\" INTEGER," + // 10: sign
+                "\"ACTIVATED\" INTEGER," + // 11: activated
                 "\"LASTLOGIN\" INTEGER);"); // 12: lastlogin
     }
 
@@ -106,16 +106,36 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (token != null) {
             stmt.bindString(6, token);
         }
-        stmt.bindLong(7, entity.getSex());
-        stmt.bindLong(8, entity.getHeight());
-        stmt.bindLong(9, entity.getWeight());
+ 
+        Integer sex = entity.getSex();
+        if (sex != null) {
+            stmt.bindLong(7, sex);
+        }
+ 
+        Integer height = entity.getHeight();
+        if (height != null) {
+            stmt.bindLong(8, height);
+        }
+ 
+        Integer weight = entity.getWeight();
+        if (weight != null) {
+            stmt.bindLong(9, weight);
+        }
  
         String birthday = entity.getBirthday();
         if (birthday != null) {
             stmt.bindString(10, birthday);
         }
-        stmt.bindLong(11, entity.getSign());
-        stmt.bindLong(12, entity.getActivated() ? 1L: 0L);
+ 
+        Integer sign = entity.getSign();
+        if (sign != null) {
+            stmt.bindLong(11, sign);
+        }
+ 
+        Boolean activated = entity.getActivated();
+        if (activated != null) {
+            stmt.bindLong(12, activated ? 1L: 0L);
+        }
  
         Long lastlogin = entity.getLastlogin();
         if (lastlogin != null) {
@@ -156,16 +176,36 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         if (token != null) {
             stmt.bindString(6, token);
         }
-        stmt.bindLong(7, entity.getSex());
-        stmt.bindLong(8, entity.getHeight());
-        stmt.bindLong(9, entity.getWeight());
+ 
+        Integer sex = entity.getSex();
+        if (sex != null) {
+            stmt.bindLong(7, sex);
+        }
+ 
+        Integer height = entity.getHeight();
+        if (height != null) {
+            stmt.bindLong(8, height);
+        }
+ 
+        Integer weight = entity.getWeight();
+        if (weight != null) {
+            stmt.bindLong(9, weight);
+        }
  
         String birthday = entity.getBirthday();
         if (birthday != null) {
             stmt.bindString(10, birthday);
         }
-        stmt.bindLong(11, entity.getSign());
-        stmt.bindLong(12, entity.getActivated() ? 1L: 0L);
+ 
+        Integer sign = entity.getSign();
+        if (sign != null) {
+            stmt.bindLong(11, sign);
+        }
+ 
+        Boolean activated = entity.getActivated();
+        if (activated != null) {
+            stmt.bindLong(12, activated ? 1L: 0L);
+        }
  
         Long lastlogin = entity.getLastlogin();
         if (lastlogin != null) {
@@ -187,12 +227,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // mobile
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // password
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // token
-            cursor.getInt(offset + 6), // sex
-            cursor.getInt(offset + 7), // height
-            cursor.getInt(offset + 8), // weight
+            cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6), // sex
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // height
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // weight
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // birthday
-            cursor.getInt(offset + 10), // sign
-            cursor.getShort(offset + 11) != 0, // activated
+            cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // sign
+            cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0, // activated
             cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12) // lastlogin
         );
         return entity;
@@ -206,12 +246,12 @@ public class UserInfoDao extends AbstractDao<UserInfo, Long> {
         entity.setMobile(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setPassword(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setToken(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setSex(cursor.getInt(offset + 6));
-        entity.setHeight(cursor.getInt(offset + 7));
-        entity.setWeight(cursor.getInt(offset + 8));
+        entity.setSex(cursor.isNull(offset + 6) ? null : cursor.getInt(offset + 6));
+        entity.setHeight(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setWeight(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
         entity.setBirthday(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setSign(cursor.getInt(offset + 10));
-        entity.setActivated(cursor.getShort(offset + 11) != 0);
+        entity.setSign(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
+        entity.setActivated(cursor.isNull(offset + 11) ? null : cursor.getShort(offset + 11) != 0);
         entity.setLastlogin(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
      }
     

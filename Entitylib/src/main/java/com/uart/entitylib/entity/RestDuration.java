@@ -12,9 +12,9 @@ public class RestDuration {
     @Id(autoincrement = true)
     private Long id;
     private String name;//时段名称
-    private int minute;//时段时长（分钟）
-    @Generated(hash = 2145618589)
-    public RestDuration(Long id, String name, int minute) {
+    private Integer minute;//时段时长（分钟）
+    @Generated(hash = 225238474)
+    public RestDuration(Long id, String name, Integer minute) {
         this.id = id;
         this.name = name;
         this.minute = minute;
@@ -34,10 +34,12 @@ public class RestDuration {
     public void setName(String name) {
         this.name = name;
     }
-    public int getMinute() {
+    public Integer getMinute() {
         return this.minute;
     }
-    public void setMinute(int minute) {
+    public void setMinute(Integer minute) {
         this.minute = minute;
     }
+
+
 }

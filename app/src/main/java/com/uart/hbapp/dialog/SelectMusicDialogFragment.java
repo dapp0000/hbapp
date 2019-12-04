@@ -1,5 +1,7 @@
 package com.uart.hbapp.dialog;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,6 +11,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -27,6 +30,7 @@ import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.adapter.CommonAdapter;
 import com.uart.hbapp.adapter.CommonViewHolder;
+import com.uart.hbapp.fragment.DeviceFragment;
 import com.uart.hbapp.utils.DownLoadFileUtils;
 
 import java.util.ArrayList;
@@ -56,6 +60,11 @@ public class SelectMusicDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    private DialogInterface.OnDismissListener _onDismissListener;
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener){
+        _onDismissListener=onDismissListener;
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,6 +74,8 @@ public class SelectMusicDialogFragment extends DialogFragment {
         ButterKnife.bind(this, v);
 
         spinnerInit();
+
+        getDialog().setOnDismissListener(_onDismissListener);
 
         return v;
     }
@@ -94,6 +105,8 @@ public class SelectMusicDialogFragment extends DialogFragment {
         switch (view.getId()) {
             case R.id.layout_title:
                 getDialog().dismiss();
+                if(_onDismissListener!=null)
+                    _onDismissListener.onDismiss(null);
                 break;
         }
     }
@@ -108,6 +121,22 @@ public class SelectMusicDialogFragment extends DialogFragment {
             }
         };
         spinnerSpan.setAdapter(spanAdapter);
+        for (int i=0;i<restDurationList.size();i++){
+            RestDuration item = restDurationList.get(i);
+            if(item.getId().equals(HbApplication.getInstance().selectDuration.getId()))
+                spinnerSpan.setSelection(i);
+        }
+        spinnerSpan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                HbApplication.getInstance().selectDuration = restDurationList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         List<Resource> musicList = new ArrayList<Resource>();
         List<Resource> speakList = new ArrayList<Resource>();
@@ -127,6 +156,22 @@ public class SelectMusicDialogFragment extends DialogFragment {
             }
         };
         spinnerMusic.setAdapter(musicAdapter);
+        for (int i=0;i<musicList.size();i++){
+            Resource item = musicList.get(i);
+            if(item.getId().equals(HbApplication.getInstance().selectMusic.getId()))
+                spinnerMusic.setSelection(i);
+        }
+        spinnerMusic.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                HbApplication.getInstance().selectMusic = musicList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         CommonAdapter<Resource> speakAdapter = new CommonAdapter<Resource>(getActivity(),speakList,R.layout.adapter_spinner_dropdown_item) {
             @Override
@@ -135,5 +180,21 @@ public class SelectMusicDialogFragment extends DialogFragment {
             }
         };
         spinnerStyle.setAdapter(speakAdapter);
+        for (int i=0;i<speakList.size();i++){
+            Resource item = speakList.get(i);
+            if(item.getId().equals(HbApplication.getInstance().selectSpeak.getId()))
+                spinnerStyle.setSelection(i);
+        }
+        spinnerStyle.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                HbApplication.getInstance().selectSpeak = speakList.get(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 }

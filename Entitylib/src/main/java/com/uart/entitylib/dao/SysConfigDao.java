@@ -27,10 +27,10 @@ public class SysConfigDao extends AbstractDao<SysConfig, Long> {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property ConfigKey = new Property(1, String.class, "configKey", false, "CONFIG_KEY");
         public final static Property ConfigValue = new Property(2, String.class, "configValue", false, "CONFIG_VALUE");
-        public final static Property Version = new Property(3, int.class, "version", false, "VERSION");
-        public final static Property CreateTime = new Property(4, long.class, "createTime", false, "CREATE_TIME");
+        public final static Property Version = new Property(3, Integer.class, "version", false, "VERSION");
+        public final static Property CreateTime = new Property(4, Long.class, "createTime", false, "CREATE_TIME");
         public final static Property Creator = new Property(5, String.class, "creator", false, "CREATOR");
-        public final static Property EditTime = new Property(6, long.class, "editTime", false, "EDIT_TIME");
+        public final static Property EditTime = new Property(6, Long.class, "editTime", false, "EDIT_TIME");
         public final static Property Editor = new Property(7, String.class, "editor", false, "EDITOR");
     }
 
@@ -50,10 +50,10 @@ public class SysConfigDao extends AbstractDao<SysConfig, Long> {
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"CONFIG_KEY\" TEXT," + // 1: configKey
                 "\"CONFIG_VALUE\" TEXT," + // 2: configValue
-                "\"VERSION\" INTEGER NOT NULL ," + // 3: version
-                "\"CREATE_TIME\" INTEGER NOT NULL ," + // 4: createTime
+                "\"VERSION\" INTEGER," + // 3: version
+                "\"CREATE_TIME\" INTEGER," + // 4: createTime
                 "\"CREATOR\" TEXT," + // 5: creator
-                "\"EDIT_TIME\" INTEGER NOT NULL ," + // 6: editTime
+                "\"EDIT_TIME\" INTEGER," + // 6: editTime
                 "\"EDITOR\" TEXT);"); // 7: editor
     }
 
@@ -81,14 +81,26 @@ public class SysConfigDao extends AbstractDao<SysConfig, Long> {
         if (configValue != null) {
             stmt.bindString(3, configValue);
         }
-        stmt.bindLong(4, entity.getVersion());
-        stmt.bindLong(5, entity.getCreateTime());
+ 
+        Integer version = entity.getVersion();
+        if (version != null) {
+            stmt.bindLong(4, version);
+        }
+ 
+        Long createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(5, createTime);
+        }
  
         String creator = entity.getCreator();
         if (creator != null) {
             stmt.bindString(6, creator);
         }
-        stmt.bindLong(7, entity.getEditTime());
+ 
+        Long editTime = entity.getEditTime();
+        if (editTime != null) {
+            stmt.bindLong(7, editTime);
+        }
  
         String editor = entity.getEditor();
         if (editor != null) {
@@ -114,14 +126,26 @@ public class SysConfigDao extends AbstractDao<SysConfig, Long> {
         if (configValue != null) {
             stmt.bindString(3, configValue);
         }
-        stmt.bindLong(4, entity.getVersion());
-        stmt.bindLong(5, entity.getCreateTime());
+ 
+        Integer version = entity.getVersion();
+        if (version != null) {
+            stmt.bindLong(4, version);
+        }
+ 
+        Long createTime = entity.getCreateTime();
+        if (createTime != null) {
+            stmt.bindLong(5, createTime);
+        }
  
         String creator = entity.getCreator();
         if (creator != null) {
             stmt.bindString(6, creator);
         }
-        stmt.bindLong(7, entity.getEditTime());
+ 
+        Long editTime = entity.getEditTime();
+        if (editTime != null) {
+            stmt.bindLong(7, editTime);
+        }
  
         String editor = entity.getEditor();
         if (editor != null) {
@@ -140,10 +164,10 @@ public class SysConfigDao extends AbstractDao<SysConfig, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // configKey
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // configValue
-            cursor.getInt(offset + 3), // version
-            cursor.getLong(offset + 4), // createTime
+            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // version
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // createTime
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // creator
-            cursor.getLong(offset + 6), // editTime
+            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // editTime
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // editor
         );
         return entity;
@@ -154,10 +178,10 @@ public class SysConfigDao extends AbstractDao<SysConfig, Long> {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setConfigKey(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setConfigValue(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setVersion(cursor.getInt(offset + 3));
-        entity.setCreateTime(cursor.getLong(offset + 4));
+        entity.setVersion(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
+        entity.setCreateTime(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setCreator(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setEditTime(cursor.getLong(offset + 6));
+        entity.setEditTime(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
         entity.setEditor(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     

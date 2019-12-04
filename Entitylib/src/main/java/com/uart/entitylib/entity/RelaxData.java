@@ -12,15 +12,17 @@ public class RelaxData {
     @Id(autoincrement = true)
     private Long id;
     private Long usageRecordId;//使用记录id
-    private int type;//数据类型（精神紧张0，轻度放松1，中度放松2，深度放松3，持续放松4）
+    private Integer type;//数据类型（精神紧张0，轻度放松1，中度放松2，深度放松3，持续放松4）
+    private Integer relax;//放松度，0-30：精神紧张，31-60：轻度放松，61-80：中度放松，81-100：深度放松，当深度放松持续10s时间：持续放松状态
     private Long startTime;//开始时间
     private Long endTime;//结束时间
-    @Generated(hash = 1490733607)
-    public RelaxData(Long id, Long usageRecordId, int type, Long startTime,
+    @Generated(hash = 105500206)
+    public RelaxData(Long id, Long usageRecordId, Integer type, Integer relax, Long startTime,
             Long endTime) {
         this.id = id;
         this.usageRecordId = usageRecordId;
         this.type = type;
+        this.relax = relax;
         this.startTime = startTime;
         this.endTime = endTime;
     }
@@ -39,10 +41,10 @@ public class RelaxData {
     public void setUsageRecordId(Long usageRecordId) {
         this.usageRecordId = usageRecordId;
     }
-    public int getType() {
+    public Integer getType() {
         return this.type;
     }
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
     public Long getStartTime() {
@@ -57,5 +59,12 @@ public class RelaxData {
     public void setEndTime(Long endTime) {
         this.endTime = endTime;
     }
+    public Integer getRelax() {
+        return this.relax;
+    }
+    public void setRelax(Integer relax) {
+        this.relax = relax;
+    }
+
 
 }

@@ -98,9 +98,6 @@ public class UserInfoFragment extends Fragment {
 
         setData();
 
-        //adapter = new MusicAdapter(getActivity(), musicList);
-        //listMusic.setAdapter(adapter);
-
         List<Resource> resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
         for (Resource res : resourceList){
             if(res.getType()==0)
@@ -166,77 +163,6 @@ public class UserInfoFragment extends Fragment {
                     }
                 });
 
-     //初始数据
-      List<RestDuration> restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
-      if(restDurationList==null||restDurationList.size()==0){
-          RestDuration r10 = new RestDuration();
-          r10.setName("10分钟体验");
-          r10.setMinute(10);
-
-          RestDuration r20 = new RestDuration();
-          r20.setName("20分钟小憩");
-          r20.setMinute(20);
-
-          RestDuration r30 = new RestDuration();
-          r30.setName("30分钟精力恢复");
-          r30.setMinute(30);
-
-          RestDuration r60 = new RestDuration();
-          r60.setName("1小时小睡");
-          r60.setMinute(60);
-
-          RestDuration r120 = new RestDuration();
-          r120.setName("2小时原地复活");
-          r120.setMinute(120);
-
-          HbApplication.getDaoInstance().getRestDurationDao().insertOrReplace(r10);
-          HbApplication.getDaoInstance().getRestDurationDao().insertOrReplace(r20);
-          HbApplication.getDaoInstance().getRestDurationDao().insertOrReplace(r30);
-          HbApplication.getDaoInstance().getRestDurationDao().insertOrReplace(r60);
-          HbApplication.getDaoInstance().getRestDurationDao().insertOrReplace(r120);
-      }
-
-      List<Resource> resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
-      if(resourceList==null||resourceList.size()==0){
-          Resource res1 = new Resource();
-          res1.setType(0);
-          res1.setName("高山流水");
-          res1.setDuration(200);
-          res1.setStatus(1);
-          res1.setUrlPath("");
-          res1.setLocalFilePath("");
-
-          Resource res2 = new Resource();
-          res2.setType(0);
-          res2.setName("四脚朝天");
-          res2.setDuration(200);
-          res2.setStatus(1);
-          res2.setUrlPath("");
-          res2.setLocalFilePath("");
-
-          Resource res3 = new Resource();
-          res3.setType(1);
-          res3.setName("温柔语音");
-          res3.setSpeaker("林志玲");
-          res3.setDuration(200);
-          res3.setStatus(1);
-          res3.setUrlPath("");
-          res3.setLocalFilePath("");
-
-          Resource res4 = new Resource();
-          res4.setType(1);
-          res4.setName("相声风格");
-          res4.setSpeaker("郭德纲");
-          res4.setDuration(200);
-          res4.setStatus(1);
-          res4.setUrlPath("");
-          res4.setLocalFilePath("");
-
-          HbApplication.getDaoInstance().getResourceDao().insertOrReplace(res1);
-          HbApplication.getDaoInstance().getResourceDao().insertOrReplace(res2);
-          HbApplication.getDaoInstance().getResourceDao().insertOrReplace(res3);
-          HbApplication.getDaoInstance().getResourceDao().insertOrReplace(res4);
-      }
     }
 
     private void setLocalData(){

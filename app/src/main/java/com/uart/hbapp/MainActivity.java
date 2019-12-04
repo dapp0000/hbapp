@@ -138,6 +138,11 @@ public class MainActivity extends AppCompatActivity implements Observer {
                 //ToastUtils.showShort("蓝牙设备断开了");
             }
 
+            //记录登录用户信息
+            HbApplication.getDaoInstance().getUserInfoDao().insertOrReplace(HbApplication.getInstance().loginUser);
+            //记录使用记录
+            HbApplication.getDaoInstance().getUsageRecordDao().insertOrReplace(HbApplication.getInstance().usageRecord);
+
         }catch (Exception ex){
             ex.printStackTrace();
         }

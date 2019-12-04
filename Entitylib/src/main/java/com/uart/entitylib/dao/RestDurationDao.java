@@ -26,7 +26,7 @@ public class RestDurationDao extends AbstractDao<RestDuration, Long> {
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property Minute = new Property(2, int.class, "minute", false, "MINUTE");
+        public final static Property Minute = new Property(2, Integer.class, "minute", false, "MINUTE");
     }
 
 
@@ -44,7 +44,7 @@ public class RestDurationDao extends AbstractDao<RestDuration, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"REST_DURATION\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "\"NAME\" TEXT," + // 1: name
-                "\"MINUTE\" INTEGER NOT NULL );"); // 2: minute
+                "\"MINUTE\" INTEGER);"); // 2: minute
     }
 
     /** Drops the underlying database table. */
@@ -66,7 +66,11 @@ public class RestDurationDao extends AbstractDao<RestDuration, Long> {
         if (name != null) {
             stmt.bindString(2, name);
         }
-        stmt.bindLong(3, entity.getMinute());
+ 
+        Integer minute = entity.getMinute();
+        if (minute != null) {
+            stmt.bindLong(3, minute);
+        }
     }
 
     @Override
@@ -82,7 +86,11 @@ public class RestDurationDao extends AbstractDao<RestDuration, Long> {
         if (name != null) {
             stmt.bindString(2, name);
         }
-        stmt.bindLong(3, entity.getMinute());
+ 
+        Integer minute = entity.getMinute();
+        if (minute != null) {
+            stmt.bindLong(3, minute);
+        }
     }
 
     @Override
@@ -95,7 +103,7 @@ public class RestDurationDao extends AbstractDao<RestDuration, Long> {
         RestDuration entity = new RestDuration( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
-            cursor.getInt(offset + 2) // minute
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2) // minute
         );
         return entity;
     }
@@ -104,7 +112,7 @@ public class RestDurationDao extends AbstractDao<RestDuration, Long> {
     public void readEntity(Cursor cursor, RestDuration entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setMinute(cursor.getInt(offset + 2));
+        entity.setMinute(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
      }
     
     @Override

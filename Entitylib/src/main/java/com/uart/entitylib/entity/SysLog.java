@@ -14,10 +14,10 @@ public class SysLog {
     private Long id;
     @NotNull
     private String logType;//日志类型
-    private long logTime;//日期
+    private Long logTime;//日期
     private String content;//日志内容
-    @Generated(hash = 865330953)
-    public SysLog(Long id, @NotNull String logType, long logTime, String content) {
+    @Generated(hash = 234037210)
+    public SysLog(Long id, @NotNull String logType, Long logTime, String content) {
         this.id = id;
         this.logType = logType;
         this.logTime = logTime;
@@ -38,10 +38,10 @@ public class SysLog {
     public void setLogType(String logType) {
         this.logType = logType;
     }
-    public long getLogTime() {
+    public Long getLogTime() {
         return this.logTime;
     }
-    public void setLogTime(long logTime) {
+    public void setLogTime(Long logTime) {
         this.logTime = logTime;
     }
     public String getContent() {
@@ -50,5 +50,7 @@ public class SysLog {
     public void setContent(String content) {
         this.content = content;
     }
+
+
 
 }

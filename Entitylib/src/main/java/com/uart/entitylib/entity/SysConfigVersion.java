@@ -11,14 +11,14 @@ import org.greenrobot.greendao.annotation.Generated;
 public class SysConfigVersion {
     @Id(autoincrement = true)
     private Long id;
-    private int version;//当前版本号
-    private int previousVersion;//前版本号
+    private Integer version;//当前版本号
+    private Integer previousVersion;//前版本号
     private String remark;//备注
-    private long createTime;//创建时间
+    private Long createTime;//创建时间
     private String creator;//创建者
-    @Generated(hash = 872664058)
-    public SysConfigVersion(Long id, int version, int previousVersion,
-            String remark, long createTime, String creator) {
+    @Generated(hash = 38779960)
+    public SysConfigVersion(Long id, Integer version, Integer previousVersion,
+            String remark, Long createTime, String creator) {
         this.id = id;
         this.version = version;
         this.previousVersion = previousVersion;
@@ -35,16 +35,16 @@ public class SysConfigVersion {
     public void setId(Long id) {
         this.id = id;
     }
-    public int getVersion() {
+    public Integer getVersion() {
         return this.version;
     }
-    public void setVersion(int version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
-    public int getPreviousVersion() {
+    public Integer getPreviousVersion() {
         return this.previousVersion;
     }
-    public void setPreviousVersion(int previousVersion) {
+    public void setPreviousVersion(Integer previousVersion) {
         this.previousVersion = previousVersion;
     }
     public String getRemark() {
@@ -53,10 +53,10 @@ public class SysConfigVersion {
     public void setRemark(String remark) {
         this.remark = remark;
     }
-    public long getCreateTime() {
+    public Long getCreateTime() {
         return this.createTime;
     }
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
     public String getCreator() {
@@ -65,4 +65,6 @@ public class SysConfigVersion {
     public void setCreator(String creator) {
         this.creator = creator;
     }
+
+
 }

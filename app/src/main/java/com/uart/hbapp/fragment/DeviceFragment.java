@@ -1,8 +1,13 @@
 package com.uart.hbapp.fragment;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.Dialog;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
+import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -13,9 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +51,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.entitylib.entity.Resource;
+import com.uart.entitylib.entity.RestDuration;
+import com.uart.entitylib.entity.UsageRecord;
 import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
@@ -99,6 +105,16 @@ public class DeviceFragment extends Fragment {
     ImageView btnMenu;
     @BindView(R.id.btn_menu_stop)
     ImageView btnMenuStop;
+    @BindView(R.id.txt_record_music_name)
+    TextView txtRecordMusicName;
+    @BindView(R.id.txt_record_duration)
+    TextView txtRecordDuration;
+    @BindView(R.id.txt_record_speak_name)
+    TextView txtRecordSpeakName;
+    @BindView(R.id.iv_battery)
+    ImageView ivBattery;
+    @BindView(R.id.iv_signal)
+    ImageView ivSignal;
 
     private static final String TAG = DeviceFragment.class.getSimpleName();
     public static final int PROPERTY_READ = 1;
@@ -106,7 +122,7 @@ public class DeviceFragment extends Fragment {
     public static final int PROPERTY_WRITE_NO_RESPONSE = 3;
     public static final int PROPERTY_NOTIFY = 4;
     public static final int PROPERTY_INDICATE = 5;
-    RotateAnimation animationR;
+    ObjectAnimator animationR;
     DeviceViewModel mViewModel;
     ActionBar actionBar;
     LineChartManager lineChartManager;
@@ -121,7 +137,8 @@ public class DeviceFragment extends Fragment {
     long startTime;
     long endTime;
     boolean isResting;
-    int restMinute = 10;
+    List<Resource> resourceList;
+    List<RestDuration> restDurationList;
 
 
     @Override
@@ -131,6 +148,7 @@ public class DeviceFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         initView();
+        initResourceData();
         initData();
         initChart();
         return v;
@@ -173,16 +191,23 @@ public class DeviceFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void initView(){
+    private void initView() {
         cacheDir = Objects.requireNonNull(getActivity()).getCacheDir();
         lineChartManager = new LineChartManager(lineChartSignal);
         timerOriginal.schedule(task, 100, 15000);//15s
+
         /* 设置旋转动画*/
-        animationR = new RotateAnimation(360, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        animationR = new RotateAnimation(360, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+//        animationR.setDuration(3000);
+//        animationR.setRepeatCount(RotateAnimation.INFINITE);
+//        animationR.setInterpolator(new LinearInterpolator());
+
+        animationR = ObjectAnimator.ofFloat(btnMusic, "rotation", 0f, 360.0f);
         animationR.setDuration(3000);
-        animationR.setRepeatCount(RotateAnimation.INFINITE);
-        animationR.setInterpolator(new LinearInterpolator());
-        btnMusic.setAnimation(animationR);
+        animationR.setInterpolator(new LinearInterpolator());//不停顿
+        animationR.setRepeatCount(-1);//设置动画重复次数
+        animationR.setRepeatMode(ValueAnimator.RESTART);//动画重复模式
+        animationR.start();
     }
 
     private void initData() {
@@ -196,25 +221,43 @@ public class DeviceFragment extends Fragment {
             btnPlay.setEnabled(true);
         }
 
-//
-//        txtDeviceName.setText(bleDevice.getName());
-//
-//        //设置信号
-//        int signal = Math.abs(bleDevice.getRssi());
-//        if (signal > 80) {
-//            tvSignal.setText("很差");
-//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_1_bar_black_24dp));
-//        } else if (signal > 70) {
-//            tvSignal.setText("差");
-//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_2_bar_black_24dp));
-//        } else if (signal > 60) {
-//            tvSignal.setText("正常");
-//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_3_bar_black_24dp));
-//        } else {
-//            tvSignal.setText("很好");
-//            viewSignal.setBackground(getResources().getDrawable(R.drawable.ic_signal_cellular_4_bar_black_24dp));
-//        }
+        UsageRecord usageRecord = HbApplication.getInstance().usageRecord;
+        usageRecord.setDeviceName(bleDevice.getName());
+        usageRecord.setDeviceSN(bleDevice.getKey());
+        usageRecord.setDeviceMac(bleDevice.getMac());
+        usageRecord.setDeviceBattery(100);
+        usageRecord.setDeviceSignal(Math.abs(100 - Math.abs(bleDevice.getRssi())));
 
+        //设置电量
+        setDeviceBattery(usageRecord.getDeviceBattery());
+        //设置信号
+        setDeviceSignal(usageRecord.getDeviceSignal());
+        //设置音乐
+        Long selectMusicId = usageRecord.getMusicId();
+        Long selectSpeakId = usageRecord.getSpeakId();
+        Long selectDurationId = usageRecord.getRestDurationId();
+        for (Resource resource : resourceList){
+            if(resource.getType()==0){
+                if(HbApplication.getInstance().selectMusic==null)
+                    HbApplication.getInstance().selectMusic=resource;
+                if(selectMusicId==resource.getId())
+                    HbApplication.getInstance().selectMusic=resource;
+            }
+            else{
+                if(HbApplication.getInstance().selectSpeak==null)
+                    HbApplication.getInstance().selectSpeak=resource;
+                if(selectSpeakId==resource.getId())
+                    HbApplication.getInstance().selectSpeak=resource;
+            }
+        }
+        for (RestDuration restDuration : restDurationList){
+            if(HbApplication.getInstance().selectDuration==null)
+                HbApplication.getInstance().selectDuration=restDuration;
+            if(selectDurationId==restDuration.getId())
+                HbApplication.getInstance().selectDuration=restDuration;
+        }
+
+        setMusicAbout();
 
         BleManager.getInstance().readRssi(bleDevice, new BleRssiCallback() {
             @Override
@@ -228,7 +271,6 @@ public class DeviceFragment extends Fragment {
 
             }
         });
-
 
         BluetoothGatt gatt = BleManager.getInstance().getBluetoothGatt(bleDevice);
 
@@ -255,6 +297,115 @@ public class DeviceFragment extends Fragment {
                 default:
                     break;
             }
+        }
+    }
+
+    private void setMusicAbout(){
+        txtRecordMusicName.setText(HbApplication.getInstance().selectMusic.getName());
+        txtRecordSpeakName.setText(HbApplication.getInstance().selectSpeak.getName());
+        txtRecordDuration.setText(HbApplication.getInstance().selectDuration.getMinute()+"min");
+    }
+
+
+    private void initResourceData(){
+        //设备使用初始数据
+        restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
+        if(restDurationList==null||restDurationList.size()==0){
+            RestDuration r10 = new RestDuration();
+            r10.setName("10分钟体验");
+            r10.setMinute(10);
+
+            RestDuration r20 = new RestDuration();
+            r20.setName("20分钟小憩");
+            r20.setMinute(20);
+
+            RestDuration r30 = new RestDuration();
+            r30.setName("30分钟精力恢复");
+            r30.setMinute(30);
+
+            RestDuration r60 = new RestDuration();
+            r60.setName("1小时小睡");
+            r60.setMinute(60);
+
+            RestDuration r120 = new RestDuration();
+            r120.setName("2小时原地复活");
+            r120.setMinute(120);
+
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r10);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r20);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r30);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r60);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r120);
+            restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
+        }
+
+        resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
+        if(resourceList==null||resourceList.size()==0){
+            Resource res1 = new Resource();
+            res1.setType(0);
+            res1.setName("高山流水");
+            res1.setDuration(200);
+            res1.setStatus(1);
+            res1.setUrlPath("");
+            res1.setLocalFilePath("");
+
+            Resource res2 = new Resource();
+            res2.setType(0);
+            res2.setName("四脚朝天");
+            res2.setDuration(200);
+            res2.setStatus(1);
+            res2.setUrlPath("");
+            res2.setLocalFilePath("");
+
+            Resource res3 = new Resource();
+            res3.setType(1);
+            res3.setName("温柔语音");
+            res3.setSpeaker("林志玲");
+            res3.setDuration(200);
+            res3.setStatus(1);
+            res3.setUrlPath("");
+            res3.setLocalFilePath("");
+
+            Resource res4 = new Resource();
+            res4.setType(1);
+            res4.setName("相声风格");
+            res4.setSpeaker("郭德纲");
+            res4.setDuration(200);
+            res4.setStatus(1);
+            res4.setUrlPath("");
+            res4.setLocalFilePath("");
+
+            HbApplication.getDaoInstance().getResourceDao().insert(res1);
+            HbApplication.getDaoInstance().getResourceDao().insert(res2);
+            HbApplication.getDaoInstance().getResourceDao().insert(res3);
+            HbApplication.getDaoInstance().getResourceDao().insert(res4);
+            resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
+        }
+    }
+
+    private void setDeviceBattery(int battery) {
+        //设置信号
+        if (battery > 80) {
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p4));
+        } else if (battery > 70) {
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p3));
+        } else if (battery > 60) {
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p2));
+        } else {
+            ivBattery.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.p1));
+        }
+    }
+
+    private void setDeviceSignal(int signal) {
+        //设置信号
+        if (signal > 80) {
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s05));
+        } else if (signal > 70) {
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s03));
+        } else if (signal > 60) {
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s02));
+        } else {
+            ivSignal.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.s00));
         }
     }
 
@@ -341,16 +492,17 @@ public class DeviceFragment extends Fragment {
                         });
                     }
 
-                    private String hexString1080="";
-                    private String hexString2002="";
+                    private String hexString1080 = "";
+                    private String hexString2002 = "";
+
                     @Override
                     public void onCharacteristicChanged(byte[] datas) {
                         //aa aa 10 80 07ff07ff064a04b9038b02adf8000691
                         //aa aa 20 02 64831802621616ffd9022d3e043fd60302980235490147181055ea0400050065
-                        if(datas==null || datas.length<=4)//非法长度字符
+                        if (datas == null || datas.length <= 4)//非法长度字符
                             return;
 
-                        if(isData1080(datas)){
+                        if (isData1080(datas)) {
                             hexString1080 = ByteUtils.bytesToHex(datas);
                             runOnUiThread(new Runnable() {
                                 @Override
@@ -359,16 +511,14 @@ public class DeviceFragment extends Fragment {
                                         originalList.add(hexString1080);
                                     }
                                     addLineData(datas);
-                                    hexString2002="";
+                                    hexString2002 = "";
                                 }
                             });
-                        }
-                        else if(isData2002((datas))){
+                        } else if (isData2002((datas))) {
                             hexString2002 = ByteUtils.bytesToHex(datas);
-                        }
-                        else if(isData2002_end(datas)){
-                            if(hexString2002.length()==40){
-                                hexString2002+=ByteUtils.bytesToHex(datas);
+                        } else if (isData2002_end(datas)) {
+                            if (hexString2002.length() == 40) {
+                                hexString2002 += ByteUtils.bytesToHex(datas);
                                 final SleepDataInfo dataInfo = OriginalDataUtil.parseSleepData(hexString2002);
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -377,7 +527,7 @@ public class DeviceFragment extends Fragment {
                                             originalList.add(hexString2002);
                                         }
 
-                                        hexString2002="";
+                                        hexString2002 = "";
                                     }
                                 });
                             }
@@ -386,25 +536,25 @@ public class DeviceFragment extends Fragment {
                 });
     }
 
-    private boolean isData1080(byte[] datas){
+    private boolean isData1080(byte[] datas) {
         //aaaa1080fe7cfb560009042502fbfcfbfb1b036a
         return datas.length == 20
-                &&(datas[0] & 0xFF) == 170
-                &&(datas[1] & 0xFF) == 170
-                &&(datas[2] & 0xFF) == 16
-                &&(datas[3] & 0xFF) == 128;
+                && (datas[0] & 0xFF) == 170
+                && (datas[1] & 0xFF) == 170
+                && (datas[2] & 0xFF) == 16
+                && (datas[3] & 0xFF) == 128;
     }
 
-    private boolean isData2002(byte[] datas){
+    private boolean isData2002(byte[] datas) {
         //aaaa200264831807072a04843f0136d403312901
         return datas.length == 20
-                &&(datas[0] & 0xFF) == 170
-                &&(datas[1] & 0xFF) == 170
-                &&(datas[2] & 0xFF) == 32
-                &&(datas[3] & 0xFF) == 2;
+                && (datas[0] & 0xFF) == 170
+                && (datas[1] & 0xFF) == 170
+                && (datas[2] & 0xFF) == 32
+                && (datas[3] & 0xFF) == 2;
     }
 
-    private boolean isData2002_end(byte[] datas){
+    private boolean isData2002_end(byte[] datas) {
         //d36605d58c00f4b203494a040005004e
         return datas.length == 16;
     }
@@ -497,6 +647,7 @@ public class DeviceFragment extends Fragment {
             mediaPlayer.reset();
             mediaPlayer.setDataSource(filePath);
             mediaPlayer.prepare();
+            mediaPlayer.setLooping(true);
             mediaPlayer.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -504,8 +655,6 @@ public class DeviceFragment extends Fragment {
     }
 
     private void startRest() {
-        mediaPlayer(musicPath);
-
         isResting = true;
         startTime = System.currentTimeMillis();
         String fileName = HbApplication.getInstance().loginUser.getUserName() + "_" + System.currentTimeMillis();
@@ -519,15 +668,20 @@ public class DeviceFragment extends Fragment {
         layoutPlaying.setVisibility(View.VISIBLE);
         //播放音乐
         mediaPlayer = MediaPlayer.create(getActivity(), R.raw.right1);
-        //设置进度条最大长度为音频时长
-        seekMusic.setMax(mediaPlayer.getDuration());
+        mediaPlayer.setLooping(true);
         mediaPlayer.start();
+
+        //设置进度条最大长度为音频时长
+        //seekMusic.setMax(mediaPlayer.getDuration());
+        int minute = HbApplication.getInstance().selectDuration.getMinute();
+        seekMusic.setMax(minute*60);
+
         //线程开始运行
-        new MusicThread().start();
+        startTimerTask();
 
         seekMusic.setEnabled(false);
 
-        animationR.startNow();
+        animationR.resume();
     }
 
     private void stopRest() {
@@ -535,7 +689,7 @@ public class DeviceFragment extends Fragment {
             updateNet();
         }
 
-        if(isResting){
+        if (isResting) {
             mediaPlayer.reset();
         }
 
@@ -547,7 +701,12 @@ public class DeviceFragment extends Fragment {
         layoutControl.setVisibility(View.VISIBLE);
         layoutPlaying.setVisibility(View.GONE);
 
-        animationR.cancel();
+        endTimerTask();
+
+        animationR.pause();
+
+        //记录使用记录
+        HbApplication.getDaoInstance().getUsageRecordDao().insertOrReplace(HbApplication.getInstance().usageRecord);
     }
 
     private void updateNet() {
@@ -683,6 +842,12 @@ public class DeviceFragment extends Fragment {
             case R.id.btn_menu:
                 SelectMusicDialogFragment fragmentMusic = SelectMusicDialogFragment.newInstance("");
                 fragmentMusic.show(getFragmentManager(), "");
+                fragmentMusic.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        setMusicAbout();
+                    }
+                });
                 break;
         }
     }
@@ -699,26 +864,55 @@ public class DeviceFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        animationR.startNow();
+        if (isResting) {
+            animationR.resume();
+        } else {
+            animationR.pause();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        animationR.cancel();
     }
 
-    class MusicThread extends Thread {
-        @Override
-        public void run() {
-            super.run();
-            //判断当前播放位置是否小于总时长
-            while (seekMusic.getProgress() <= seekMusic.getMax()) {
-                //设置进度条当前位置为音频播放位置
-                seekMusic.setProgress(mediaPlayer.getCurrentPosition());
-            }
+
+    private int currentSecond;
+    private Timer timerMusic = new Timer();
+    private TimerTask timerTask=null;
+    private void startTimerTask(){
+        if(timerTask==null){
+            timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    try {
+                        currentSecond++;
+                        if (currentSecond < seekMusic.getMax()) {
+                            //设置进度条当前位置为音频播放位置
+                            seekMusic.setProgress(currentSecond);
+                        } else {
+                            //休息完成
+                            stopRest();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
         }
+
+        currentSecond = -1;
+        timerMusic.schedule(timerTask, 0, 1000);
     }
+
+    private void endTimerTask(){
+        timerTask.cancel();
+        timerTask=null;
+    }
+
+
+
+
 
 
 }

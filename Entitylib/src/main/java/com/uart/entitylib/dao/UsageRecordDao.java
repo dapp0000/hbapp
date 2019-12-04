@@ -31,14 +31,16 @@ public class UsageRecordDao extends AbstractDao<UsageRecord, Long> {
         public final static Property DeviceSN = new Property(4, String.class, "deviceSN", false, "DEVICE_SN");
         public final static Property DeviceMac = new Property(5, String.class, "deviceMac", false, "DEVICE_MAC");
         public final static Property DeviceName = new Property(6, String.class, "deviceName", false, "DEVICE_NAME");
-        public final static Property MusicId = new Property(7, Long.class, "musicId", false, "MUSIC_ID");
-        public final static Property SpeakId = new Property(8, Long.class, "speakId", false, "SPEAK_ID");
-        public final static Property RestDurationId = new Property(9, Long.class, "restDurationId", false, "REST_DURATION_ID");
-        public final static Property StartTime = new Property(10, Long.class, "startTime", false, "START_TIME");
-        public final static Property EndTime = new Property(11, Long.class, "endTime", false, "END_TIME");
-        public final static Property Vigor = new Property(12, int.class, "vigor", false, "VIGOR");
-        public final static Property OriginalDataFile = new Property(13, String.class, "originalDataFile", false, "ORIGINAL_DATA_FILE");
-        public final static Property SynchState = new Property(14, int.class, "synchState", false, "SYNCH_STATE");
+        public final static Property DeviceSignal = new Property(7, Integer.class, "deviceSignal", false, "DEVICE_SIGNAL");
+        public final static Property DeviceBattery = new Property(8, Integer.class, "deviceBattery", false, "DEVICE_BATTERY");
+        public final static Property MusicId = new Property(9, Long.class, "musicId", false, "MUSIC_ID");
+        public final static Property SpeakId = new Property(10, Long.class, "speakId", false, "SPEAK_ID");
+        public final static Property RestDurationId = new Property(11, Long.class, "restDurationId", false, "REST_DURATION_ID");
+        public final static Property StartTime = new Property(12, Long.class, "startTime", false, "START_TIME");
+        public final static Property EndTime = new Property(13, Long.class, "endTime", false, "END_TIME");
+        public final static Property Vigor = new Property(14, Integer.class, "vigor", false, "VIGOR");
+        public final static Property OriginalDataFile = new Property(15, String.class, "originalDataFile", false, "ORIGINAL_DATA_FILE");
+        public final static Property SynchState = new Property(16, Integer.class, "synchState", false, "SYNCH_STATE");
     }
 
 
@@ -61,14 +63,16 @@ public class UsageRecordDao extends AbstractDao<UsageRecord, Long> {
                 "\"DEVICE_SN\" TEXT," + // 4: deviceSN
                 "\"DEVICE_MAC\" TEXT," + // 5: deviceMac
                 "\"DEVICE_NAME\" TEXT," + // 6: deviceName
-                "\"MUSIC_ID\" INTEGER," + // 7: musicId
-                "\"SPEAK_ID\" INTEGER," + // 8: speakId
-                "\"REST_DURATION_ID\" INTEGER," + // 9: restDurationId
-                "\"START_TIME\" INTEGER," + // 10: startTime
-                "\"END_TIME\" INTEGER," + // 11: endTime
-                "\"VIGOR\" INTEGER NOT NULL ," + // 12: vigor
-                "\"ORIGINAL_DATA_FILE\" TEXT," + // 13: originalDataFile
-                "\"SYNCH_STATE\" INTEGER NOT NULL );"); // 14: synchState
+                "\"DEVICE_SIGNAL\" INTEGER," + // 7: deviceSignal
+                "\"DEVICE_BATTERY\" INTEGER," + // 8: deviceBattery
+                "\"MUSIC_ID\" INTEGER," + // 9: musicId
+                "\"SPEAK_ID\" INTEGER," + // 10: speakId
+                "\"REST_DURATION_ID\" INTEGER," + // 11: restDurationId
+                "\"START_TIME\" INTEGER," + // 12: startTime
+                "\"END_TIME\" INTEGER," + // 13: endTime
+                "\"VIGOR\" INTEGER," + // 14: vigor
+                "\"ORIGINAL_DATA_FILE\" TEXT," + // 15: originalDataFile
+                "\"SYNCH_STATE\" INTEGER);"); // 16: synchState
     }
 
     /** Drops the underlying database table. */
@@ -116,37 +120,55 @@ public class UsageRecordDao extends AbstractDao<UsageRecord, Long> {
             stmt.bindString(7, deviceName);
         }
  
+        Integer deviceSignal = entity.getDeviceSignal();
+        if (deviceSignal != null) {
+            stmt.bindLong(8, deviceSignal);
+        }
+ 
+        Integer deviceBattery = entity.getDeviceBattery();
+        if (deviceBattery != null) {
+            stmt.bindLong(9, deviceBattery);
+        }
+ 
         Long musicId = entity.getMusicId();
         if (musicId != null) {
-            stmt.bindLong(8, musicId);
+            stmt.bindLong(10, musicId);
         }
  
         Long speakId = entity.getSpeakId();
         if (speakId != null) {
-            stmt.bindLong(9, speakId);
+            stmt.bindLong(11, speakId);
         }
  
         Long restDurationId = entity.getRestDurationId();
         if (restDurationId != null) {
-            stmt.bindLong(10, restDurationId);
+            stmt.bindLong(12, restDurationId);
         }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(11, startTime);
+            stmt.bindLong(13, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(12, endTime);
+            stmt.bindLong(14, endTime);
         }
-        stmt.bindLong(13, entity.getVigor());
+ 
+        Integer vigor = entity.getVigor();
+        if (vigor != null) {
+            stmt.bindLong(15, vigor);
+        }
  
         String originalDataFile = entity.getOriginalDataFile();
         if (originalDataFile != null) {
-            stmt.bindString(14, originalDataFile);
+            stmt.bindString(16, originalDataFile);
         }
-        stmt.bindLong(15, entity.getSynchState());
+ 
+        Integer synchState = entity.getSynchState();
+        if (synchState != null) {
+            stmt.bindLong(17, synchState);
+        }
     }
 
     @Override
@@ -188,37 +210,55 @@ public class UsageRecordDao extends AbstractDao<UsageRecord, Long> {
             stmt.bindString(7, deviceName);
         }
  
+        Integer deviceSignal = entity.getDeviceSignal();
+        if (deviceSignal != null) {
+            stmt.bindLong(8, deviceSignal);
+        }
+ 
+        Integer deviceBattery = entity.getDeviceBattery();
+        if (deviceBattery != null) {
+            stmt.bindLong(9, deviceBattery);
+        }
+ 
         Long musicId = entity.getMusicId();
         if (musicId != null) {
-            stmt.bindLong(8, musicId);
+            stmt.bindLong(10, musicId);
         }
  
         Long speakId = entity.getSpeakId();
         if (speakId != null) {
-            stmt.bindLong(9, speakId);
+            stmt.bindLong(11, speakId);
         }
  
         Long restDurationId = entity.getRestDurationId();
         if (restDurationId != null) {
-            stmt.bindLong(10, restDurationId);
+            stmt.bindLong(12, restDurationId);
         }
  
         Long startTime = entity.getStartTime();
         if (startTime != null) {
-            stmt.bindLong(11, startTime);
+            stmt.bindLong(13, startTime);
         }
  
         Long endTime = entity.getEndTime();
         if (endTime != null) {
-            stmt.bindLong(12, endTime);
+            stmt.bindLong(14, endTime);
         }
-        stmt.bindLong(13, entity.getVigor());
+ 
+        Integer vigor = entity.getVigor();
+        if (vigor != null) {
+            stmt.bindLong(15, vigor);
+        }
  
         String originalDataFile = entity.getOriginalDataFile();
         if (originalDataFile != null) {
-            stmt.bindString(14, originalDataFile);
+            stmt.bindString(16, originalDataFile);
         }
-        stmt.bindLong(15, entity.getSynchState());
+ 
+        Integer synchState = entity.getSynchState();
+        if (synchState != null) {
+            stmt.bindLong(17, synchState);
+        }
     }
 
     @Override
@@ -236,14 +276,16 @@ public class UsageRecordDao extends AbstractDao<UsageRecord, Long> {
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // deviceSN
             cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // deviceMac
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // deviceName
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // musicId
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // speakId
-            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // restDurationId
-            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // startTime
-            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // endTime
-            cursor.getInt(offset + 12), // vigor
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // originalDataFile
-            cursor.getInt(offset + 14) // synchState
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // deviceSignal
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // deviceBattery
+            cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9), // musicId
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // speakId
+            cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11), // restDurationId
+            cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12), // startTime
+            cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13), // endTime
+            cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14), // vigor
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // originalDataFile
+            cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16) // synchState
         );
         return entity;
     }
@@ -257,14 +299,16 @@ public class UsageRecordDao extends AbstractDao<UsageRecord, Long> {
         entity.setDeviceSN(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setDeviceMac(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDeviceName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setMusicId(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setSpeakId(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
-        entity.setRestDurationId(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
-        entity.setStartTime(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setEndTime(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
-        entity.setVigor(cursor.getInt(offset + 12));
-        entity.setOriginalDataFile(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setSynchState(cursor.getInt(offset + 14));
+        entity.setDeviceSignal(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setDeviceBattery(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setMusicId(cursor.isNull(offset + 9) ? null : cursor.getLong(offset + 9));
+        entity.setSpeakId(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setRestDurationId(cursor.isNull(offset + 11) ? null : cursor.getLong(offset + 11));
+        entity.setStartTime(cursor.isNull(offset + 12) ? null : cursor.getLong(offset + 12));
+        entity.setEndTime(cursor.isNull(offset + 13) ? null : cursor.getLong(offset + 13));
+        entity.setVigor(cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14));
+        entity.setOriginalDataFile(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setSynchState(cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16));
      }
     
     @Override
