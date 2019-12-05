@@ -13,7 +13,7 @@ public class Resource {
     @Id(autoincrement = true)
     private Long id;
     private String name;//资源名称
-    private Integer type;//资源类型（音乐0、指导语1）
+    private Integer type;//资源类型（音乐1、指导语2）
     private Integer duration;//资源时长（秒）
     private Integer status;//资源状态（未下载0，已下载1）
     private String speaker;//播音员
