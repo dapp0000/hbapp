@@ -89,17 +89,16 @@
             <TextView
                 android:id="@+id/sendCode"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_gravity="bottom|right"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="20dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_press2"
+                android:background="@drawable/shape_button"
                 android:gravity="center"
                 android:text="点击发送"
                 android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -126,31 +125,31 @@
             <TextView
                 android:id="@+id/login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_press2"
-                android:clickable="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/shape_button"
                 android:gravity="center"
                 android:text="登录"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/userPwdLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
-                android:background="@drawable/button_press2"
-                android:clickable="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/shape_button"
                 android:gravity="center"
                 android:text="账号密码码登录"
-                android:textColor="@color/white" />
-
+                android:textColor="@color/white"
+                android:textSize="16sp"/>
 
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

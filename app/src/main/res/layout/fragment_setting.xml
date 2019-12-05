@@ -103,14 +103,16 @@
         android:id="@+id/exit"
         android:layout_marginTop="200dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_marginLeft="100dp"
         android:layout_marginRight="100dp"
-        android:background="@drawable/button_press2"
+        android:padding="5dp"
+        android:background="@drawable/shape_button"
         android:gravity="center"
         android:layout_gravity="center|bottom"
         android:text="退出登录"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="16sp"/>
 
 
 </LinearLayout>

@@ -125,11 +125,19 @@ public class RecordFragment extends Fragment {
                     @Override
                     public void onSuccess(Response<String> response) {
                         try {
+
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean(true,false));
+                            records.add(new RecordBean(true,true));
+                            recordAdapter.notifyDataSetChanged();
+
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
-//                                records.add(new RecordBean());
-//                                records.add(new RecordBean(true,false));
+
 
                             } else {
                                 ToastUtils.showShort(jsonObject.getString("message"));
