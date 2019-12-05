@@ -131,6 +131,8 @@ public class RecordFragment extends Fragment {
                             records.add(new RecordBean());
                             records.add(new RecordBean());
                             records.add(new RecordBean(true,false));
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
                             records.add(new RecordBean(true,true));
                             recordAdapter.notifyDataSetChanged();
 
