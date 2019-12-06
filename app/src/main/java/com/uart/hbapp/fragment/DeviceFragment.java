@@ -147,10 +147,6 @@ public class DeviceFragment extends Fragment {
     long startTime;
     long endTime;
     boolean isResting;
-    List<Resource> resourceList;
-    List<RestDuration> restDurationList;
-
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -159,7 +155,6 @@ public class DeviceFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         initView();
-        initResourceData();
         initData();
         initChart();
         return v;
@@ -181,6 +176,13 @@ public class DeviceFragment extends Fragment {
         super.onHiddenChanged(hidden);
         if (actionBar != null && !hidden) {
             actionBar.setTitle(R.string.title_home);
+            setMusicAbout();
+        }
+        else{
+           if(fragmentDevice!=null)
+               fragmentDevice.dismiss();
+           if(fragmentMusic!=null)
+               fragmentMusic.dismiss();
         }
     }
 
@@ -232,12 +234,10 @@ public class DeviceFragment extends Fragment {
             //设置信号
             ivSignal.setImageBitmap(CommandUtils.getUIDeviceSignal(getContext(),null));
 
-            btnEditDevice.setEnabled(false);
             btnPlay.setEnabled(false);
             return;
         } else {
             lineChartSignal.setNoDataText("设备准备就绪");
-            btnEditDevice.setEnabled(true);
             btnPlay.setEnabled(true);
         }
 
@@ -254,31 +254,6 @@ public class DeviceFragment extends Fragment {
         ivBattery.setImageBitmap(CommandUtils.getUIDeviceBattery(getContext(),HbApplication.getInstance().usageRecord.getDeviceBattery()));
         //设置信号
         ivSignal.setImageBitmap(CommandUtils.getUIDeviceSignal(getContext(),HbApplication.getInstance().usageRecord.getDeviceSignal()));
-
-
-        //设置音乐
-        Long selectMusicId = usageRecord.getMusicId();
-        Long selectSpeakId = usageRecord.getSpeakId();
-        Long selectDurationId = usageRecord.getRestDurationId();
-        for (Resource resource : resourceList) {
-            if (resource.getType() == 0) {
-                if (HbApplication.getInstance().selectMusic == null)
-                    HbApplication.getInstance().selectMusic = resource;
-                if (selectMusicId == resource.getId())
-                    HbApplication.getInstance().selectMusic = resource;
-            } else {
-                if (HbApplication.getInstance().selectSpeak == null)
-                    HbApplication.getInstance().selectSpeak = resource;
-                if (selectSpeakId == resource.getId())
-                    HbApplication.getInstance().selectSpeak = resource;
-            }
-        }
-        for (RestDuration restDuration : restDurationList) {
-            if (HbApplication.getInstance().selectDuration == null)
-                HbApplication.getInstance().selectDuration = restDuration;
-            if (selectDurationId == restDuration.getId())
-                HbApplication.getInstance().selectDuration = restDuration;
-        }
 
         setMusicAbout();
 
@@ -324,87 +299,15 @@ public class DeviceFragment extends Fragment {
     }
 
     private void setMusicAbout() {
-        txtRecordMusicName.setText(HbApplication.getInstance().selectMusic.getName());
-        txtRecordSpeakName.setText(HbApplication.getInstance().selectSpeak.getName());
-        txtRecordDuration.setText(HbApplication.getInstance().selectDuration.getMinute() + "min");
+        if(HbApplication.getInstance().selectMusic!=null)
+            txtRecordMusicName.setText(HbApplication.getInstance().selectMusic.getName());
+        if(HbApplication.getInstance().selectSpeak!=null)
+            txtRecordSpeakName.setText(HbApplication.getInstance().selectSpeak.getName());
+        if(HbApplication.getInstance().selectDuration!=null)
+            txtRecordDuration.setText(HbApplication.getInstance().selectDuration.getMinute() + "min");
     }
 
 
-    private void initResourceData() {
-        //设备使用初始数据
-        restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
-        if (restDurationList == null || restDurationList.size() == 0) {
-            RestDuration r10 = new RestDuration();
-            r10.setName("10分钟体验");
-            r10.setMinute(10);
-
-            RestDuration r20 = new RestDuration();
-            r20.setName("20分钟小憩");
-            r20.setMinute(20);
-
-            RestDuration r30 = new RestDuration();
-            r30.setName("30分钟精力恢复");
-            r30.setMinute(30);
-
-            RestDuration r60 = new RestDuration();
-            r60.setName("1小时小睡");
-            r60.setMinute(60);
-
-            RestDuration r120 = new RestDuration();
-            r120.setName("2小时原地复活");
-            r120.setMinute(120);
-
-            HbApplication.getDaoInstance().getRestDurationDao().insert(r10);
-            HbApplication.getDaoInstance().getRestDurationDao().insert(r20);
-            HbApplication.getDaoInstance().getRestDurationDao().insert(r30);
-            HbApplication.getDaoInstance().getRestDurationDao().insert(r60);
-            HbApplication.getDaoInstance().getRestDurationDao().insert(r120);
-            restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
-        }
-
-        resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
-        if (resourceList == null || resourceList.size() == 0) {
-            Resource res1 = new Resource();
-            res1.setType(0);
-            res1.setName("高山流水");
-            res1.setDuration(200);
-            res1.setStatus(1);
-            res1.setUrlPath("");
-            res1.setLocalFilePath("");
-
-            Resource res2 = new Resource();
-            res2.setType(0);
-            res2.setName("四脚朝天");
-            res2.setDuration(200);
-            res2.setStatus(1);
-            res2.setUrlPath("");
-            res2.setLocalFilePath("");
-
-            Resource res3 = new Resource();
-            res3.setType(1);
-            res3.setName("温柔语音");
-            res3.setSpeaker("林志玲");
-            res3.setDuration(200);
-            res3.setStatus(1);
-            res3.setUrlPath("");
-            res3.setLocalFilePath("");
-
-            Resource res4 = new Resource();
-            res4.setType(1);
-            res4.setName("相声风格");
-            res4.setSpeaker("郭德纲");
-            res4.setDuration(200);
-            res4.setStatus(1);
-            res4.setUrlPath("");
-            res4.setLocalFilePath("");
-
-            HbApplication.getDaoInstance().getResourceDao().insert(res1);
-            HbApplication.getDaoInstance().getResourceDao().insert(res2);
-            HbApplication.getDaoInstance().getResourceDao().insert(res3);
-            HbApplication.getDaoInstance().getResourceDao().insert(res4);
-            resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
-        }
-    }
 
 
 
@@ -936,6 +839,8 @@ public class DeviceFragment extends Fragment {
     };
 
 
+    EditDeviceDialogFragment fragmentDevice;
+    SelectMusicDialogFragment fragmentMusic;
     @OnClick({R.id.btn_play, R.id.btn_menu_stop, R.id.btn_edit_device, R.id.btn_menu})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -946,13 +851,11 @@ public class DeviceFragment extends Fragment {
                 stopRest();
                 break;
             case R.id.btn_edit_device:
-                if(((MainActivity) getActivity()).getBleDevice()!=null){
-                    EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
-                    fragmentDevice.show(getFragmentManager(), "");
-                }
+                fragmentDevice = EditDeviceDialogFragment.newInstance("");
+                fragmentDevice.show(getFragmentManager(), "");
                 break;
             case R.id.btn_menu:
-                SelectMusicDialogFragment fragmentMusic = SelectMusicDialogFragment.newInstance("");
+                fragmentMusic = SelectMusicDialogFragment.newInstance("");
                 fragmentMusic.show(getFragmentManager(), "");
                 fragmentMusic.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override

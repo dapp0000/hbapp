@@ -76,6 +76,7 @@ public class ScanActivity extends AppCompatActivity {
     private DeviceAdapter mDeviceAdapter;
     private Handler mHandler = new Handler();
 
+    boolean noResource = false;
     boolean mIsScanning = false;
     boolean isAutoConnect = false;
     String str_uuid = null;
@@ -135,6 +136,92 @@ public class ScanActivity extends AppCompatActivity {
                 .setOperateTimeout(5000);
 
         HbApplication.getInstance().usageRecord = new UsageRecord();
+        initResourceData(HbApplication.getInstance().usageRecord);
+    }
+
+
+    private void initResourceData(UsageRecord usageRecord) {
+        //设备使用初始数据
+        List<RestDuration> restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
+        if (restDurationList == null || restDurationList.size() == 0) {
+            RestDuration r10 = new RestDuration();
+            r10.setName("10分钟体验");
+            r10.setMinute(10);
+
+            RestDuration r20 = new RestDuration();
+            r20.setName("20分钟小憩");
+            r20.setMinute(20);
+
+            RestDuration r30 = new RestDuration();
+            r30.setName("30分钟精力恢复");
+            r30.setMinute(30);
+
+            RestDuration r60 = new RestDuration();
+            r60.setName("1小时小睡");
+            r60.setMinute(60);
+
+            RestDuration r120 = new RestDuration();
+            r120.setName("2小时原地复活");
+            r120.setMinute(120);
+
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r10);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r20);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r30);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r60);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(r120);
+            restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
+        }
+
+        List<Resource> resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
+        if (resourceList == null || resourceList.size() == 0) {
+            noResource = true;
+
+//            Resource res1 = new Resource();
+//            res1.setType(1);
+//            res1.setName("高山流水");
+//            res1.setDuration(200);
+//            res1.setStatus(1);
+//            res1.setUrlPath("");
+//            res1.setLocalFilePath("");
+//
+//            Resource res2 = new Resource();
+//            res2.setType(2);
+//            res2.setName("温柔语音");
+//            res2.setSpeaker("");
+//            res2.setDuration(200);
+//            res2.setStatus(1);
+//            res2.setUrlPath("");
+//            res2.setLocalFilePath("");
+//
+//            HbApplication.getDaoInstance().getResourceDao().insert(res1);
+//            HbApplication.getDaoInstance().getResourceDao().insert(res2);
+//            resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
+        }
+
+        //设置音乐
+        for (Resource resource : resourceList) {
+            if (resource.getType() == 0) {
+                if (HbApplication.getInstance().selectMusic == null)
+                {
+                    HbApplication.getInstance().selectMusic = resource;
+                    usageRecord.setMusicId(resource.getId());
+                }
+
+            } else {
+                if (HbApplication.getInstance().selectSpeak == null)
+                {
+                    HbApplication.getInstance().selectSpeak = resource;
+                    usageRecord.setSpeakId(resource.getId());
+                }
+            }
+        }
+        for (RestDuration restDuration : restDurationList) {
+            if (HbApplication.getInstance().selectDuration == null)
+            {
+                HbApplication.getInstance().selectDuration = restDuration;
+                usageRecord.setRestDurationId(restDuration.getId());
+            }
+        }
     }
 
     public void updateRadar(BleDevice mDatas) {
@@ -212,7 +299,17 @@ public class ScanActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(ScanActivity.this, MainActivity.class);
                 intent.putExtra(MainActivity.KEY_DATA, bleDevice);
+                if(noResource){
+                    intent.setAction("resource");
+                }
+                else{
+                    intent.setAction("device");
+                }
+
                 startActivity(intent);
+
+
+
                 finish();
             }
 
@@ -320,8 +417,15 @@ public class ScanActivity extends AppCompatActivity {
 
     public void skip() {
         Intent intent = new Intent(ScanActivity.this, MainActivity.class);
-        intent.setAction("skip");
+        if(noResource){
+            intent.setAction("resource");
+        }
+        else{
+            intent.setAction("record");
+        }
+
         startActivity(intent);
+
         mHandler.postDelayed(() -> {
             if (mIsScanning) {
                 stopScanDevice();

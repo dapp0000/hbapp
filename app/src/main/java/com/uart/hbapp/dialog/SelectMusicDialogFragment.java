@@ -148,9 +148,9 @@ public class SelectMusicDialogFragment extends DialogFragment {
         List<Resource> speakList = new ArrayList<Resource>();
         List<Resource> resourceList = HbApplication.getDaoInstance().getResourceDao().loadAll();
         for (Resource res : resourceList){
-            if(res.getType()==0)
+            if(res.getType()==1)
                 musicList.add(res);
-            else
+            else if(res.getType()==2)
                 speakList.add(res);
         }
 

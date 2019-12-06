@@ -8,9 +8,12 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
+import com.lzy.okgo.model.Response;
 import com.lzy.okgo.request.base.Request;
+import com.uart.hbapp.HbApplication;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -19,8 +22,18 @@ import java.util.Vector;
 
 public class DownLoadFileUtils {
 
-    private static String mBasePath; //本地文件存储的完整路径  /storage/emulated/0/book/恰似寒光遇骄阳.txt
-    public static  float  dLProgress=0;
+    public static void httpDownloadFile(Context context,String fileUrl,String destFileDir,String musicName,String musicUrl,DownloadCallback callback){
+        String  mDestFileName =musicName+getExtensionName(musicUrl);
+        callback.setFileConvert(destFileDir,mDestFileName);
+
+        OkGo.<File>get(fileUrl).params("musicName",musicName).params("musicUrl",musicUrl).tag(context).execute(callback);
+    }
+
+    public static String getExtensionName(String musicUrl){
+        return musicUrl.substring(musicUrl.lastIndexOf("."),musicUrl.length());
+    }
+
+
     /**
      *
      * @param context 上下文
@@ -42,7 +55,6 @@ public class DownLoadFileUtils {
             @Override
             public void onSuccess(com.lzy.okgo.model.Response<File> response) {
                 //ToastUtils.showShort(context,"下载文件成功"+response.body().length());
-                mBasePath=response.body().getAbsolutePath();
             }
 
             @Override
@@ -60,8 +72,7 @@ public class DownLoadFileUtils {
             @Override
             public void downloadProgress(Progress progress) {
                 super.downloadProgress(progress);
-                dLProgress= progress.fraction;
-               LogUtils.e("文件下载的进度"+"DDDDD"+dLProgress);
+               LogUtils.e("文件下载的进度"+"DDDDD"+progress.fraction);
             }
         });
     }

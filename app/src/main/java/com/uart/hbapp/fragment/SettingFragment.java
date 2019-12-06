@@ -95,10 +95,8 @@ public class SettingFragment extends Fragment {
                 getActivity().finish();
                 break;
             case R.id.btnEditDevice:
-                if(((MainActivity) getActivity()).getBleDevice()!=null){
-                    EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
-                    fragmentDevice.show(getFragmentManager(), "");
-                }
+                EditDeviceDialogFragment fragmentDevice = EditDeviceDialogFragment.newInstance("");
+                fragmentDevice.show(getFragmentManager(), "");
                 break;
         }
     }

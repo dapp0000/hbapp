@@ -130,9 +130,18 @@ public class RecordFragment extends Fragment {
                             records.add(new RecordBean());
                             records.add(new RecordBean());
                             records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
                             records.add(new RecordBean(true,false));
                             records.add(new RecordBean());
                             records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean());
+                            records.add(new RecordBean(true,false));
                             records.add(new RecordBean(true,true));
                             recordAdapter.notifyDataSetChanged();
 
@@ -166,7 +175,6 @@ public class RecordFragment extends Fragment {
             actionBar.setTitle(R.string.title_dashboard);
         // TODO: Use the ViewModel
     }
-
 
     @Override
     public void onHiddenChanged(boolean hidden) {

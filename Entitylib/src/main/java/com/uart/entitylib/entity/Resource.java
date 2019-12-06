@@ -13,9 +13,11 @@ public class Resource {
     @Id(autoincrement = true)
     private Long id;
     private String name;//资源名称
+    private String extension;//文件扩展名
     private Integer type;//资源类型（音乐1、指导语2）
-    private Integer duration;//资源时长（秒）
     private Integer status;//资源状态（未下载0，已下载1）
+    private Integer duration;//资源时长（秒）
+    private String durationStr;//资源时长（5'55''）
     private String speaker;//播音员
     private String urlPath;//资源地址
     private String localFilePath;//本地文件路径
@@ -23,14 +25,17 @@ public class Resource {
     @Transient
     public boolean isChecked;//选中状态
 
-    @Generated(hash = 2089623801)
-    public Resource(Long id, String name, Integer type, Integer duration,
-            Integer status, String speaker, String urlPath, String localFilePath) {
+    @Generated(hash = 1815484929)
+    public Resource(Long id, String name, String extension, Integer type,
+            Integer status, Integer duration, String durationStr, String speaker,
+            String urlPath, String localFilePath) {
         this.id = id;
         this.name = name;
+        this.extension = extension;
         this.type = type;
-        this.duration = duration;
         this.status = status;
+        this.duration = duration;
+        this.durationStr = durationStr;
         this.speaker = speaker;
         this.urlPath = urlPath;
         this.localFilePath = localFilePath;
@@ -102,6 +107,22 @@ public class Resource {
 
     public void setLocalFilePath(String localFilePath) {
         this.localFilePath = localFilePath;
+    }
+
+    public String getDurationStr() {
+        return this.durationStr;
+    }
+
+    public void setDurationStr(String durationStr) {
+        this.durationStr = durationStr;
+    }
+
+    public String getExtension() {
+        return this.extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
 

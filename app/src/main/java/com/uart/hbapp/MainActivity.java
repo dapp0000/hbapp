@@ -103,9 +103,12 @@ public class MainActivity extends AppCompatActivity implements Observer {
             }
         });
 
-        if("skip".equals(getIntent().getAction())){
+        if("record".equals(getIntent().getAction())){
             //setFragmentPosition(1);
             mBottomNavigationView.setSelectedItemId(R.id.navigation_dashboard);
+        }
+        else if("resource".equals(getIntent().getAction())){
+            mBottomNavigationView.setSelectedItemId(R.id.navigation_notifications);
         }
         else{
             // 初始化展示MessageFragment
