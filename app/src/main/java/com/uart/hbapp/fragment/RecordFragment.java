@@ -1,6 +1,7 @@
 package com.uart.hbapp.fragment;
 
 import android.content.Intent;
+import android.icu.text.AlphabeticIndex;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,13 +30,17 @@ import com.uart.hbapp.bean.RecordBean;
 import com.uart.hbapp.history.DayHistoryActivity;
 import com.uart.hbapp.history.MonthHistoryActivity;
 import com.uart.hbapp.history.WeekHistoryActivity;
+import com.uart.hbapp.utils.TimeUtil;
 import com.uart.hbapp.utils.URLUtil;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.PropertyResourceBundle;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,18 +55,28 @@ public class RecordFragment extends Fragment {
     private ActionBar actionBar;
     private CommonAdapter recordAdapter;
     private List<RecordBean> records=new ArrayList<>();
+    private Calendar calendar = Calendar.getInstance();
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_record, container, false);
         ButterKnife.bind(this, v);
+
         recordAdapter=new CommonAdapter<RecordBean>(getActivity(),records,R.layout.adapter_record) {
             @Override
             protected void convertView(CommonViewHolder holder, RecordBean bean) {
                 if(!bean.isweek && !bean.ismonth){
                     holder.setVisibility(R.id.layout_week,View.GONE)
                     .setVisibility(R.id.layout_month,View.GONE);
+
+                    String sleepTimeStr = String.format("休息%d分钟",bean.sleepTime);
+                    String vigorStr = bean.vigor+"%";
+
+                    holder.setText(R.id.tv_content_date,bean.startDateString)
+                            .setText(R.id.tv_content_time,bean.startTimeString)
+                            .setText(R.id.tv_content_sleepTime,sleepTimeStr)
+                            .setText(R.id.tv_vigor,vigorStr);
 
                     View day = holder.getView(R.id.layout_content);
                     day.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +91,7 @@ public class RecordFragment extends Fragment {
                     holder.setVisibility(R.id.layout_content,View.GONE);
                     if(bean.ismonth){
                         holder.setVisibility(R.id.layout_month,View.VISIBLE);
-                        holder.setVisibility(R.id.layout_week,View.VISIBLE);
+                        holder.setVisibility(R.id.layout_week,View.GONE);
                     }
                     else{
                         holder.setVisibility(R.id.layout_month,View.GONE);
@@ -125,36 +140,68 @@ public class RecordFragment extends Fragment {
                     @Override
                     public void onSuccess(Response<String> response) {
                         try {
-
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
+                            records.add(new RecordBean(false,true));
                             records.add(new RecordBean(true,false));
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean());
-                            records.add(new RecordBean(true,false));
-                            records.add(new RecordBean(true,true));
-                            recordAdapter.notifyDataSetChanged();
 
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
+                                //data pager resultList
+                                JSONObject dataJSON = jsonObject.getJSONObject("data");
+                                if (dataJSON != null) {
+                                    JSONObject pagerJSON = dataJSON.getJSONObject("pager");
+                                    if (pagerJSON != null) {
+                                        JSONArray resultListJSON = pagerJSON.getJSONArray("resultList");
+                                        if(resultListJSON!=null){
+                                           int size = resultListJSON.length();
+                                           RecordBean cacheBean = null;
+                                           for (int i=0;i<size;i++){
+                                               JSONObject item = resultListJSON.getJSONObject(i);
+                                               RecordBean bean = new RecordBean();
+                                               bean.dataId = item.getInt("dataId");
+                                               bean.logsId = item.getInt("logsId");
+                                               bean.startTime = item.getLong("startTime");
+                                               bean.endTime = item.getLong("endTime");
+                                               bean.sleepTime = item.getInt("sleepTime");
+                                               bean.sober_1 = item.getInt("sober_1");
+                                               bean.sober_2 = item.getInt("sober_2");
+                                               bean.sober_3 = item.getInt("sober_3");
+                                               bean.sober_4 = item.getInt("sober_4");
+                                               bean.sober_5 = item.getInt("sober_5");
+                                               bean.relax_1 = item.getInt("relax_1");
+                                               bean.relax_2 = item.getInt("relax_2");
+                                               bean.relax_3 = item.getInt("relax_3");
+                                               bean.relax_4 = item.getInt("relax_4");
+                                               bean.relax_5 = item.getInt("relax_5");
 
+                                               bean.startTimeString = TimeUtil.getTimeString(bean.startTime);
+                                               bean.startDateString = TimeUtil.getDateString(bean.startTime);
+                                               calendar.setTimeInMillis(bean.startTime);
+                                               bean.weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
+                                               bean.monthNum = calendar.get(Calendar.MONTH);
 
+                                               if(cacheBean!=null&&cacheBean.monthNum>bean.monthNum){
+                                                   records.add(new RecordBean(false,true));
+                                               }
+                                               if(cacheBean!=null&&cacheBean.weekNum>bean.weekNum){
+                                                   records.add(new RecordBean(true,false));
+                                               }
+
+                                               records.add(bean);
+                                               cacheBean = bean;
+                                           }
+                                        }
+                                    }
+                                }
                             } else {
                                 ToastUtils.showShort(jsonObject.getString("message"));
                             }
+
                         } catch (Exception e) {
                             e.printStackTrace();
+                        }
+                        finally {
+                            recordAdapter.notifyDataSetChanged();
                         }
                     }
                     @Override

@@ -332,13 +332,13 @@ public class UserInfoFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.bt_disable:
-                send(CommandUtils.bt_disable_cmd());
+                //send(CommandUtils.bt_disable_cmd());
                 break;
             case R.id.bt_enable:
-                send(CommandUtils.bt_enable_cmd());
+                //send(CommandUtils.bt_enable_cmd());
                 break;
             case R.id.bt_dispair:
-                send(CommandUtils.bt_dispair_cmd());
+                //send(CommandUtils.bt_dispair_cmd());
                 break;
         }
 
@@ -346,45 +346,6 @@ public class UserInfoFragment extends Fragment {
     }
 
 
-    private void send(byte[] hexCmd) {
-        BleDevice bleDevice = ((MainActivity) getActivity()).getBleDevice();
-        BluetoothGattCharacteristic characteristic = ((MainActivity) getActivity()).getCharacteristic();
-        if (bleDevice == null || characteristic == null)
-            return;
-
-        BleManager.getInstance().write(
-                bleDevice,
-                characteristic.getService().getUuid().toString(),
-                characteristic.getUuid().toString(),
-                hexCmd,
-                new BleWriteCallback() {
-                    @Override
-                    public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                String result = "current: " + current
-                                        + " total: " + total
-                                        + " justWrite: " + HexUtil.formatHexString(justWrite, true);
-
-                                ToastUtils.showShort("onWriteSuccess: " + result);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onWriteFailure(final BleException exception) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                //addText(txt, exception.toString());
-                                ToastUtils.showShort("onWriteFailure:" + exception.toString());
-                            }
-                        });
-                    }
-                });
-    }
 
 
     private void runOnUiThread(Runnable runnable) {
