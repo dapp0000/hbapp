@@ -9,7 +9,9 @@ import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.blankj.utilcode.util.FileIOUtils;
 import com.blankj.utilcode.util.FileUtils;
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
@@ -73,6 +76,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -139,8 +143,7 @@ public class DeviceFragment extends Fragment {
     BleDevice bleDevice;
     BluetoothGattCharacteristic heartRateCharacteristic;
     ArrayList<Float> xValues;
-    MediaPlayer mediaPlayer;
-    String musicPath;
+
     File cacheDir;
     String dataFileName;
     String zipFileName;
@@ -624,17 +627,50 @@ public class DeviceFragment extends Fragment {
     }
 
 
-    private void mediaPlayer(String filePath) {
+    private MediaPlayer mediaPlayer_music;
+
+    private void playMusic() {
         try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(filePath);
-            mediaPlayer.prepare();
-            mediaPlayer.setLooping(true);
-            mediaPlayer.start();
+            if(!existResource(HbApplication.getInstance().selectMusic)){
+                mediaPlayer_music = MediaPlayer.create(getActivity(), R.raw.right1);
+            }
+            else{
+                mediaPlayer_music = MediaPlayer.create(getActivity(),Uri.parse(HbApplication.getInstance().selectMusic.getLocalFilePath()));
+            }
+
+            mediaPlayer_music.setLooping(true);
+            mediaPlayer_music.start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    private void stopMusic(){
+        if(mediaPlayer_music!=null)
+            mediaPlayer_music.stop();
+    }
+
+    private MediaPlayer mediaPlayer_speak;
+    private void playSpeak(){
+        try {
+            if(existResource(HbApplication.getInstance().selectSpeak)){
+                mediaPlayer_speak = MediaPlayer.create(getActivity(),Uri.parse(HbApplication.getInstance().selectSpeak.getLocalFilePath()));
+                mediaPlayer_speak.setLooping(true);
+                mediaPlayer_speak.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void stopSpeak(){
+        if(mediaPlayer_speak!=null)
+            mediaPlayer_speak.stop();
+    }
+
+    private boolean existResource(Resource resource){
+        return resource!=null && !TextUtils.isEmpty(resource.getLocalFilePath())&& FileUtils.isFileExists(resource.getLocalFilePath());
+    }
+
 
     private void startRest() {
         isResting = true;
@@ -644,10 +680,10 @@ public class DeviceFragment extends Fragment {
         btnMenuStop.setVisibility(View.VISIBLE);
         layoutControl.setVisibility(View.GONE);
         layoutPlaying.setVisibility(View.VISIBLE);
+
         //播放音乐
-        mediaPlayer = MediaPlayer.create(getActivity(), R.raw.right1);
-        mediaPlayer.setLooping(true);
-        mediaPlayer.start();
+        playMusic();
+        playSpeak();
 
         //设置进度条最大长度为音频时长
         //seekMusic.setMax(mediaPlayer.getDuration());
@@ -668,9 +704,9 @@ public class DeviceFragment extends Fragment {
             updateNet();
         }
 
-        if (isResting) {
-            mediaPlayer.reset();
-        }
+        //停止音乐
+        stopMusic();
+        stopSpeak();
 
         isResting = false;
         endTime = System.currentTimeMillis();
