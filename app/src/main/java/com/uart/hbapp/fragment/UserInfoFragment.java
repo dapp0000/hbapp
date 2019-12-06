@@ -131,6 +131,7 @@ public class UserInfoFragment extends Fragment {
 
         setData(1);
         setData(2);
+
     }
 
     private void setData(int resourceType) {
@@ -170,6 +171,7 @@ public class UserInfoFragment extends Fragment {
                                                      itemData.setName(item.getString("musicName"));
                                                      itemData.setType(item.getInt("type"));
                                                      itemData.setUrlPath(item.getString("musicUrl"));
+                                                     itemData.setSpeaker(item.getString("voice"));
                                                      remoteList.add(itemData);
                                                  }
                                               }
@@ -199,7 +201,6 @@ public class UserInfoFragment extends Fragment {
             @Override
             public void run() {
                 if(resourceType==1){
-                    musicList.clear();
                     List<String> musicNames = DownLoadFileUtils.getFileName(DownLoadFileUtils.customLocalStoragePath("HbMusic"));
                     for (Resource music : remoteList){
                         if(musicNames.contains(music.getName())){
@@ -212,11 +213,10 @@ public class UserInfoFragment extends Fragment {
                             music.setDuration(0);
                         }
 
-                        musicList.add(music);
-                        HbApplication.getDaoInstance().getResourceDao().insertOrReplace(music);
+                        insertOrUpdate(musicList,music);
                     }
-                    musicAdapter.notifyDataSetChanged();
 
+                    musicAdapter.notifyDataSetChanged();
                 }
                 else if(resourceType==2){
                     speakList.clear();
@@ -232,14 +232,24 @@ public class UserInfoFragment extends Fragment {
                             speak.setDuration(0);
                         }
 
-                        speakList.add(speak);
-                        HbApplication.getDaoInstance().getResourceDao().insertOrReplace(speak);
+                        insertOrUpdate(speakList,speak);
                     }
 
                     speakAdapter.notifyDataSetChanged();
                 }
             }
         });
+    }
+
+    private void insertOrUpdate(List<Resource> localList,Resource target){
+        for (Resource resource : localList){
+            if(resource.getName().equals(target.getName()))
+            {
+                target.setId(resource.getId());
+            }
+        }
+
+        HbApplication.getDaoInstance().getResourceDao().insertOrReplace(target);
     }
 
     private String getTimeFromMusic(String name){
