@@ -1,11 +1,8 @@
 package com.uart.hbapp.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
-
-import com.uart.hbapp.HbApplication;
 
 public class ShareUtil {
 
