@@ -79,10 +79,12 @@ public class RecordFragment extends Fragment {
                             .setText(R.id.tv_vigor,vigorStr);
 
                     View day = holder.getView(R.id.layout_content);
+                    day.setTag(bean);
                     day.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), DayHistoryActivity.class);
+                            intent.putExtra("record",(RecordBean)v.getTag());
                             startActivity(intent);
                         }
                     });
@@ -226,8 +228,13 @@ public class RecordFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (actionBar != null && !hidden)
+        if (actionBar != null && !hidden){
             actionBar.setTitle(R.string.title_dashboard);
+            records.clear();
+            recordAdapter.notifyDataSetChanged();
+            initDatas();
+        }
+
     }
 
     @Override

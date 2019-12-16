@@ -25,6 +25,13 @@
             <enum name="sleep" value="0" />
             <enum name="relax" value="1" />
         </attr>
+
+        <attr name="number_1" format="integer"/>
+        <attr name="number_2" format="integer"/>
+        <attr name="number_3" format="integer"/>
+        <attr name="number_4" format="integer"/>
+        <attr name="number_5" format="integer"/>
+
     </declare-styleable>
 
 </resources>

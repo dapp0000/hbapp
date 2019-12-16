@@ -1,6 +1,9 @@
 package com.uart.hbapp.bean;
 
-public class RecordBean {
+
+import java.io.Serializable;
+
+public class RecordBean implements Serializable {
     public RecordBean(){}
     public RecordBean(boolean week,boolean month){
         this.isweek = week;
@@ -30,25 +33,5 @@ public class RecordBean {
     public String startDateString;
     public int weekNum;
     public int monthNum;
-
-
-
-
-//              "dataId": 24,
-//              "vigor": 0,
-//              "sleepTime": 1,
-//              "sober_1": 0,
-//              "sober_2": 1,
-//              "sober_3": 0,
-//              "sober_4": 0,
-//              "sober_5": 0,
-//              "relax_1": 1,
-//              "relax_2": 0,
-//              "relax_3": 0,
-//              "relax_4": 0,
-//              "relax_5": 0,
-//              "logsId": 27,
-//              "startTime": 1575625542050,
-//              "endTime": 0
 
 }

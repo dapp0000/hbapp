@@ -66,5 +66,6 @@ dependencies {
     //greendao
     implementation 'org.greenrobot:greendao:3.2.2'
 
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
 }
