@@ -197,6 +197,9 @@ public class MonthHistoryActivity extends AppCompatActivity {
 
                                         List<Float> relaxList = getMonthValues(monthBean.list,2);
                                         CommandUtils.drawHistoryLog(lineChartRelax,relaxList,xValuesLabel);
+
+
+
                                     }
                                 }
                             }
@@ -358,7 +361,7 @@ public class MonthHistoryActivity extends AppCompatActivity {
                                         setProgress(pbThisSleep, pbLastSleep, monthBean.thisSleepTime, lastBean.thisSleepTime);
                                         setProgress(pbThisRelax, pbLastRelax, monthBean.thisRelax, lastBean.thisRelax);
 
-
+                                        txtSuggest.setText(getSuggestion(lastBean));
                                     }
 
 
