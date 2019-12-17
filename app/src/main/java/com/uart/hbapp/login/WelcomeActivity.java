@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.uart.entitylib.dao.UserInfoDao;
 import com.uart.entitylib.entity.UserInfo;
 import com.uart.hbapp.AppConstants;
 import com.uart.hbapp.HbApplication;
@@ -129,9 +130,11 @@ public class WelcomeActivity extends Activity {
 //                    finish();
 //                }
 
-                if (HbApplication.getInstance().loginUser.getActivated()) {
-                    if (!TextUtils.isEmpty(HbApplication.getInstance().loginUser.getToken())) {
-                        if(HbApplication.getInstance().loginUser.getSign()==0){
+                UserInfo userInfo = HbApplication.getInstance().loginUser;
+                if (userInfo.getActivated()) {
+                    if (!TextUtils.isEmpty(userInfo.getToken())) {
+                        autoLogin(userInfo.getUserName(),userInfo.getPassword());
+                        if(userInfo.getSign()==0){
                             startActivity(new Intent(WelcomeActivity.this, ScanActivity.class));
                             finish();
                         }
@@ -139,6 +142,7 @@ public class WelcomeActivity extends Activity {
                             startActivity(new Intent(WelcomeActivity.this, AdditionalActivity.class));
                             finish();
                         }
+
                     } else {
                         startActivity(new Intent(WelcomeActivity.this, LoginUserPwdActivity.class));
                         finish();
@@ -152,4 +156,66 @@ public class WelcomeActivity extends Activity {
             CountHandler.postDelayed(this, 1000);
         }
     };
+
+
+
+    //自动登录
+    private void autoLogin(String uname, String pwd) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("userName", uname);
+        params.put("passWord", pwd);
+
+        JSONObject jsonObject = new JSONObject(params);
+        String base_url =URLUtil.url + URLUtil.login;
+        OkGo.<String>post(base_url)
+                .tag(this)
+                .cacheKey("cachePostKey")
+                .headers("Content-Type","application/json")
+                .upJson(jsonObject.toString())
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        try {
+                            Log.e("eee", "AddFaceT:" + response.body());
+                            JSONObject jsonObject = new JSONObject(response.body());
+                            int error = jsonObject.getInt("error");
+                            if (error == 0) {
+                                //查找本地用户
+                                UserInfo user = HbApplication.getDaoInstance().getUserInfoDao().queryBuilder().where(UserInfoDao.Properties.UserName.eq(uname)).unique();
+                                if(user == null){
+                                    user = new UserInfo();
+                                    user.setActivated(false);//未激活
+                                    user.setToken("");//未登录
+                                    user.setSign(1);//未完善信息
+                                }
+
+                                HbApplication.getInstance().loginUser = user;
+                                JSONObject data = jsonObject.getJSONObject("data");
+                                if(data!=null){
+                                    String token = data.getString("token");
+                                    int sign = data.getInt("sign");
+                                    user.setSign(sign);
+                                    user.setUserName(uname);
+                                    user.setPassword(pwd);
+                                    user.setLastlogin(System.currentTimeMillis());
+                                    user.setToken(token);
+                                    user.setActivated(true);
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Response<String> response) {
+                        super.onError(response);
+                        ToastUtils.showShort("服务器异常");
+                    }
+                });
+
+    }
+
+
+
 }

@@ -101,18 +101,22 @@ public class RecordFragment extends Fragment {
                     }
 
                     View week = holder.getView(R.id.btn_week);
+                    week.setTag(bean);
                     week.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), WeekHistoryActivity.class);
+                            intent.putExtra("record",(RecordBean)v.getTag());
                             startActivity(intent);
                         }
                     });
                     View month = holder.getView(R.id.btn_month);
+                    month.setTag(bean);
                     month.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(getActivity(), MonthHistoryActivity.class);
+                            intent.putExtra("record",(RecordBean)v.getTag());
                             startActivity(intent);
                         }
                     });
@@ -142,9 +146,6 @@ public class RecordFragment extends Fragment {
                     @Override
                     public void onSuccess(Response<String> response) {
                         try {
-                            records.add(new RecordBean(false,true));
-                            records.add(new RecordBean(true,false));
-
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");
                             if (error == 0) {
@@ -178,15 +179,19 @@ public class RecordFragment extends Fragment {
 
                                                bean.startTimeString = TimeUtil.getTimeString(bean.startTime);
                                                bean.startDateString = TimeUtil.getDateString(bean.startTime);
+
                                                calendar.setTimeInMillis(bean.startTime);
                                                bean.weekNum = calendar.get(Calendar.WEEK_OF_YEAR);
                                                bean.monthNum = calendar.get(Calendar.MONTH);
-
-                                               if(cacheBean!=null&&cacheBean.monthNum>bean.monthNum){
-                                                   records.add(new RecordBean(false,true));
+                                               if(cacheBean==null){
+                                                   records.add(new RecordBean(false,true,bean.weekNum,bean.monthNum,bean.startTime));
+                                                   records.add(new RecordBean(true,false,bean.weekNum,bean.monthNum,bean.startTime));
                                                }
-                                               if(cacheBean!=null&&cacheBean.weekNum>bean.weekNum){
-                                                   records.add(new RecordBean(true,false));
+                                               if(cacheBean!=null&&cacheBean.monthNum!=bean.monthNum){
+                                                   records.add(new RecordBean(false,true,bean.weekNum,bean.monthNum,bean.startTime));
+                                               }
+                                               if(cacheBean!=null&&cacheBean.weekNum!=bean.weekNum){
+                                                   records.add(new RecordBean(true,false,bean.weekNum,bean.monthNum,bean.startTime));
                                                }
 
                                                records.add(bean);

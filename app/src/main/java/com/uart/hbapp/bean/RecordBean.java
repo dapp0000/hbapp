@@ -10,6 +10,16 @@ public class RecordBean implements Serializable {
         this.ismonth = month;
     }
 
+    public RecordBean(boolean week,boolean month,int weekNum,int monthNum,long startTime){
+        this.isweek = week;
+        this.ismonth = month;
+        this.weekNum=weekNum;
+        this.monthNum=monthNum;
+
+        this.startTime = startTime;
+    }
+
+
     public boolean isweek;
     public boolean ismonth;
     public long startTime;

@@ -65,6 +65,7 @@ dependencies {
     implementation project(path: ':Entitylib')
     //greendao
     implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.alibaba:fastjson:1.2.46'
 
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
