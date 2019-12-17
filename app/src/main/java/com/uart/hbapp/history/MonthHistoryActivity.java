@@ -19,10 +19,14 @@ import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.R;
 import com.uart.hbapp.bean.RecordBean;
 import com.uart.hbapp.bean.RecordMonthBean;
+import com.uart.hbapp.bean.RecordWeekBean;
+import com.uart.hbapp.utils.CommandUtils;
 import com.uart.hbapp.utils.URLUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,6 +98,9 @@ public class MonthHistoryActivity extends AppCompatActivity {
 
     private int monthNum;
     private RecordMonthBean monthBean;
+    private List<String> xValuesLabel;
+    private  Calendar calendar;
+    private int dayCount = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,15 +122,36 @@ public class MonthHistoryActivity extends AppCompatActivity {
             calendar.setTimeInMillis(bean.startTime);
             calendar.set(Calendar.DAY_OF_MONTH, 1);//设置为1号,当前日期既为本月第一天
             String firstDate = getDateString(calendar);
+            long first = calendar.getTimeInMillis();
             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
             String lastDate = getDateString(calendar);
+            dayCount = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
             txtMonthStart.setText(firstDate);
             txtMonthEnd.setText(lastDate);
 
+            long oneDayLong = 24*60*60*1000;
+            xValuesLabel = new ArrayList<>();
+            for (int i=0;i<dayCount;i++){
+                long x = first + i*oneDayLong;
+                calendar.setTimeInMillis(x);
+                int month = calendar.get(Calendar.MONTH)+1;
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                xValuesLabel.add(month+"/"+day);
+            }
+
+
             initData();
         }
 
+    }
+
+    private List<Float> getYValues(){
+        List<Float> yValues = new ArrayList<>();
+        for (int i=0;i<dayCount;i++){
+            yValues.add(0f);
+        }
+        return yValues;
     }
 
 
@@ -159,6 +187,16 @@ public class MonthHistoryActivity extends AppCompatActivity {
                                         txtThisUse.setText(monthBean.thisTime+"分钟");
                                         txtThisSleep.setText(monthBean.thisSleepTime+"分钟");
                                         txtThisRelax.setText(monthBean.thisRelax+"分钟");
+
+
+                                        List<Float> useList = getMonthValues(monthBean.list,0);
+                                        CommandUtils.drawHistoryLog(lineChartUse,useList,xValuesLabel);
+
+                                        List<Float> sleepList = getMonthValues(monthBean.list,1);
+                                        CommandUtils.drawHistoryLog(lineChartSleep,sleepList,xValuesLabel);
+
+                                        List<Float> relaxList = getMonthValues(monthBean.list,2);
+                                        CommandUtils.drawHistoryLog(lineChartRelax,relaxList,xValuesLabel);
                                     }
                                 }
                             }
@@ -174,6 +212,112 @@ public class MonthHistoryActivity extends AppCompatActivity {
                     }
                 });
     }
+
+
+    private String getSuggestion(RecordMonthBean lastMonth){
+        //  您本周休息次数【times_per_week】，每次平均使用时间【service_time】精力回升效果【energy_recovery】；
+        //  平均有效睡眠时间为【effective_sleep_time】，其占比【proportion_of_effective_sleep_time】%，每次使用的平均放松时间为【relax_time】。
+        //  【suggestion1】【suggestion2】【suggestion3】【suggestion4】【suggestion5】
+//你本周休息次数比上周有所减少，使用效果有小
+//幅度提升；有效睡眠时间占比较少，建议你适当调
+//整休息环境，有利于提升休息质量！
+
+        int times_per_week = monthBean.list.size();
+        long service_time = monthBean.thisTime;
+        int energy_recovery = monthBean.thisVigor;
+        String energy_recovery_str = "";
+        if (energy_recovery>25)
+            energy_recovery_str = "显著";
+        else
+            energy_recovery_str = "良好";
+
+
+        long effective_sleep_time = monthBean.thisSleepTime;
+        float effective = effective_sleep_time/service_time;
+        int proportion_of_effective_sleep_time =Math.round(effective*100);
+        String proportion_of_effective_sleep_time_str ="";
+        if(proportion_of_effective_sleep_time<10)
+            proportion_of_effective_sleep_time_str = "较少";
+        else if(proportion_of_effective_sleep_time<20)
+            proportion_of_effective_sleep_time_str = "正常";
+        else
+            proportion_of_effective_sleep_time_str = "理想";
+        long relax_time = monthBean.thisRelax;
+
+
+        String suggestion1 = String.format("    您本月休息次数%s，每次平均使用时间%s,精力回升效果%s；平均有效睡眠时间为%s，其占比%s，每次使用的平均放松时间为%s。"
+                ,times_per_week+"次"
+                ,service_time+"分钟"
+                ,energy_recovery_str
+                ,effective_sleep_time+"分钟"
+                ,proportion_of_effective_sleep_time_str
+                ,relax_time+"分钟");
+
+
+        String tip1 = monthBean.list.size()>=lastMonth.list.size()?"增多":"减少";
+
+        String tip2 = "";
+        int offsetVigor =Math.abs(monthBean.thisVigor - lastMonth.thisVigor);
+        if(offsetVigor>60)
+            tip2 = "大幅度";
+        else if(offsetVigor>30)
+            tip2= "中幅度";
+        else
+            tip2 = "小幅度";
+
+        String tip3 = monthBean.thisVigor >= lastMonth.thisVigor?"提升":"下降";
+
+
+        String tip4 = "";
+        if(energy_recovery<15){
+            tip4 = "有效睡眠时间占比较少，建议你适当调整休息环境，有利于提升休息质量！";
+        }
+        else {
+            tip4 = "";
+        }
+
+
+        String suggestion2 = String.format("    你本月休息次数比上周有所%s，使用效果有%s%s；%s"
+                ,tip1,tip2,tip3,tip4);
+
+        return suggestion1 + "\n" + suggestion2+ "\n";
+    }
+
+
+    private List<Float> getMonthValues(List<RecordBean> datas,int type){
+        List<Float> list = getYValues();
+
+        int length = datas.size();
+        //时间顺序
+        for (int i=length-1;i>=0;i--){
+            RecordBean item = datas.get(i);
+            float yValue = 0;
+            switch (type){
+                case 0://使用时间
+                    yValue = item.relax_1+item.relax_2+item.relax_3+item.relax_4+item.relax_5;
+                    break;
+                case 1://有效睡眠
+                    yValue = item.sober_3+item.sober_4+item.sober_5;
+                    break;
+                case 2://放松时长
+                    yValue = item.relax_2+item.relax_3+item.relax_4+item.relax_5;
+                    break;
+            }
+
+
+            if(calendar==null)
+                calendar = Calendar.getInstance();
+
+            calendar.setTimeInMillis(item.startTime);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            float current = list.get(day-1)+yValue;
+            list.set(day-1,current);
+        }
+
+        return list;
+    }
+
 
 
     private void initLastMonthData() {

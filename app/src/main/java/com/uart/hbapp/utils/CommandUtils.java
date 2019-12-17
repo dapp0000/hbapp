@@ -3,9 +3,32 @@ package com.uart.hbapp.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.text.TextUtils;
 
+import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.uart.hbapp.R;
+import com.uart.hbapp.bean.RecordBean;
+import com.uart.hbapp.utils.view.LineChart.LineChartManager;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class CommandUtils {
     private final static String SPLITCHAR = "-";
@@ -85,4 +108,58 @@ public class CommandUtils {
     }
 
 
+    public static void drawHistoryLog(LineChart chart, List<Float> yValues,final List<String> xValuesLabel){
+        LineChartManager lineChartManager = new LineChartManager(chart);
+        XAxis xAxis = chart.getXAxis();
+        YAxis yAxisLeft = chart.getAxisLeft();
+        YAxis yAxisRight = chart.getAxisRight();
+        xAxis.setTextColor(Color.WHITE);
+        yAxisLeft.setTextColor(Color.WHITE);
+        yAxisRight.setTextColor(Color.WHITE);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            SimpleDateFormat mFormat = new SimpleDateFormat("M/d");
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                int index = (int)value;
+                if(xValuesLabel.size()>7){
+                    if(index%10==0 || index==xValuesLabel.size()-1)
+                        return xValuesLabel.get(index);
+                    else
+                        return "";
+                }else {
+                    return xValuesLabel.get(index);
+                }
+
+
+                //String dateStr = mFormat.format(new Date((long) value*1000));
+                //return dateStr;
+            }
+        });
+
+        float max = 10;
+        List<Float> xValues = new ArrayList<>();
+        int index = 0;
+        for (Float y : yValues){
+            xValues.add((float)index);
+            index++;
+            if(y>max)
+                max = y+100;
+        }
+
+        lineChartManager.showLineChart(xValues,yValues,"",Color.GREEN);
+        lineChartManager.setYAxis(max,0,3);
+
+        LineData lineData = chart.getLineData();
+        lineData.setValueTextColor(Color.GREEN);
+        //折线图例 标签 设置
+        Legend legend = chart.getLegend();
+        legend.setTextColor(Color.WHITE);
+        legend.setForm(Legend.LegendForm.EMPTY);
+        Description description = chart.getDescription();
+        description.setTextColor(Color.WHITE);
+        description.setText("");
+        chart.setDrawBorders(false);
+        chart.setDrawMarkers(false);
+
+    }
 }

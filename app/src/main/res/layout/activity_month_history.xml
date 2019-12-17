@@ -443,7 +443,7 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/line_chart_use"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="120dp"
                     />
 
                 <View
@@ -462,7 +462,7 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/line_chart_sleep"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="120dp"
                     />
 
                 <View
@@ -481,7 +481,7 @@
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/line_chart_relax"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="120dp"
                     />
 
                 <View

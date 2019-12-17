@@ -27,11 +27,14 @@ import com.uart.hbapp.R;
 import com.uart.hbapp.bean.RecordBean;
 import com.uart.hbapp.bean.RecordWeekBean;
 import com.uart.hbapp.utils.BItmapUtil;
+import com.uart.hbapp.utils.CommandUtils;
 import com.uart.hbapp.utils.ShareUtil;
 import com.uart.hbapp.utils.URLUtil;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,6 +106,8 @@ public class WeekHistoryActivity extends AppCompatActivity {
     private static final String APP_ID = "wx94f346ad6a97fff7";
     private int weekNum;
     private RecordWeekBean weekBean;
+    private List<String> xValuesLabel;
+    private  Calendar calendar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,10 +132,11 @@ public class WeekHistoryActivity extends AppCompatActivity {
         });
 
         //周报初始化
+        Calendar calendar = Calendar.getInstance();
         RecordBean bean = (RecordBean) getIntent().getSerializableExtra("record");
         if (bean != null) {
             int num = bean.weekNum;
-            Calendar calendar = Calendar.getInstance();
+
             calendar.setTimeInMillis(System.currentTimeMillis());
             int todayweekNum = calendar.get(Calendar.WEEK_OF_YEAR);
             int todaymonthNum = calendar.get(Calendar.MONTH);
@@ -151,8 +157,25 @@ public class WeekHistoryActivity extends AppCompatActivity {
             txtWeekStart.setText(firstDate);
             txtWeekEnd.setText(lastDate);
 
+            xValuesLabel = new ArrayList<>();
+            for (int i=0;i<7;i++){
+                long x = first + i*oneDayLong;
+                calendar.setTimeInMillis(x);
+                int month = calendar.get(Calendar.MONTH)+1;
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                xValuesLabel.add(month+"/"+day);
+            }
+
             initData();
         }
+    }
+
+    private List<Float> getYValues(){
+        List<Float> yValues = new ArrayList<>();
+        for (int i=0;i<7;i++){
+            yValues.add(0f);
+        }
+        return yValues;
     }
 
     private String getDateString(Calendar c){
@@ -196,20 +219,14 @@ public class WeekHistoryActivity extends AppCompatActivity {
                                         txtThisSleep.setText(weekBean.thisSleepTime+"分钟");
                                         txtThisRelax.setText(weekBean.thisRelax+"分钟");
 
-//                                        pbThisCount.setMax(count);
-//                                        pbThisCount.setProgress(count);
-//
-//                                        pbThisVigor.setMax(weekBean.thisVigor);
-//                                        pbThisVigor.setProgress(weekBean.thisVigor);
-//
-//                                        pbThisUse.setMax(100);
-//                                        pbThisUse.setProgress(100);
-//
-//                                        pbThisSleep.setMax(100);
-//                                        pbThisSleep.setProgress(100);
-//
-//                                        pbThisRelax.setMax(100);
-//                                        pbThisRelax.setProgress(100);
+                                        List<Float> useList = getWeekValues(weekBean.list,0);
+                                        CommandUtils.drawHistoryLog(lineChartUse,useList,xValuesLabel);
+
+                                        List<Float> sleepList = getWeekValues(weekBean.list,1);
+                                        CommandUtils.drawHistoryLog(lineChartSleep,sleepList,xValuesLabel);
+
+                                        List<Float> relaxList = getWeekValues(weekBean.list,2);
+                                        CommandUtils.drawHistoryLog(lineChartRelax,relaxList,xValuesLabel);
 
                                     }
                                 }
@@ -225,6 +242,108 @@ public class WeekHistoryActivity extends AppCompatActivity {
                         LogUtils.e(response.body());
                     }
                 });
+    }
+
+
+    private List<Float> getWeekValues(List<RecordBean> datas,int type){
+        List<Float> list = getYValues();
+
+        int length = datas.size();
+        //时间顺序
+        for (int i=length-1;i>=0;i--){
+            RecordBean item = datas.get(i);
+            float yValue = 0;
+            switch (type){
+                case 0://使用时间
+                    yValue = item.relax_1+item.relax_2+item.relax_3+item.relax_4+item.relax_5;
+                    break;
+                case 1://有效睡眠
+                    yValue = item.sober_3+item.sober_4+item.sober_5;
+                    break;
+                case 2://放松时长
+                    yValue = item.relax_2+item.relax_3+item.relax_4+item.relax_5;
+                    break;
+            }
+
+            if(calendar==null)
+                calendar=Calendar.getInstance();
+
+            calendar.setTimeInMillis(item.startTime);
+            int week = calendar.get(Calendar.DAY_OF_WEEK);
+            float current = list.get(week)+yValue;
+            list.set(week,current);
+        }
+
+        return list;
+    }
+
+    private String getSuggestion(RecordWeekBean lastWeek){
+      //  您本周休息次数【times_per_week】，每次平均使用时间【service_time】精力回升效果【energy_recovery】；
+        //  平均有效睡眠时间为【effective_sleep_time】，其占比【proportion_of_effective_sleep_time】%，每次使用的平均放松时间为【relax_time】。
+        //  【suggestion1】【suggestion2】【suggestion3】【suggestion4】【suggestion5】
+//你本周休息次数比上周有所减少，使用效果有小
+//幅度提升；有效睡眠时间占比较少，建议你适当调
+//整休息环境，有利于提升休息质量！
+
+        int times_per_week = weekBean.list.size();
+        long service_time = weekBean.thisTime;
+        int energy_recovery = weekBean.thisVigor;
+        String energy_recovery_str = "";
+        if (energy_recovery>25)
+            energy_recovery_str = "显著";
+        else
+            energy_recovery_str = "良好";
+
+
+        long effective_sleep_time = weekBean.thisSleepTime;
+        float effective = effective_sleep_time/service_time;
+        int proportion_of_effective_sleep_time =Math.round(effective*100);
+        String proportion_of_effective_sleep_time_str ="";
+        if(proportion_of_effective_sleep_time<10)
+            proportion_of_effective_sleep_time_str = "较少";
+        else if(proportion_of_effective_sleep_time<20)
+            proportion_of_effective_sleep_time_str = "正常";
+        else
+            proportion_of_effective_sleep_time_str = "理想";
+        long relax_time = weekBean.thisRelax;
+
+
+        String suggestion1 = String.format("    您本周休息次数%s，每次平均使用时间%s,精力回升效果%s；平均有效睡眠时间为%s，其占比%s，每次使用的平均放松时间为%s。"
+        ,times_per_week+"次"
+        ,service_time+"分钟"
+        ,energy_recovery_str
+        ,effective_sleep_time+"分钟"
+        ,proportion_of_effective_sleep_time_str
+        ,relax_time+"分钟");
+
+
+        String tip1 = weekBean.list.size()>=lastWeek.list.size()?"增多":"减少";
+
+        String tip2 = "";
+        int offsetVigor =Math.abs(weekBean.thisVigor - lastWeek.thisVigor);
+        if(offsetVigor>60)
+            tip2 = "大幅度";
+        else if(offsetVigor>30)
+            tip2= "中幅度";
+        else
+            tip2 = "小幅度";
+
+        String tip3 = weekBean.thisVigor >= lastWeek.thisVigor?"提升":"下降";
+
+
+        String tip4 = "";
+        if(energy_recovery<15){
+            tip4 = "有效睡眠时间占比较少，建议你适当调整休息环境，有利于提升休息质量！";
+        }
+        else {
+            tip4 = "";
+        }
+
+
+        String suggestion2 = String.format("    你本周休息次数比上周有所%s，使用效果有%s%s；%s"
+        ,tip1,tip2,tip3,tip4);
+
+        return suggestion1 + "\n" + suggestion2+ "\n";
     }
 
     private void initLastWeekData() {
@@ -264,6 +383,9 @@ public class WeekHistoryActivity extends AppCompatActivity {
                                         setProgress(pbThisUse,pbLastUse,weekBean.thisTime,lastWeekBean.thisTime);
                                         setProgress(pbThisSleep,pbLastSleep,weekBean.thisSleepTime,lastWeekBean.thisSleepTime);
                                         setProgress(pbThisRelax,pbLastRelax,weekBean.thisRelax,lastWeekBean.thisRelax);
+
+                                        txtSuggest.setText(getSuggestion(lastWeekBean));
+
                                     }
 
 
