@@ -311,10 +311,15 @@ public class UserInfoFragment extends Fragment {
             setData(1);
             setData(2);
         } else {
-            if (HbApplication.getInstance().selectMusic == null)
-                HbApplication.getInstance().selectMusic = musicList.get(0);
-            if (HbApplication.getInstance().selectSpeak == null)
-                HbApplication.getInstance().selectSpeak = speakList.get(0);
+            try {
+                if (HbApplication.getInstance().selectMusic == null)
+                    HbApplication.getInstance().selectMusic = musicList.get(0);
+                if (HbApplication.getInstance().selectSpeak == null)
+                    HbApplication.getInstance().selectSpeak = speakList.get(0);
+            }catch (Exception e){
+                ToastUtils.showShort("暂无音乐");
+            }
+
 
         }
 

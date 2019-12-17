@@ -27,8 +27,8 @@ android {
         }
     }
     compileOptions {
-        targetCompatibility JavaVersion.VERSION_1_8
-        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
     repositories {
         flatDir { dirs 'libs' }
@@ -55,7 +55,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
-
+    implementation 'org.greenrobot:greendao:3.2.2'
     //联网
     implementation 'com.zhy:okhttputils:+'
     implementation 'com.lzy.net:okgo:3.0.4'
@@ -63,8 +63,8 @@ dependencies {
     implementation 'com.lzy.net:okserver:2.0.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation project(path: ':Entitylib')
-    //greendao
-    implementation 'org.greenrobot:greendao:3.2.2'
 
+
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
 }
