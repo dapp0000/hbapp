@@ -42,8 +42,10 @@ import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleNotifyCallback;
 import com.clj.fastble.callback.BleReadCallback;
 import com.clj.fastble.callback.BleRssiCallback;
+import com.clj.fastble.callback.BleWriteCallback;
 import com.clj.fastble.data.BleDevice;
 import com.clj.fastble.exception.BleException;
+import com.clj.fastble.utils.HexUtil;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
@@ -243,6 +245,9 @@ public class DeviceFragment extends Fragment {
             lineChartSignal.setNoDataText("设备准备就绪");
             btnPlay.setEnabled(true);
         }
+
+        send(CommandUtils.bt_dispair_cmd());
+        send(CommandUtils.bt_enable_cmd());
 
         UsageRecord usageRecord = HbApplication.getInstance().usageRecord;
         usageRecord.setDeviceName(bleDevice.getName());
@@ -962,6 +967,47 @@ public class DeviceFragment extends Fragment {
             timerTask.cancel();
             timerTask = null;
         }
+    }
+
+
+    private void send(byte[] hexCmd) {
+        BleDevice bleDevice = ((MainActivity) getActivity()).getBleDevice();
+        BluetoothGattCharacteristic characteristic = ((MainActivity) getActivity()).getCharacteristic();
+        if (bleDevice == null || characteristic == null)
+            return;
+
+        BleManager.getInstance().write(
+                bleDevice,
+                characteristic.getService().getUuid().toString(),
+                characteristic.getUuid().toString(),
+                hexCmd,
+                new BleWriteCallback() {
+                    @Override
+                    public void onWriteSuccess(final int current, final int total, final byte[] justWrite) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                String result = "current: " + current
+                                        + " total: " + total
+                                        + " justWrite: " + HexUtil.formatHexString(justWrite, true);
+
+                                ToastUtils.showShort("onWriteSuccess: " + result);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onWriteFailure(final BleException exception) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //addText(txt, exception.toString());
+                                ToastUtils.showShort("onWriteFailure:" + exception.toString());
+                            }
+                        });
+                    }
+                });
     }
 
 

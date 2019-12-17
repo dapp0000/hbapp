@@ -101,6 +101,8 @@ public class LoginUserPwdActivity extends Activity {
                                 JSONObject data = jsonObject.getJSONObject("data");
                                 if(data!=null){
                                     String token = data.getString("token");
+                                    int sign = data.getInt("sign");
+                                    user.setSign(sign);
                                     user.setUserName(uname);
                                     user.setPassword(pwd);
                                     user.setLastlogin(System.currentTimeMillis());
