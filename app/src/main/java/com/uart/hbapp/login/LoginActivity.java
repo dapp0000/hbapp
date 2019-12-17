@@ -72,7 +72,8 @@ public class LoginActivity extends Activity {
                     ToastUtils.showShort("用户名不能为空");
                     return;
                 }
-
+                startActivity(new Intent(LoginActivity.this, ScanActivity.class));
+                finish();
 //                UserInfo user = HbApplication.getInstance().loginUser;
 //                user.setUserName(userName);
 //                user.setLastlogin(System.currentTimeMillis());
