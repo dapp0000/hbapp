@@ -166,8 +166,14 @@ public class WeekHistoryActivity extends AppCompatActivity {
                 xValuesLabel.add(month+"/"+day);
             }
 
-            initData();
+
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 
     private List<Float> getYValues(){
