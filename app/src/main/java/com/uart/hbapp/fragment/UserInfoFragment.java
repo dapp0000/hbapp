@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.blankj.utilcode.util.FileUtils;
+import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.callback.BleWriteCallback;
@@ -155,11 +156,21 @@ public class UserInfoFragment extends Fragment {
 
         listSpeak.setAdapter(speakAdapter);
 
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        HbApplication.getDaoInstance().getResourceDao().deleteAll();
+
         setData(1);
         setData(2);
     }
 
     private void setData(int resourceType) {
+
+
         //todo:musicListQuery接口需要添加音乐类型和播音员字段
         HashMap<String, Object> params = new HashMap<>();
         params.put("token", HbApplication.getInstance().loginUser.getToken());
@@ -176,6 +187,7 @@ public class UserInfoFragment extends Fragment {
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(Response<String> response) {
+                        LogUtils.e(response.body());
                         try {
                             JSONObject jsonObject = new JSONObject(response.body());
                             int error = jsonObject.getInt("error");

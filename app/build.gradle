@@ -13,11 +13,11 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             // Zipalign优化
-            zipAlignEnabled true
+            zipAlignEnabled false
             // 移除无用的resource文件
-            shrinkResources true
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -64,7 +64,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     implementation project(path: ':Entitylib')
 
-
+    implementation 'com.alibaba:fastjson:1.2.55'
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
 
 }

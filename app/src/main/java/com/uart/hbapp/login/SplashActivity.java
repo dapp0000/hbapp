@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,13 +33,13 @@ public class SplashActivity extends Activity {
     ViewPager vpGuide;
     @BindView(R.id.ll_guide_points)
     LinearLayout llGuidePoints;
-    @BindView(R.id.v_guide_redpoint)
-    View vGuideRedpoint;
+    @BindView(R.id.startBtn)
+    Button startBtn;
 
 
     //向导界面的图片
     private int[] mPics = new int[]{R.mipmap.img1, R.mipmap.img2, R.mipmap.img3};
-    private int disPoints;
+
     private int currentItem;
     private SplashAdapter adapter;
     private List<ImageView> guids;
@@ -97,29 +98,28 @@ public class SplashActivity extends Activity {
     }
 
     private void initEvent() {
-        //监听界面绘制完成
-        vGuideRedpoint.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onGlobalLayout() {
-                //取消注册界面而产生的回调接口
-                vGuideRedpoint.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                //计算点于点之间的距离
-                disPoints = (llGuidePoints.getChildAt(1).getLeft() - llGuidePoints.getChildAt(0).getLeft());
+            public void onClick(View v) {
+                Intent intent = new Intent(SplashActivity.this, LoginUserPwdActivity.class);
+                startActivity(intent);
+                //这部分代码是切换Activity时的动画，看起来就不会很生硬
+                overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                finish();
             }
         });
-
         //滑动事件监听滑动距离，点更随滑动。
         vpGuide.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
-               /* //当前viewpager显示的页码
+                //当前viewpager显示的页码
                 //如果viewpager滑动到第三页码（最后一页），显示进入的button
                 if (position == guids.size() - 1) {
-                    bt_startExp.setVisibility(View.VISIBLE);//设置按钮的显示
+                    startBtn.setVisibility(View.VISIBLE);//设置按钮的显示
                 } else {
                     //隐藏该按钮
-                    bt_startExp.setVisibility(View.GONE);
-                }*/
+                    startBtn.setVisibility(View.GONE);
+                }
                 currentItem = position;
             }
 
@@ -131,14 +131,7 @@ public class SplashActivity extends Activity {
              */
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                //计算红点的左边距
-                float leftMargin = disPoints * (position + positionOffset);
-                //设置红点的左边距
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) vGuideRedpoint.getLayoutParams();
-                //对folat类型进行四舍五入，
-                layoutParams.leftMargin = Math.round(leftMargin);
-                //设置位置
-                vGuideRedpoint.setLayoutParams(layoutParams);
+
             }
 
             @Override
