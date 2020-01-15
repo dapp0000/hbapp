@@ -71,6 +71,7 @@ import com.uart.hbapp.utils.ByteUtils;
 import com.uart.hbapp.utils.CommandUtils;
 import com.uart.hbapp.utils.OriginalDataUtil;
 import com.uart.hbapp.utils.URLUtil;
+import com.uart.hbapp.utils.view.EcgView;
 import com.uart.hbapp.utils.view.LineChart.LineChartManager;
 
 import org.json.JSONObject;
@@ -83,6 +84,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -131,6 +133,10 @@ public class DeviceFragment extends Fragment {
     ImageView ivSleepType;
     @BindView(R.id.txt_sleep_type)
     TextView txtSleepType;
+    @BindView(R.id.line_chart_signal_ecg)
+    EcgView lineChartSignalECG;
+
+
 
     private static final String TAG = DeviceFragment.class.getSimpleName();
     public static final int PROPERTY_READ = 1;
@@ -215,11 +221,6 @@ public class DeviceFragment extends Fragment {
         timerOriginal.schedule(task, 100, 15000);//15s
 
         /* 设置旋转动画*/
-//        animationR = new RotateAnimation(360, 0, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-//        animationR.setDuration(3000);
-//        animationR.setRepeatCount(RotateAnimation.INFINITE);
-//        animationR.setInterpolator(new LinearInterpolator());
-
         animationR = ObjectAnimator.ofFloat(btnMusic, "rotation", 0f, 360.0f);
         animationR.setDuration(3000);
         animationR.setInterpolator(new LinearInterpolator());//不停顿
@@ -571,6 +572,7 @@ public class DeviceFragment extends Fragment {
         showChart(datas);
     }
 
+    Random random = new Random();
     private void initChart() {
         XAxis xAxis = lineChartSignal.getXAxis();
         YAxis yAxisLeft = lineChartSignal.getAxisLeft();
@@ -623,6 +625,7 @@ public class DeviceFragment extends Fragment {
                 maxValue = (int) point + 100;
 
             yValue.add(point);
+            lineChartSignalECG.setData(Math.round(point));
         }
 
         lineChartManager.showLineChart(xValues, yValue, "", Color.GREEN);
@@ -882,7 +885,7 @@ public class DeviceFragment extends Fragment {
 
     EditDeviceDialogFragment fragmentDevice;
     SelectMusicDialogFragment fragmentMusic;
-    @OnClick({R.id.btn_play, R.id.btn_menu_stop, R.id.btn_edit_device, R.id.btn_menu})
+    @OnClick({R.id.btn_play, R.id.btn_menu_stop, R.id.btn_edit_device, R.id.btn_menu,R.id.iv_sleep_type})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_play:
@@ -904,6 +907,11 @@ public class DeviceFragment extends Fragment {
                         setMusicAbout();
                     }
                 });
+                break;
+            case R.id.iv_sleep_type:
+                for (int i=0;i<8;i++){
+                    lineChartSignalECG.setData(random.nextInt(1000));
+                }
                 break;
         }
     }
