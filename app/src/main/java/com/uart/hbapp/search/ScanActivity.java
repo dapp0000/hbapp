@@ -212,20 +212,24 @@ public class ScanActivity extends AppCompatActivity {
 
         //设置音乐
         for (Resource resource : resourceList) {
-            if (resource.getType() == 0) {
-                if (HbApplication.getInstance().selectMusic == null)
-                {
-                    HbApplication.getInstance().selectMusic = resource;
-                    usageRecord.setMusicId(resource.getId());
-                }
+            //资源为已下载
+            if(resource!=null&&resource.getStatus()==1){
+                if (resource.getType() == 0) {
+                    if (HbApplication.getInstance().selectMusic == null)
+                    {
+                        HbApplication.getInstance().selectMusic = resource;
+                        usageRecord.setMusicId(resource.getId());
+                    }
 
-            } else {
-                if (HbApplication.getInstance().selectSpeak == null)
-                {
-                    HbApplication.getInstance().selectSpeak = resource;
-                    usageRecord.setSpeakId(resource.getId());
+                } else {
+                    if (HbApplication.getInstance().selectSpeak == null)
+                    {
+                        HbApplication.getInstance().selectSpeak = resource;
+                        usageRecord.setSpeakId(resource.getId());
+                    }
                 }
             }
+
         }
         for (RestDuration restDuration : restDurationList) {
             if (HbApplication.getInstance().selectDuration == null)

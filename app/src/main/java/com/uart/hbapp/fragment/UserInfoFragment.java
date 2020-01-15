@@ -324,10 +324,24 @@ public class UserInfoFragment extends Fragment {
             setData(2);
         } else {
             try {
-                if (HbApplication.getInstance().selectMusic == null)
-                    HbApplication.getInstance().selectMusic = musicList.get(0);
-                if (HbApplication.getInstance().selectSpeak == null)
-                    HbApplication.getInstance().selectSpeak = speakList.get(0);
+                //离开页面时默认选择
+                for (Resource music:musicList){
+                    if (HbApplication.getInstance().selectMusic == null&&music!=null&&music.getStatus()==1)
+                    {
+                        HbApplication.getInstance().selectMusic = music;
+                        break;
+                    }
+                }
+
+                for (Resource speak:speakList){
+                    if (HbApplication.getInstance().selectSpeak == null&&speak!=null&&speak.getStatus()==1)
+                    {
+                        HbApplication.getInstance().selectSpeak = speak;
+                        break;
+                    }
+
+                }
+
             }catch (Exception e){
                 ToastUtils.showShort("暂无音乐");
             }
@@ -453,11 +467,20 @@ public class UserInfoFragment extends Fragment {
                     Resource item = musics.get(0);
                     if(!TextUtils.isEmpty(item.getLocalFilePath())){
                         if(FileUtils.delete(item.getLocalFilePath())){
-                            item.setStatus(0);
-                            item.isChecked=false;
-                            saveResource(item);
+
                         }
                     }
+
+                    item.setStatus(0);
+                    item.isChecked=false;
+                    saveResource(item);
+
+
+                    //删除的是当前选择
+                    if(HbApplication.getInstance().selectMusic!=null&&HbApplication.getInstance().selectMusic.getId()==item.getId()){
+                        HbApplication.getInstance().selectMusic=null;
+                    }
+
                     musics.remove(item);
                     startDeleteMusic(musics);
                 }
@@ -509,11 +532,20 @@ public class UserInfoFragment extends Fragment {
                     Resource item = speaks.get(0);
                     if(!TextUtils.isEmpty(item.getLocalFilePath())){
                         if(FileUtils.delete(item.getLocalFilePath())){
-                            item.setStatus(0);
-                            item.isChecked=false;
-                            saveResource(item);
+
                         }
                     }
+
+                    item.setStatus(0);
+                    item.isChecked=false;
+                    saveResource(item);
+
+
+                    //删除的是当前选择
+                    if(HbApplication.getInstance().selectSpeak!=null&&HbApplication.getInstance().selectSpeak.getId()==item.getId()){
+                        HbApplication.getInstance().selectSpeak=null;
+                    }
+
                     speaks.remove(item);
                     startDeleteSpeak(speaks);
                 }
@@ -527,11 +559,16 @@ public class UserInfoFragment extends Fragment {
     }
 
     private void saveResource(Resource item){
-        if(item.getId()!=null){
-            HbApplication.getDaoInstance().getResourceDao().update(item);
-        }
-        else{
-            HbApplication.getDaoInstance().getResourceDao().insertOrReplace(item);
+//        if(item.getId()!=null){
+//            HbApplication.getDaoInstance().getResourceDao().update(item);
+//        }
+//        else{
+//            HbApplication.getDaoInstance().getResourceDao().insertOrReplace(item);
+//        }
+
+        if(item!=null){
+            HbApplication.getDaoInstance().getResourceDao().deleteByKey(item.getId());
+            HbApplication.getDaoInstance().getResourceDao().insert(item);
         }
     }
 }

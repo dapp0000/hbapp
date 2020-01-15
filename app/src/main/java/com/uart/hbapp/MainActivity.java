@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.clj.fastble.BleManager;
 import com.clj.fastble.data.BleDevice;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements Observer {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initBottomNavigation();
-
+        SPUtils.getInstance().put("firstUse",true);
         try {
             getSupportActionBar().hide();
             getActionBar().hide();

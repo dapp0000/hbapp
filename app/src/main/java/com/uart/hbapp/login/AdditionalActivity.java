@@ -203,11 +203,11 @@ public class AdditionalActivity extends Activity implements DatePicker.OnDateCha
                                 user.setWeight((int)mWeight);
                                 user.setBirthday(year+"-"+monthOfYear+"-"+dayOfMonth);
 
-                                if (user.getSign()==0) {
+                                if (user.getSign()!=0) {
                                     ToastUtils.showShort("修改成功");
                                     finish();
                                 } else {
-                                    user.setSign(0);//已完善
+                                    user.setSign(1);//已完善
                                     Intent intent = new Intent(AdditionalActivity.this, ScanActivity.class);
                                     startActivity(intent);
                                     finish();

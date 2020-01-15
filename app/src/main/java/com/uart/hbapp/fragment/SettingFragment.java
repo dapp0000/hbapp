@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.clj.fastble.data.BleDevice;
 import com.uart.hbapp.HbApplication;
 import com.uart.hbapp.MainActivity;
@@ -57,7 +58,7 @@ public class SettingFragment extends Fragment {
         ButterKnife.bind(this, v);
 
 
-        nickName.setText(HbApplication.getInstance().loginUser.getUserName());
+        nickName.setText(SPUtils.getInstance().getString("username"));
         //设置设备名称
         btnEditDevice.setText(CommandUtils.getUIDeviceName(HbApplication.getInstance().usageRecord.getDeviceName()));
         //设置电量

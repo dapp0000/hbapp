@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.blankj.utilcode.constant.PermissionConstants;
 import com.blankj.utilcode.util.PermissionUtils;
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheMode;
@@ -104,13 +105,15 @@ public class LoginUserPwdActivity extends Activity {
                                     int sign = data.getInt("sign");
                                     user.setSign(sign);
                                     user.setUserName(uname);
+                                    SPUtils.getInstance().put("username",uname);
+                                    SPUtils.getInstance().put("userpwd",pwd);
                                     user.setPassword(pwd);
                                     user.setLastlogin(System.currentTimeMillis());
                                     user.setToken(token);
                                     user.setActivated(true);
                                 }
 
-                                if (user.getSign()==0) {
+                                if (user.getSign()!=0) {
                                     startActivity(new Intent(LoginUserPwdActivity.this, ScanActivity.class));
                                     finish();
                                 } else {

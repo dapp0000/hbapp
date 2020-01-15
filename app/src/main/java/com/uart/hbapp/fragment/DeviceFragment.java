@@ -308,10 +308,18 @@ public class DeviceFragment extends Fragment {
     }
 
     private void setMusicAbout() {
-        if(HbApplication.getInstance().selectMusic!=null)
+        if(HbApplication.getInstance().selectMusic!=null&&HbApplication.getInstance().selectMusic.getStatus()==1)
             txtRecordMusicName.setText(HbApplication.getInstance().selectMusic.getName());
-        if(HbApplication.getInstance().selectSpeak!=null)
+        else
+        {
+
+            txtRecordMusicName.setText("");
+        }
+        if(HbApplication.getInstance().selectSpeak!=null&&HbApplication.getInstance().selectSpeak.getStatus()==1)
             txtRecordSpeakName.setText(HbApplication.getInstance().selectSpeak.getName());
+        else
+            txtRecordSpeakName.setText("");
+
         if(HbApplication.getInstance().selectDuration!=null)
             txtRecordDuration.setText(HbApplication.getInstance().selectDuration.getMinute() + "min");
     }
@@ -909,9 +917,9 @@ public class DeviceFragment extends Fragment {
                 });
                 break;
             case R.id.iv_sleep_type:
-                for (int i=0;i<8;i++){
-                    lineChartSignalECG.setData(random.nextInt(1000));
-                }
+//                for (int i=0;i<8;i++){
+//                    lineChartSignalECG.setData(random.nextInt(1000));
+//                }
                 break;
         }
     }

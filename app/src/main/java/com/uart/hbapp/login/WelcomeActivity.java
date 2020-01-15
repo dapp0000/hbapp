@@ -27,6 +27,7 @@ import com.uart.hbapp.utils.URLUtil;
 
 import org.json.JSONObject;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,7 +49,10 @@ public class WelcomeActivity extends Activity {
         welcome=findViewById(R.id.welcome);
         img_welcome=findViewById(R.id.img_welcome);
         getRandomHome();
-        CountHandler.postDelayed(CountRunnable, 1000);
+        if (new Date().getTime()/1000<1582948800){
+            CountHandler.postDelayed(CountRunnable, 1000);
+        }
+
     }
 
     private void getRandomHome() {
@@ -131,10 +135,11 @@ public class WelcomeActivity extends Activity {
 //                }
 
                 UserInfo userInfo = HbApplication.getInstance().loginUser;
-                if (userInfo.getActivated()) {
-                    if (!TextUtils.isEmpty(userInfo.getToken())) {
-                        autoLogin(userInfo.getUserName(),userInfo.getPassword());
-                        if(userInfo.getSign()==0){
+                boolean firstUse=SPUtils.getInstance().getBoolean("firstUse",false);
+                if (firstUse==true) {
+                    if (!TextUtils.isEmpty(SPUtils.getInstance().getString("username"))) {
+                        autoLogin(SPUtils.getInstance().getString("username"),SPUtils.getInstance().getString("userpwd"));
+                        if(userInfo.getSign()!=0){
                             startActivity(new Intent(WelcomeActivity.this, ScanActivity.class));
                             finish();
                         }
