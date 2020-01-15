@@ -164,11 +164,23 @@ public class ScanActivity extends AppCompatActivity {
             r120.setName("2小时原地复活");
             r120.setMinute(120);
 
+
+
             HbApplication.getDaoInstance().getRestDurationDao().insert(r10);
             HbApplication.getDaoInstance().getRestDurationDao().insert(r20);
             HbApplication.getDaoInstance().getRestDurationDao().insert(r30);
             HbApplication.getDaoInstance().getRestDurationDao().insert(r60);
             HbApplication.getDaoInstance().getRestDurationDao().insert(r120);
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(3));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(4));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(5));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(6));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(7));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(8));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(9));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(10));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(11));
+            HbApplication.getDaoInstance().getRestDurationDao().insert(getRestDuration(12));
             restDurationList = HbApplication.getDaoInstance().getRestDurationDao().loadAll();
         }
 
@@ -222,6 +234,14 @@ public class ScanActivity extends AppCompatActivity {
                 usageRecord.setRestDurationId(restDuration.getId());
             }
         }
+    }
+
+    private RestDuration getRestDuration(int hour){
+        RestDuration rHour = new RestDuration();
+        rHour.setName(hour+"小时睡眠");
+        rHour.setMinute(60*hour);
+
+        return rHour;
     }
 
     public void updateRadar(BleDevice mDatas) {
