@@ -79,11 +79,18 @@
         android:orientation="vertical"
         android:layout_below="@id/layout_title"
         android:layout_centerHorizontal="true">
+
+        <com.uart.hbapp.utils.view.EcgView
+            android:id="@+id/line_chart_signal_ecg"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            />
+
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart_signal"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="30dp"
+            android:layout_height="230dp"
+            android:visibility="gone"
             />
 
     </LinearLayout>
@@ -118,12 +125,14 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="55dp">
 
-            <TextView
+            <com.uart.hbapp.utils.view.ScrollTextView
                 android:id="@+id/txt_record_music_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:maxWidth="70dp"
                 android:textColor="@color/white"
-                android:text="高山流水"/>
+                android:text="高山流水高山流水"/>
 
             <TextView
                 android:id="@+id/txt_record_duration"
@@ -168,12 +177,14 @@
             android:layout_marginEnd="55dp"
             android:layout_gravity="center_vertical">
 
-            <TextView
+            <com.uart.hbapp.utils.view.ScrollTextView
                 android:id="@+id/txt_record_speak_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:maxWidth="70dp"
                 android:textColor="@color/white"
-                android:text="温柔语音"/>
+                android:text="温柔语音温柔语音"/>
 
         </LinearLayout>
 
